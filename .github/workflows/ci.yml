@@ -20,6 +20,9 @@ jobs:
       - name: 🚧 Install
         run: bun install
 
+      - name: 🧹 Lint
+        run: bun run lint
+
       - name: 📝 Check types
         run: bun run check
 
