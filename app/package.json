@@ -15,7 +15,8 @@
     "db:push": "npx drizzle-kit push",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx tsx ./migrate.ts",
-    "db:seed": "npx tsx ./scripts/seed.ts"
+    "db:seed": "npx tsx ./scripts/seed.ts",
+    "db:ui": "npx drizzle-kit studio"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "1.0.7",
@@ -33,7 +34,7 @@
     "@sveltejs/vite-plugin-svelte": "3.0.0",
     "@types/eslint": "8.56.7",
     "autoprefixer": "10.4.19",
-    "dotenv": "^16.4.5",
+    "dotenv": "16.4.5",
     "drizzle-kit": "0.23.0",
     "eslint": "9.0.0",
     "eslint-config-prettier": "9.1.0",
@@ -42,12 +43,12 @@
     "postcss": "8.4.39",
     "prettier": "3.1.1",
     "prettier-plugin-svelte": "3.1.2",
-    "svelte": "5.0.0-next.1",
-    "svelte-check": "3.6.0",
+    "svelte": "5.0.0-next.183",
+    "svelte-check": "3.8.4",
     "tailwindcss": "3.4.4",
     "tslib": "2.4.1",
     "tsx": "4.16.2",
-    "typescript": "5.5.3",
+    "typescript": "^5.0.0",
     "typescript-eslint": "8.0.0-alpha.20",
     "vite": "5.0.0",
     "vitest": "1.6.0"
