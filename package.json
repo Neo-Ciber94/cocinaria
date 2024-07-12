@@ -1,0 +1,28 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
+  "packageManager": "bun@1.1.17",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check": "turbo check",
+    "lint": "turbo lint",
+    "format": "turbo run format"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "eslint": "9",
+    "eslint-define-config": "^2.1.0",
+    "globals": "^15.8.0",
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.6",
+    "typescript-eslint": "^7.16.0"
+  }
+}

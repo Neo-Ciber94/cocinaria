@@ -1,0 +1,12 @@
+# repo
+node_modules
+.turbo
+
+# env
+.env
+.env.*
+!.env.example
+
+# misc
+private
+todo
