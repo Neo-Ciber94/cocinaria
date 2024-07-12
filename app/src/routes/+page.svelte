@@ -1,11 +1,12 @@
 <script lang="ts">
-	let count = $state(0);
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
 </script>
 
-<p>Count: {count}</p>
-<button
-	class="bg-red-500 rounded-xl text-white font-bold px-4 py-2 shadow-lg"
-	onclick={() => count++}
->
-	Increment
-</button>
+{#if data.user}
+	<h1>Username: {data.user}</h1>
+	<a href="/api/auth/google/logout">Logout</a>
+{:else}
+	<a href="/login" class="text-2xl font-bold">Go to Login</a>
+{/if}

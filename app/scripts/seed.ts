@@ -16,7 +16,8 @@ async function seed() {
 	await db.insert(users).values({
 		id: crypto.randomUUID(),
 		username: 'test',
-		email: 'someuser@example.com'
+		email: 'someuser@example.com',
+		accountId: ''
 	});
 
 	console.log('✅ Database seeded successfully!');

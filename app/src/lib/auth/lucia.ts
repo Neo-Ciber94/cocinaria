@@ -3,7 +3,7 @@ import { sessions, users } from '$lib/db/schema';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { Google } from 'arctic';
 import { Lucia, TimeSpan } from 'lucia';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } from '$env/dynamic/private';
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } from '$env/static/private';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 

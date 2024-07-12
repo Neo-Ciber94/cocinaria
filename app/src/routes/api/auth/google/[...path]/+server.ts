@@ -8,14 +8,14 @@ import { and, eq } from 'drizzle-orm';
 const COOKIE_GOOGLE_OAUTH_STATE = 'google-oauth-state';
 const COOKIE_GOOGLE_CODE_VERIFIER = 'google-oauth-verifier';
 
-export const POST: RequestHandler = (event: RequestEvent) => {
+export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {
-		case '/login':
+		case '/api/auth/google/login':
 			return handleLogin(event);
-		case '/callback':
-			return handleCallback(event);
-		case '/logout':
+		case '/api/auth/google/logout':
 			return handleLogout(event);
+		case '/api/auth/google/callback':
+			return handleCallback(event);
 		default:
 			return new Response(null, { status: 404 });
 	}
@@ -42,7 +42,9 @@ async function handleLogin(event: RequestEvent) {
 
 	const state = generateState();
 	const codeVerifier = generateCodeVerifier();
-	const url = await googleAuth.createAuthorizationURL(state, codeVerifier);
+	const url = await googleAuth.createAuthorizationURL(state, codeVerifier, {
+		scopes: ['profile', 'email']
+	});
 
 	event.cookies.set(COOKIE_GOOGLE_OAUTH_STATE, state, {
 		path: '/',
@@ -83,7 +85,7 @@ async function handleCallback(event: RequestEvent) {
 		return new Response(null, {
 			status: 302,
 			headers: {
-				Location: '/login?OAuthError=InvalidState'
+				Location: '/login?AuthError=InvalidState'
 			}
 		});
 	}
@@ -99,15 +101,16 @@ async function handleCallback(event: RequestEvent) {
 		});
 
 		const googleUser: GoogleUser = await googleUserResponse.json();
-		const existingUser = await db.query.users.findFirst({
-			where: and(eq(users.accountId, googleUser.sub), eq(accounts.authProvider, 'google'))
+		const existingAccount = await db.query.accounts.findFirst({
+			where: and(eq(accounts.authAccountId, googleUser.sub), eq(accounts.authProvider, 'google'))
 		});
 
-		const userId = existingUser?.id ?? crypto.randomUUID();
-		const session = await lucia.createSession(userId, {});
-		const sessionCookie = lucia.createSessionCookie(session.id);
+		const userId = existingAccount?.userId ?? crypto.randomUUID();
 
-		if (existingUser) {
+		if (existingAccount) {
+			const session = await lucia.createSession(userId, {});
+			const sessionCookie = lucia.createSessionCookie(session.id);
+
 			return new Response(null, {
 				status: 302,
 				headers: {
@@ -130,11 +133,13 @@ async function handleCallback(event: RequestEvent) {
 
 			await tx.insert(accounts).values({
 				userId,
-				id: accountId,
 				authAccountId: googleUser.sub,
 				authProvider: 'google'
 			});
 		});
+
+		const session = await lucia.createSession(userId, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
 
 		return new Response(null, {
 			status: 302,
@@ -149,7 +154,7 @@ async function handleCallback(event: RequestEvent) {
 		return new Response(null, {
 			status: 302,
 			headers: {
-				Location: '/login?OAuthError=CallbackError'
+				Location: '/login?AuthError=CallbackError'
 			}
 		});
 	}
