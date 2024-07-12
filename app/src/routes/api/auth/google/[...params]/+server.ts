@@ -1,0 +1,191 @@
+import { googleAuth, lucia } from '$lib/auth/lucia';
+import { db } from '$lib/db';
+import { accounts, users } from '$lib/db/schema';
+import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
+import { generateCodeVerifier, generateState } from 'arctic';
+import { and, eq } from 'drizzle-orm';
+
+const COOKIE_GOOGLE_OAUTH_STATE = 'google-oauth-state';
+const COOKIE_GOOGLE_CODE_VERIFIER = 'google-oauth-verifier';
+
+export const POST: RequestHandler = (event: RequestEvent) => {
+	switch (event.url.pathname) {
+		case '/login':
+			return handleLogin(event);
+		case '/callback':
+			return handleCallback(event);
+		case '/logout':
+			return handleLogout(event);
+		default:
+			return new Response(null, { status: 404 });
+	}
+};
+
+async function handleLogin(event: RequestEvent) {
+	const sessionCookie = event.cookies.get(lucia.sessionCookieName);
+
+	if (sessionCookie) {
+		try {
+			const userSession = await lucia.validateSession(sessionCookie);
+			if (userSession.user && userSession.session) {
+				return new Response(null, {
+					status: 302,
+					headers: {
+						Location: '/'
+					}
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	const state = generateState();
+	const codeVerifier = generateCodeVerifier();
+	const url = await googleAuth.createAuthorizationURL(state, codeVerifier);
+
+	event.cookies.set(COOKIE_GOOGLE_OAUTH_STATE, state, {
+		path: '/',
+		secure: process.env.NODE_ENV === 'production',
+		httpOnly: true,
+		maxAge: 60 * 5, // 5min
+		sameSite: 'lax'
+	});
+
+	event.cookies.set(COOKIE_GOOGLE_CODE_VERIFIER, codeVerifier, {
+		path: '/',
+		secure: process.env.NODE_ENV === 'production',
+		httpOnly: true,
+		maxAge: 60 * 5, // 5min
+		sameSite: 'lax'
+	});
+
+	return new Response(null, {
+		status: 302,
+		headers: {
+			Location: url.toString()
+		}
+	});
+}
+
+async function handleCallback(event: RequestEvent) {
+	const oauthState = event.cookies.get(COOKIE_GOOGLE_OAUTH_STATE);
+	const oauthVerifier = event.cookies.get(COOKIE_GOOGLE_CODE_VERIFIER);
+	const storedCode = event.url.searchParams.get('code');
+	const storedState = event.url.searchParams.get('state');
+
+	event.cookies.delete(COOKIE_GOOGLE_OAUTH_STATE, { path: '/' });
+	event.cookies.delete(COOKIE_GOOGLE_CODE_VERIFIER, { path: '/' });
+
+	if (!oauthVerifier || !oauthState || !storedState || !storedCode || storedState !== oauthState) {
+		cleanUpSession(event);
+
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: '/login?OAuthError=InvalidState'
+			}
+		});
+	}
+
+	try {
+		const tokens = await googleAuth.validateAuthorizationCode(storedCode, oauthVerifier);
+
+		// Retrieve user information
+		const googleUserResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
+			headers: {
+				Authorization: `Bearer ${tokens.accessToken}`
+			}
+		});
+
+		const googleUser: GoogleUser = await googleUserResponse.json();
+		const existingUser = await db.query.users.findFirst({
+			where: and(eq(users.accountId, googleUser.sub), eq(accounts.authProvider, 'google'))
+		});
+
+		const userId = existingUser?.id ?? crypto.randomUUID();
+		const session = await lucia.createSession(userId, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
+
+		if (existingUser) {
+			return new Response(null, {
+				status: 302,
+				headers: {
+					'Set-Cookie': sessionCookie.serialize(),
+					Location: '/'
+				}
+			});
+		}
+
+		const accountId = crypto.randomUUID();
+
+		await db.transaction(async (tx) => {
+			await tx.insert(users).values({
+				id: userId,
+				accountId,
+				email: googleUser.email,
+				username: googleUser.name,
+				picture: googleUser.picture
+			});
+
+			await tx.insert(accounts).values({
+				userId,
+				id: accountId,
+				authAccountId: googleUser.sub,
+				authProvider: 'google'
+			});
+		});
+
+		return new Response(null, {
+			status: 302,
+			headers: {
+				'Set-Cookie': sessionCookie.serialize(),
+				Location: '/'
+			}
+		});
+	} catch (err) {
+		console.error(err);
+
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: '/login?OAuthError=CallbackError'
+			}
+		});
+	}
+}
+
+async function handleLogout(event: RequestEvent) {
+	cleanUpSession(event);
+
+	return new Response(null, {
+		status: 302,
+		headers: {
+			Location: '/'
+		}
+	});
+}
+
+function cleanUpSession(event: RequestEvent) {
+	event.cookies.delete(lucia.sessionCookieName, { path: '/' });
+}
+
+// https://google.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/google.ts
+interface GoogleUser {
+	aud: string;
+	azp: string;
+	email: string;
+	email_verified: boolean;
+	exp: number;
+	family_name?: string;
+	given_name: string;
+	hd?: string;
+	iat: number;
+	iss: string;
+	jti?: string;
+	locale?: string;
+	name: string;
+	nbf?: number;
+	picture: string;
+	sub: string;
+}

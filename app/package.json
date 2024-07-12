@@ -19,10 +19,13 @@
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "1.0.7",
-    "@types/pg": "^8.11.6",
-    "drizzle-orm": "^0.32.0",
+    "@types/pg": "8.11.6",
+    "arctic": "1.9.1",
+    "bits-ui": "0.21.12",
+    "drizzle-orm": "0.32.0",
     "lucia": "3.2.0",
-    "postgres": "^3.4.4"
+    "oslo": "1.2.1",
+    "postgres": "3.4.4"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.0.0",
