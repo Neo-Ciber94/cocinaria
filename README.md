@@ -1,3 +1,3 @@
-# AI Recipe Generator
+# 🍰🧁 AI Recipe Generator 🍔🍕
 
 TODO
