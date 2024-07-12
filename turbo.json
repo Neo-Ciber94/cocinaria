@@ -19,6 +19,7 @@
                 "^check"
             ]
         },
+        "test": {},
         "lint": {},
         "format": {}
     }
