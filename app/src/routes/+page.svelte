@@ -1,11 +1,17 @@
 <script lang="ts">
-	let count = $state(0);
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
+	const user = data.auth?.user;
 </script>
 
-<p>Count: {count}</p>
-<button
-	class="bg-red-500 rounded-xl text-white font-bold px-4 py-2 shadow-lg"
-	onclick={() => count++}
+<div
+	class="w-full h-[calc(100vh-var(--header-height)*2)] flex flex-col justify-center items-center"
 >
-	Increment
-</button>
+	{#if user}
+		<h1>Username: {user.username}</h1>
+		<a href="/api/auth/logout">Logout</a>
+	{:else}
+		<a href="/login" class="text-2xl font-bold">Go to Login</a>
+	{/if}
+</div>
