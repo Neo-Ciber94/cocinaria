@@ -4,9 +4,14 @@
 	import SearchIcon from '$components/icons/searchIcon.svelte';
 	import { useAuth } from '$lib/hooks/useAuth';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
+	import { derived } from 'svelte/store';
 	import UserAvatar from './UserAvatar.svelte';
 
-	const isLoginPage = $page.url.pathname === '/login';
+	const isLoginPage = derived(
+		page,
+		($p) => $p.url.pathname.split('/').filter(Boolean)[0] === 'login'
+	);
+
 	const icon = useFoodIcon();
 	const auth = useAuth();
 
@@ -20,7 +25,7 @@
 		<span>{icon}</span>
 	</a>
 
-	<div class="flex flex-row h-full items-center gap-4">
+	<div class="sm:flex flex-row h-full items-center gap-4 hidden">
 		<a
 			href="/"
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
@@ -41,7 +46,7 @@
 
 	{#if user}
 		<UserAvatar {user} />
-	{:else if !isLoginPage}
+	{:else if !$isLoginPage}
 		<a
 			href="/login"
 			class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg flex flex-row gap-2 items-center"

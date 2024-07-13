@@ -52,7 +52,7 @@
 	}
 </script>
 
-<div class={cn('container mx-auto flex flex-row w-full min-h-full justify-center items-center')}>
+<div class={cn('container mx-auto flex flex-row w-full min-h-[90%] justify-center items-center')}>
 	<div>
 		<LoginForm class="min-w-[95vw] sm:min-w-[400px] bg-white" />
 	</div>
@@ -61,7 +61,7 @@
 <button
 	onclick={handleIconClick}
 	style="--food-icon-right: {$iconRight}px; --food-icon-bottom: {$iconBottom}px"
-	class="select-none text-[min(50vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
+	class="select-none text-[min(40vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
 >
 	{icon}
 </button>

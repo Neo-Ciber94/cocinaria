@@ -26,7 +26,7 @@
 </svelte:head>
 
 <Header />
-<main class="p-4 h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
+<main class="h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
 	<slot />
 </main>
 
