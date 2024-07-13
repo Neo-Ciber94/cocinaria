@@ -1,21 +1,16 @@
 import { Discord, GitHub, Google } from 'arctic';
-import {
-	GOOGLE_CLIENT_ID,
-	GOOGLE_CLIENT_SECRET,
-	GOOGLE_REDIRECT_URL,
-	GITHUB_CLIENT_ID,
-	GITHUB_CLIENT_SECRET,
-	DISCORD_CLIENT_ID,
-	DISCORD_CLIENT_SECRET,
-	DISCORD_REDIRECT_URL
-} from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-export const googleAuth = new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
+export const googleAuth = new Google(
+	env.GOOGLE_CLIENT_ID,
+	env.GOOGLE_CLIENT_SECRET,
+	env.GOOGLE_REDIRECT_URL
+);
 
-export const githubAuth = new GitHub(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET);
+export const githubAuth = new GitHub(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET);
 
 export const discordAuth = new Discord(
-	DISCORD_CLIENT_ID,
-	DISCORD_CLIENT_SECRET,
-	DISCORD_REDIRECT_URL
+	env.DISCORD_CLIENT_ID,
+	env.DISCORD_CLIENT_SECRET,
+	env.DISCORD_REDIRECT_URL
 );
