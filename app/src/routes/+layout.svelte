@@ -30,7 +30,7 @@
 	/>
 </svelte:head>
 
-<header class="flex flex-row p-4 items-center justify-between w-full h-[var(--header-height)]">
+<header class="flex flex-row px-4 items-center justify-between w-full h-[var(--header-height)]">
 	<a class="text-2xl font-bold flex flex-row justify-center font-mono text-orange-500" href="/">
 		<span>Cocinar</span>
 		<span class="text-emerald-500">IA</span>
