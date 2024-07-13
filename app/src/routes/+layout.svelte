@@ -50,7 +50,7 @@
 </footer>
 
 <div
-	class="absolute min-w-[100px] aspect-square w-[80%] max-w-[300px] ring-[50px] md:ring-[100px] ring-orange-100 rounded-full -left-20 -bottom-20 -z-10"
+	class="fixed min-w-[100px] aspect-square w-[80%] max-w-[300px] ring-[50px] md:ring-[100px] ring-orange-100 rounded-full -left-20 -bottom-20 -z-10"
 ></div>
 
 <!-- <div
