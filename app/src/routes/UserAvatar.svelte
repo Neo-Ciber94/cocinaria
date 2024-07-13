@@ -32,7 +32,7 @@
 		>
 			<a
 				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg flex-row gap-2"
-				href="/"
+				href="/user/@me"
 			>
 				<Icon icon="solar:user-circle-linear" class="size-5 text-gray-500" />
 				<span>{user.username}</span>

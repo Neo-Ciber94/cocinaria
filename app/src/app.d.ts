@@ -1,6 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 
 import type { Session, User } from 'lucia';
+import type { AuthProvider } from '$lib/db/types';
 
 // for information about these interfaces
 declare global {
@@ -9,6 +10,7 @@ declare global {
 			auth: {
 				user: User;
 				session: Session;
+				authProvider: AuthProvider;
 			} | null;
 		}
 

@@ -8,7 +8,7 @@ export const users = pgTable('user', {
 	username: text('username').notNull(),
 	picture: varchar('picture'),
 	accountId: uuid('account_id').notNull(),
-	createdAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });
 
 export const accounts = pgTable(
