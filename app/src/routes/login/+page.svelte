@@ -13,6 +13,7 @@
 		const isAuthError = (() => {
 			switch (error) {
 				case AuthError.InvalidState:
+				case AuthError.LoginError:
 				case AuthError.CallbackError:
 					return true;
 				default:
