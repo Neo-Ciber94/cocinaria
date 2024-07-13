@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { flyAndScale } from '$lib/utils/transitions';
 	import Icon from '@iconify/svelte';
 	import { Avatar, DropdownMenu } from 'bits-ui';
 	import type { User } from 'lucia';
@@ -26,6 +27,7 @@
 	<DropdownMenu.Content
 		class="w-full max-w-[229px] rounded-xl border border-muted bg-background px-1 py-1.5 shadow-popover"
 		sideOffset={8}
+		transition={flyAndScale}
 	>
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
