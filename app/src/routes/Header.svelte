@@ -14,6 +14,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
+	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 
 	const isLoginPage = derived(
 		page,
@@ -99,7 +100,7 @@
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg"
+				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg bg-white"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -146,6 +147,20 @@
 					>
 						<SparkIcon class="size-5 group-hover:opacity-100 opacity-50" />
 						<p>Generate</p>
+					</a>
+				</DropdownMenu.Item>
+
+				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+				<DropdownMenu.Item
+					class="flex flex-row gap-2 h-12 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+				>
+					<a
+						href="https://github.com/Neo-Ciber94/cocinaria"
+						class="flex flex-row justify-center items-center gap-2 px-3 w-full"
+						target="_blank"
+					>
+						<GithubAnimatedIcon class="size-4" />
+						<p>View on Github</p>
 					</a>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
