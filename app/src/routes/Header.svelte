@@ -6,6 +6,13 @@
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { derived } from 'svelte/store';
 	import UserAvatar from './UserAvatar.svelte';
+	import MenuIcon from '$components/icons/menuIcon.svelte';
+	import { DropdownMenu } from 'bits-ui';
+	import { linear } from 'svelte/easing';
+	import { fly } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
+	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 
 	const isLoginPage = derived(
 		page,
@@ -16,6 +23,14 @@
 	const auth = useAuth();
 
 	const user = auth?.user;
+	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
+	let isMenuOpen = $state(false);
+
+	$effect(() => {
+		if (!isSmallScreenQuery.matches) {
+			isMenuOpen = false;
+		}
+	});
 </script>
 
 <header class="flex flex-row px-4 items-center justify-between w-full h-[var(--header-height)]">
@@ -25,7 +40,7 @@
 		<span>{icon}</span>
 	</a>
 
-	<div class="sm:flex flex-row h-full items-center gap-4 hidden">
+	<div class="md:flex flex-row h-full items-center gap-4 hidden">
 		<a
 			href="/"
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
@@ -49,7 +64,7 @@
 	{:else if !$isLoginPage}
 		<a
 			href="/login"
-			class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg flex flex-row gap-2 items-center"
+			class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg md:flex flex-row gap-2 items-center hidden"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
 				<path
@@ -60,6 +75,59 @@
 
 			<span> Login </span>
 		</a>
+
+		<DropdownMenu.Root
+			open={isMenuOpen}
+			onOpenChange={(isOpen) => {
+				isMenuOpen = isOpen;
+			}}
+		>
+			<DropdownMenu.Trigger
+				class="md:hidden focus-visible inline-flex h-10 w-10 items-center justify-center bg-background-alt text-sm font-medium text-foreground shadow-btn hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
+			>
+				<MenuIcon
+					class="size-10 text-neutral-500 rounded-full active:bg-gray-100 p-1 flex flex-row justify-center items-center"
+				/>
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content
+				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg"
+				sideOffset={8}
+				transition={fly}
+				transitionConfig={{
+					duration: 200,
+					x: 0,
+					y: 20,
+					opacity: 0.1,
+					easing: linear
+				}}
+			>
+				<DropdownMenu.Item
+					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+				>
+					<a
+						href="/"
+						class="flex flex-row gap-2 px-3"
+						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+					>
+						<SearchIcon class="size-5 group-hover:opacity-100 opacity-50" />
+						<p>Explore</p>
+					</a>
+				</DropdownMenu.Item>
+				<DropdownMenu.Separator class="block h-px bg-neutral-200" />
+				<DropdownMenu.Item
+					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+				>
+					<a
+						href="/"
+						class="flex flex-row gap-2 px-3"
+						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+					>
+						<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
+						<p>My Recipes</p>
+					</a>
+				</DropdownMenu.Item>
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
 	{:else}
 		<div></div>
 	{/if}
