@@ -6,6 +6,8 @@
 	import { page } from '$app/stores';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { setAuth } from '$lib/hooks/useAuth';
+	import SearchIcon from '$components/icons/searchIcon.svelte';
+	import CookingIcon from '$components/icons/cookingIcon.svelte';
 
 	export let data: LayoutData;
 
@@ -41,22 +43,7 @@
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
 			data-active={false}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="size-5 group-hover:opacity-100 opacity-50"
-				viewBox="0 0 24 24"
-			>
-				<g
-					fill="none"
-					stroke="currentColor"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-				>
-					<circle cx="11" cy="11" r="8" />
-					<path d="m21 21l-4.3-4.3" />
-				</g>
-			</svg>
+			<SearchIcon class="size-5 group-hover:opacity-100 opacity-50" />
 			<span> Explore </span>
 		</a>
 		<a
@@ -64,21 +51,7 @@
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
 			data-active={false}
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="size-5 group-hover:opacity-100 opacity-50"
-				viewBox="0 0 24 24"
-			>
-				<path
-					fill="none"
-					stroke="currentColor"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M2 12h20m-2 0v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8m0-4l16-4M8.86 6.78l-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"
-				/>
-			</svg>
-
+			<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
 			<span> My Recipes </span>
 		</a>
 	</div>
