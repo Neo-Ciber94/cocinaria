@@ -1,3 +1,11 @@
 # 🍰🧁 AI Recipe Generator 🍔🍕
 
-TODO
+## Features
+
+- Auth
+    - [ ] Google
+    - [ ] Github
+    - [ ] Discord
+- [ ] Home page with latest created recipes
+- [ ] Generate recipe page for user to generate recipes
+- [ ] My recipes page to show the user recipes
