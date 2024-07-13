@@ -1,4 +1,5 @@
-import { discordAuth, lucia } from '$lib/auth/lucia';
+import { discordAuth } from '$lib/auth/providers';
+import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
 import { accounts, users } from '$lib/db/schema';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
