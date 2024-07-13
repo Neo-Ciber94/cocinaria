@@ -1,9 +1,12 @@
 import { db } from '$lib/db';
 import { sessions, users } from '$lib/db/schema';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { GitHub, Google } from 'arctic';
+import { Discord, GitHub, Google } from 'arctic';
 import { Lucia, TimeSpan } from 'lucia';
 import {
+	DISCORD_CLIENT_ID,
+	DISCORD_CLIENT_SECRET,
+	DISCORD_REDIRECT_URL,
 	GITHUB_CLIENT_ID,
 	GITHUB_CLIENT_SECRET,
 	GOOGLE_CLIENT_ID,
@@ -43,3 +46,9 @@ declare module 'lucia' {
 export const googleAuth = new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
 
 export const githubAuth = new GitHub(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET);
+
+export const discordAuth = new Discord(
+	DISCORD_CLIENT_ID,
+	DISCORD_CLIENT_SECRET,
+	DISCORD_REDIRECT_URL
+);

@@ -2,6 +2,7 @@
 	import { cn } from '$lib';
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
+	import DiscordIcon from '$components/icons/discordIcon.svelte';
 
 	let props: { class?: string } = $props();
 </script>
@@ -31,5 +32,13 @@
 	>
 		<GithubIcon size={'1.5rem'} />
 		<span> Continue with Github </span>
+	</a>
+
+	<a
+		href="/api/auth/discord/login"
+		class="flex flex-row gap-2 items-center shadow-sm px-3 py-2 hover:bg-orange-100 border border-gray-200 rounded-md"
+	>
+		<DiscordIcon size={'1.5rem'} />
+		<span> Continue with Discord </span>
 	</a>
 </div>
