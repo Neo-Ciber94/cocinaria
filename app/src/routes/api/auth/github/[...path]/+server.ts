@@ -7,7 +7,6 @@ import { and, eq } from 'drizzle-orm';
 import { AuthError, redirectToAuthError } from '../../utils';
 
 const COOKIE_GITHUB_OAUTH_STATE = 'github-oauth-state';
-const COOKIE_GITHUB_CODE_VERIFIER = 'github-oauth-verifier';
 
 export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {
@@ -64,7 +63,6 @@ async function handleCallback(event: RequestEvent) {
 	const storedState = event.url.searchParams.get('state');
 
 	event.cookies.delete(COOKIE_GITHUB_OAUTH_STATE, { path: '/' });
-	event.cookies.delete(COOKIE_GITHUB_CODE_VERIFIER, { path: '/' });
 
 	if (!oauthState || !storedState || !storedCode || storedState !== oauthState) {
 		event.cookies.delete(lucia.sessionCookieName, { path: '/' });
@@ -138,7 +136,7 @@ async function handleCallback(event: RequestEvent) {
 }
 
 /** @see [Get the authenticated user](https://docs.github.com/en/rest/users/users#get-the-authenticated-user) */
-export interface GithubUser {
+interface GithubUser {
 	login: string;
 	id: number;
 	node_id: string;
