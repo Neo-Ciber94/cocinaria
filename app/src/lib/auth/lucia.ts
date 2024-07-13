@@ -1,9 +1,15 @@
 import { db } from '$lib/db';
 import { sessions, users } from '$lib/db/schema';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { Google } from 'arctic';
+import { GitHub, Google } from 'arctic';
 import { Lucia, TimeSpan } from 'lucia';
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL } from '$env/static/private';
+import {
+	GITHUB_CLIENT_ID,
+	GITHUB_CLIENT_SECRET,
+	GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET,
+	GOOGLE_REDIRECT_URL
+} from '$env/static/private';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
@@ -35,3 +41,5 @@ declare module 'lucia' {
 }
 
 export const googleAuth = new Google(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URL);
+
+export const githubAuth = new GitHub(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET);
