@@ -6,6 +6,7 @@
 	import LoginForm from './LoginForm.svelte';
 	import { cn } from '$lib';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
+	import { spring } from 'svelte/motion';
 
 	$effect(() => {
 		const error = $page.url.searchParams.get('AuthError') as AuthError | undefined;
@@ -29,6 +30,13 @@
 	});
 
 	const icon = useFoodIcon();
+	const iconRight = spring(-500, { damping: 0.4, stiffness: 0.1 });
+	const iconBottom = spring(-500, { damping: 0.4, stiffness: 0.1 });
+
+	setTimeout(() => {
+		iconRight.set(0);
+		iconBottom.set(0);
+	}, 100);
 </script>
 
 <div
@@ -42,7 +50,8 @@
 </div>
 
 <div
-	class="select-none pointer-events-none text-[min(50vh,500px)] fixed -right-0 -bottom-0 leading-none translate-x-1/3 translate-y-1/3"
+	style="--food-icon-right: {$iconRight}px; --food-icon-bottom: {$iconBottom}px"
+	class="select-none pointer-events-none text-[min(50vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
 >
 	{icon}
 </div>

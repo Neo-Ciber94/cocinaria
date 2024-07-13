@@ -24,11 +24,11 @@
 </svelte:head>
 
 <header class="flex flex-row p-4 items-center justify-between w-full h-[var(--header-height)]">
-	<h1 class="text-2xl font-bold flex flex-row justify-center font-mono text-orange-500">
+	<a class="text-2xl font-bold flex flex-row justify-center font-mono text-orange-500" href="/">
 		<span>Cocinar</span>
 		<span>IA</span>
 		<span>{icon}</span>
-	</h1>
+	</a>
 
 	<div class="flex flex-row h-full items-center gap-4">
 		<a
