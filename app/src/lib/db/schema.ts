@@ -6,7 +6,6 @@ export const authProviderEnum = pgEnum('auth_provider', ['github', 'google', 'di
 export const users = pgTable('user', {
 	id: uuid('id').primaryKey(),
 	username: text('username').notNull(),
-	email: varchar('email', { length: 256 }),
 	picture: varchar('picture'),
 	accountId: uuid('account_id').notNull(),
 	createdAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()

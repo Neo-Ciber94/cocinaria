@@ -43,7 +43,7 @@ async function handleLogin(event: RequestEvent) {
 	const state = generateState();
 	const codeVerifier = generateCodeVerifier();
 	const url = await googleAuth.createAuthorizationURL(state, codeVerifier, {
-		scopes: ['profile', 'email']
+		scopes: ['profile']
 	});
 
 	event.cookies.set(COOKIE_GOOGLE_OAUTH_STATE, state, {
@@ -126,7 +126,6 @@ async function handleCallback(event: RequestEvent) {
 			await tx.insert(users).values({
 				id: userId,
 				accountId,
-				email: googleUser.email,
 				username: googleUser.name,
 				picture: googleUser.picture
 			});
