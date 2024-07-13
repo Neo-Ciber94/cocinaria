@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { cn } from '$lib';
-	import { fade } from 'svelte/transition';
 	import { fly } from 'svelte/transition';
 	import { bounceInOut } from 'svelte/easing';
 
