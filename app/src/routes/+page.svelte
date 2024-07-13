@@ -6,7 +6,7 @@
 
 {#if data.user}
 	<h1>Username: {data.user}</h1>
-	<a href="/api/auth/google/logout">Logout</a>
+	<a href="/api/auth/logout">Logout</a>
 {:else}
 	<a href="/login" class="text-2xl font-bold">Go to Login</a>
 {/if}
