@@ -38,6 +38,7 @@
 				<span>{user.username}</span>
 			</a>
 		</DropdownMenu.Item>
+		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
 		>
