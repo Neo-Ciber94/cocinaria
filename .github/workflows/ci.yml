@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -28,6 +28,8 @@ jobs:
 
       - name: 🧪 Run tests
         run: bun run test
-        
+
       - name: 🏗️ Build
-        run: bun run build
+        run: |
+          cp ./app/.env.example ./app/.env
+          bun run build
