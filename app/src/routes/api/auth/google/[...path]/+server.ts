@@ -81,7 +81,7 @@ async function handleCallback(event: RequestEvent) {
 	event.cookies.delete(COOKIE_GOOGLE_CODE_VERIFIER, { path: '/' });
 
 	if (!oauthVerifier || !oauthState || !storedState || !storedCode || storedState !== oauthState) {
-		cleanUpSession(event);
+		event.cookies.delete(lucia.sessionCookieName, { path: '/' });
 		redirectToAuthError(AuthError.InvalidState);
 	}
 
@@ -149,7 +149,7 @@ async function handleCallback(event: RequestEvent) {
 }
 
 async function handleLogout(event: RequestEvent) {
-	cleanUpSession(event);
+	event.cookies.delete(lucia.sessionCookieName, { path: '/' });
 
 	return new Response(null, {
 		status: 302,
@@ -157,10 +157,6 @@ async function handleLogout(event: RequestEvent) {
 			Location: '/'
 		}
 	});
-}
-
-function cleanUpSession(event: RequestEvent) {
-	event.cookies.delete(lucia.sessionCookieName, { path: '/' });
 }
 
 // https://google.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/google.ts
