@@ -26,7 +26,8 @@
     "drizzle-orm": "0.32.0",
     "lucia": "3.2.0",
     "oslo": "1.2.1",
-    "postgres": "3.4.4"
+    "postgres": "3.4.4",
+    "svelte-french-toast": "1.2.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.0.0",

@@ -4,6 +4,7 @@ import { accounts, users } from '$lib/db/schema';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { and, eq } from 'drizzle-orm';
+import { AuthError, redirectToAuthError } from '../../utils';
 
 const COOKIE_GOOGLE_OAUTH_STATE = 'google-oauth-state';
 const COOKIE_GOOGLE_CODE_VERIFIER = 'google-oauth-verifier';
@@ -81,13 +82,7 @@ async function handleCallback(event: RequestEvent) {
 
 	if (!oauthVerifier || !oauthState || !storedState || !storedCode || storedState !== oauthState) {
 		cleanUpSession(event);
-
-		return new Response(null, {
-			status: 302,
-			headers: {
-				Location: '/login?AuthError=InvalidState'
-			}
-		});
+		redirectToAuthError(AuthError.InvalidState);
 	}
 
 	try {
@@ -149,13 +144,7 @@ async function handleCallback(event: RequestEvent) {
 		});
 	} catch (err) {
 		console.error(err);
-
-		return new Response(null, {
-			status: 302,
-			headers: {
-				Location: '/login?AuthError=CallbackError'
-			}
-		});
+		redirectToAuthError(AuthError.CallbackError);
 	}
 }
 

@@ -2,6 +2,7 @@
 	import '../app.css';
 	import type { LayoutData } from './$types';
 	import { Avatar, DropdownMenu } from 'bits-ui';
+	import { Toaster } from 'svelte-french-toast';
 
 	export let data: LayoutData;
 </script>
@@ -49,3 +50,5 @@
 <main class="p-2">
 	<slot />
 </main>
+
+<Toaster />

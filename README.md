@@ -3,7 +3,7 @@
 ## Features
 
 - Auth
-    - [ ] Google
+    - [x] Google
     - [ ] Github
     - [ ] Discord
 - [ ] Home page with latest created recipes
