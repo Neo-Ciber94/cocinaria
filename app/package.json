@@ -19,6 +19,7 @@
     "db:ui": "npx drizzle-kit studio"
   },
   "dependencies": {
+    "@iconify/svelte": "4.0.2",
     "@lucia-auth/adapter-drizzle": "1.0.7",
     "@types/pg": "8.11.6",
     "arctic": "1.9.1",

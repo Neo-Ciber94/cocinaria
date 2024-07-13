@@ -25,7 +25,6 @@ export const lucia = new Lucia(adapter, {
 	sessionExpiresIn: new TimeSpan(7, 'd'),
 	getUserAttributes: (attributes) => {
 		return {
-			email: attributes.email,
 			username: attributes.username,
 			picture: attributes.picture
 		};
@@ -37,7 +36,6 @@ declare module 'lucia' {
 		Lucia: typeof lucia;
 		DatabaseUserAttributes: {
 			username: string;
-			email: string;
 			picture?: string;
 		};
 	}

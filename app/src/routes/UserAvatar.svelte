@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { Avatar, DropdownMenu } from 'bits-ui';
 	import type { User } from 'lucia';
 
@@ -30,9 +31,23 @@
 			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
 		>
 			<a
-				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg"
-				href="/api/auth/logout">Logout</a
+				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg flex-row gap-2"
+				href="/"
 			>
+				<Icon icon="solar:user-circle-linear" class="size-5 text-gray-500" />
+				<span>{user.username}</span>
+			</a>
+		</DropdownMenu.Item>
+		<DropdownMenu.Item
+			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
+		>
+			<a
+				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg flex-row gap-2"
+				href="/api/auth/logout"
+			>
+				<Icon icon="solar:logout-2-outline" class="size-5 text-gray-500" />
+				<span>Logout</span>
+			</a>
 		</DropdownMenu.Item>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
