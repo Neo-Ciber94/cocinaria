@@ -5,11 +5,16 @@
 	import UserAvatar from './UserAvatar.svelte';
 	import { page } from '$app/stores';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
+	import { setAuth } from '$lib/hooks/useAuth';
 
 	export let data: LayoutData;
 
 	const isLoginPage = $page.url.pathname === '/login';
 	const icon = setFoodIcon(data.icon);
+
+	setAuth(data.auth);
+
+	const user = data.auth?.user;
 </script>
 
 <svelte:head>
@@ -43,8 +48,8 @@
 		>
 	</div>
 
-	{#if data.user}
-		<UserAvatar user={data.user} />
+	{#if user}
+		<UserAvatar {user} />
 	{:else if !isLoginPage}
 		<a
 			href="/login"

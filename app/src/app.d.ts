@@ -6,7 +6,7 @@ import type { Session, User } from 'lucia';
 declare global {
 	namespace App {
 		interface Locals {
-			session: {
+			auth: {
 				user: User;
 				session: Session;
 			} | null;

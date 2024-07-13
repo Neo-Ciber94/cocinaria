@@ -1,7 +1,7 @@
 import type { Cookies } from '@sveltejs/kit';
 import { lucia } from './lucia';
 
-export async function getSession(cookies: Cookies) {
+export async function getAuth(cookies: Cookies) {
 	const sessionCookie = cookies.get(lucia.sessionCookieName);
 
 	if (!sessionCookie) {
