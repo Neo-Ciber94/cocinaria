@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--header-height: 64px;
+}
+* {
+	font-family: Sofia Sans, serif;
+}
