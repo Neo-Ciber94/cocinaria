@@ -13,8 +13,6 @@ export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {
 		case '/api/auth/google/login':
 			return handleLogin(event);
-		case '/api/auth/google/logout':
-			return handleLogout(event);
 		case '/api/auth/google/callback':
 			return handleCallback(event);
 		default:
@@ -146,17 +144,6 @@ async function handleCallback(event: RequestEvent) {
 		console.error(err);
 		redirectToAuthError(AuthError.CallbackError);
 	}
-}
-
-async function handleLogout(event: RequestEvent) {
-	event.cookies.delete(lucia.sessionCookieName, { path: '/' });
-
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: '/'
-		}
-	});
 }
 
 // https://google.com/nextauthjs/next-auth/blob/main/packages/core/src/providers/google.ts
