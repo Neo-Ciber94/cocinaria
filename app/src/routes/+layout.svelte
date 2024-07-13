@@ -77,9 +77,18 @@
 	{/if}
 </header>
 
-<main class="p-4">
+<main class="p-4 h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
 	<slot />
 </main>
+
+<footer
+	class="h-[var(--footer-height)] flex flex-row justify-center items-center text-black border-t border-gray-200"
+>
+	<p>
+		<span> &copy; </span>
+		<span>Copyleft</span>
+	</p>
+</footer>
 
 <!-- <div
 	class="fixed select-none pointer-events-none -z-10 top-0 left-0 pattern-cross pattern-orange-500 pattern-bg-white pattern-size-6 pattern-opacity-20 w-full h-full"

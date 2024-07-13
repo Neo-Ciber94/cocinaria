@@ -5,9 +5,7 @@
 	const user = data.auth?.user;
 </script>
 
-<div
-	class="w-full h-[calc(100vh-var(--header-height)*2)] flex flex-col justify-center items-center"
->
+<div class="w-full h-full flex flex-col justify-center items-center">
 	{#if user}
 		<h1>Username: {user.username}</h1>
 		<a href="/api/auth/logout">Logout</a>
