@@ -38,25 +38,30 @@ async function handleLogin(event: RequestEvent) {
 		}
 	}
 
-	const state = generateState();
-	const url = await discordAuth.createAuthorizationURL(state, {
-		scopes: ['identify']
-	});
+	try {
+		const state = generateState();
+		const url = await discordAuth.createAuthorizationURL(state, {
+			scopes: ['identify']
+		});
 
-	event.cookies.set(COOKIE_DISCORD_OAUTH_STATE, state, {
-		path: '/',
-		secure: process.env.NODE_ENV === 'production',
-		httpOnly: true,
-		maxAge: 60 * 5, // 5min
-		sameSite: 'lax'
-	});
+		event.cookies.set(COOKIE_DISCORD_OAUTH_STATE, state, {
+			path: '/',
+			secure: process.env.NODE_ENV === 'production',
+			httpOnly: true,
+			maxAge: 60 * 5, // 5min
+			sameSite: 'lax'
+		});
 
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: url.toString()
-		}
-	});
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: url.toString()
+			}
+		});
+	} catch (err) {
+		console.error(err);
+		redirectToAuthError(AuthError.LoginError);
+	}
 }
 
 async function handleCallback(event: RequestEvent) {

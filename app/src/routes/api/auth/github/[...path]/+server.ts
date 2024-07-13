@@ -38,23 +38,28 @@ async function handleLogin(event: RequestEvent) {
 		}
 	}
 
-	const state = generateState();
-	const url = await githubAuth.createAuthorizationURL(state);
+	try {
+		const state = generateState();
+		const url = await githubAuth.createAuthorizationURL(state);
 
-	event.cookies.set(COOKIE_GITHUB_OAUTH_STATE, state, {
-		path: '/',
-		secure: process.env.NODE_ENV === 'production',
-		httpOnly: true,
-		maxAge: 60 * 5, // 5min
-		sameSite: 'lax'
-	});
+		event.cookies.set(COOKIE_GITHUB_OAUTH_STATE, state, {
+			path: '/',
+			secure: process.env.NODE_ENV === 'production',
+			httpOnly: true,
+			maxAge: 60 * 5, // 5min
+			sameSite: 'lax'
+		});
 
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: url.toString()
-		}
-	});
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: url.toString()
+			}
+		});
+	} catch (err) {
+		console.error(err);
+		redirectToAuthError(AuthError.LoginError);
+	}
 }
 
 async function handleCallback(event: RequestEvent) {
