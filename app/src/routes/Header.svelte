@@ -13,6 +13,7 @@
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
+	import SparkIcon from '$components/icons/sparkIcon.svelte';
 
 	const isLoginPage = derived(
 		page,
@@ -43,7 +44,7 @@
 	<div class="md:flex flex-row h-full items-center gap-4 hidden">
 		<a
 			href="/"
-			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
+			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
 			data-active={false}
 		>
 			<SearchIcon class="size-5 group-hover:opacity-100 opacity-50" />
@@ -51,11 +52,19 @@
 		</a>
 		<a
 			href="/"
-			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-2"
+			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
 			data-active={false}
 		>
 			<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
 			<span> My Recipes </span>
+		</a>
+		<a
+			href="/generate"
+			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
+			data-active={false}
+		>
+			<SparkIcon class="size-5 group-hover:opacity-100 opacity-50" />
+			<span> Generate </span>
 		</a>
 	</div>
 
@@ -113,7 +122,7 @@
 						<p>Explore</p>
 					</a>
 				</DropdownMenu.Item>
-				<DropdownMenu.Separator class="block h-px bg-neutral-200" />
+				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 				<DropdownMenu.Item
 					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
 				>
@@ -124,6 +133,19 @@
 					>
 						<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
 						<p>My Recipes</p>
+					</a>
+				</DropdownMenu.Item>
+				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+				<DropdownMenu.Item
+					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+				>
+					<a
+						href="/generate"
+						class="flex flex-row gap-2 px-3"
+						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+					>
+						<SparkIcon class="size-5 group-hover:opacity-100 opacity-50" />
+						<p>Generate</p>
 					</a>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
