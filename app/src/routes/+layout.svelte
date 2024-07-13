@@ -7,12 +7,16 @@
 	export let data: LayoutData;
 </script>
 
+<svelte:head>
+	<title>CocinarIA</title>
+</svelte:head>
+
 <header
 	class="flex flex-row p-4 items-center justify-between w-full min-h-16 shadow-lg border-b border-gray-200"
 >
 	<h1 class="text-2xl font-bold">
-		<span> Cociner </span>
-		<span> IA </span>
+		<span>Cociner</span>
+		<span>IA</span>
 	</h1>
 
 	{#if data.user}
