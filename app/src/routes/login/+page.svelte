@@ -37,6 +37,19 @@
 		iconRight.set(0);
 		iconBottom.set(0);
 	}, 100);
+
+	function handleIconClick() {
+		iconRight.set(-300);
+		iconBottom.set(-300);
+
+		// Between 100ms and 1500ms
+		const ms = Math.random() * 1400 + 100;
+
+		setTimeout(() => {
+			iconRight.set(0);
+			iconBottom.set(0);
+		}, ms);
+	}
 </script>
 
 <div
@@ -49,9 +62,10 @@
 	</div>
 </div>
 
-<div
+<button
+	onclick={handleIconClick}
 	style="--food-icon-right: {$iconRight}px; --food-icon-bottom: {$iconBottom}px"
-	class="select-none pointer-events-none text-[min(50vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
+	class="select-none text-[min(50vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
 >
 	{icon}
-</div>
+</button>
