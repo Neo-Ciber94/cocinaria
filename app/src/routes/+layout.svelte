@@ -5,6 +5,7 @@
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { setAuth } from '$lib/hooks/useAuth';
 	import Header from './Header.svelte';
+	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 
 	export let data: LayoutData;
 
@@ -31,12 +32,21 @@
 </main>
 
 <footer
-	class="h-[var(--footer-height)] flex flex-row justify-center items-center text-black border-t border-gray-200"
+	class="h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-200 px-2 sm:px-4"
 >
-	<p>
-		<span> &copy; </span>
+	<p class="flex flex-row gap-1 items-center">
+		<span class="text-lg"> &copy; </span>
 		<span>Copyleft</span>
 	</p>
+
+	<a
+		href="https://github.com/Neo-Ciber94/cocinaria"
+		class="flex flex-row justify-center items-center gap-2 px-3"
+		target="_blank"
+	>
+		<GithubAnimatedIcon class="size-4" />
+		<p>View on Github</p>
+	</a>
 </footer>
 
 <!-- <div
