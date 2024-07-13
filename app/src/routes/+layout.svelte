@@ -32,7 +32,7 @@
 </main>
 
 <footer
-	class="h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-200 px-2 sm:px-4"
+	class="h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"
 >
 	<p class="flex flex-row gap-1 items-center">
 		<span class="text-lg"> &copy; </span>
@@ -48,6 +48,10 @@
 		<p>View on Github</p>
 	</a>
 </footer>
+
+<div
+	class="absolute min-w-[100px] aspect-square w-[80%] max-w-[300px] ring-[50px] md:ring-[100px] ring-orange-100 rounded-full -left-20 -bottom-20 -z-10"
+></div>
 
 <!-- <div
 	class="fixed select-none pointer-events-none -z-10 top-0 left-0 pattern-cross pattern-orange-500 pattern-bg-white pattern-size-6 pattern-opacity-20 w-full h-full"
