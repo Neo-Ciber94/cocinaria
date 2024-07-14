@@ -1,9 +1,12 @@
 <script lang="ts">
+	import type { Snippet } from "svelte";
+
 	type Props = {
 		images: string[];
+		children?: Snippet
 	};
 
-	let { images }: Props = $props();
+	let { images, children }: Props = $props();
 
 	const items: string[] = [];
 	const max = Math.max(5, images.length);
@@ -27,6 +30,10 @@
 			{emoji}
 		</span>
 	{/each}
+	
+	{#if children}
+		{@render children()}
+	{/if}
 </div>
 
 <style>
