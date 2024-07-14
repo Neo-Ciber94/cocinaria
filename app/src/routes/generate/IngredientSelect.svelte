@@ -61,8 +61,8 @@
 				'inline-flex h-input w-full truncate rounded-lg border border-gray-200 bg-white px-11 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-white',
 				rest.inputClass
 			)}
-			placeholder="Search a fruit"
-			aria-label="Search a fruit"
+			placeholder="Search an ingredient"
+			aria-label="Search an ingredient"
 		/>
 		<Icon
 			icon="heroicons:chevron-up-down-16-solid"
