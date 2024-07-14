@@ -2,7 +2,7 @@
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
 	import type { PageData } from './$types';
 	import { backOut } from 'svelte/easing';
-	import {  scale } from 'svelte/transition';
+	import { scale } from 'svelte/transition';
 
 	let { data }: { data: PageData } = $props();
 	let recipes = $state<PageData['recipes']>([]);
@@ -27,7 +27,7 @@
 				<a
 					href={`/recipes/${recipe.id}`}
 					class="flex flex-col gap-2 p-2 rounded-lg shadow-md border border-gray-200 w-[180px] md:w-[220px] xl:w-[300px] bg-white"
-					in:scale|global={{
+					in:scale|local={{
 						duration: 500,
 						opacity: 0.01,
 						start: 0.5,
