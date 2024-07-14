@@ -15,6 +15,7 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
+	import { dev } from '$app/environment';
 
 	const recipeItems = useRecipeItems();
 	const selectedIngredients = $derived.by(() => {
@@ -22,8 +23,7 @@
 	});
 
 	const selectedCount = $derived(selectedIngredients.length);
-
-	let recipeTypeStorage = useLocalStorage(
+	const recipeTypeStorage = useLocalStorage(
 		'cocinaria:generate-recipe-type',
 		recipeTypeSchema.optional(),
 		{
@@ -51,12 +51,10 @@
 			}
 
 			// We just consume the stream until it's done
-			const reader = res.body.getReader();
-			while (true) {
-				const { done } = await reader.read();
-				if (done) {
-					break;
-				}
+			const recipeContents = await res.text();
+
+			if (dev) {
+				console.log(recipeContents);
 			}
 
 			toast.success('Recipe was generated', { position: 'bottom-center' });
@@ -130,7 +128,7 @@
 						<IngredientSelect
 							class="w-full"
 							disabled={isGenerating}
-							ingredients={recipeItems.ingredients}
+							ingredients={recipeItems.remainingIngredients}
 							selectedIngredient={item.ingredient}
 							onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
 						/>

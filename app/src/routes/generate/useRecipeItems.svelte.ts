@@ -10,16 +10,20 @@ const itemSchema = z.object({
 
 export function useRecipeItems() {
 	const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
-	const items = useLocalStorage('cocinaria:generate-recipe-ingredients', ingredientArraySchema, {
-		initialValue: [],
-		storage: () => sessionStorage
-	});
+	const recipeStorage = useLocalStorage(
+		'cocinaria:generate-recipe-ingredients',
+		ingredientArraySchema,
+		{
+			initialValue: [],
+			storage: () => sessionStorage
+		}
+	);
 
 	const selectedItems = $derived.by(() => {
-		return items.value as ReadonlyArray<z.infer<typeof itemSchema>>;
+		return recipeStorage.value as ReadonlyArray<z.infer<typeof itemSchema>>;
 	});
 
-	const ingredients = $derived.by(() => {
+	const remainingIngredients = $derived.by(() => {
 		const selectedIngredients = selectedItems
 			.map((s) => s.ingredient)
 			.filter(Boolean) as Ingredient[];
@@ -34,15 +38,15 @@ export function useRecipeItems() {
 			return;
 		}
 
-		items.value.push({ ingredient: undefined, id: crypto.randomUUID() });
+		recipeStorage.value.push({ ingredient: undefined, id: crypto.randomUUID() });
 	}
 
 	function remove(id: string) {
-		items.value = selectedItems.filter((ingredient) => ingredient.id !== id);
+		recipeStorage.value = selectedItems.filter((ingredient) => ingredient.id !== id);
 	}
 
 	function update(id: string, ingredient: Ingredient | undefined) {
-		items.value = selectedItems.map((item) => {
+		recipeStorage.value = selectedItems.map((item) => {
 			if (item.id === id) {
 				return { ...item, ingredient };
 			}
@@ -51,18 +55,23 @@ export function useRecipeItems() {
 		});
 	}
 
+	function clear() {
+		recipeStorage.remove();
+	}
+
 	return {
-		get ingredients() {
-			return ingredients;
+		get remainingIngredients() {
+			return remainingIngredients;
 		},
 		get selectedItems() {
 			return selectedItems;
 		},
 		get pending() {
-			return items.pending;
+			return recipeStorage.pending;
 		},
 		add,
 		remove,
-		update
+		update,
+		clear
 	};
 }
