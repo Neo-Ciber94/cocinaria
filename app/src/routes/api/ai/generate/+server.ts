@@ -30,7 +30,16 @@ export const POST: RequestHandler = async (event) => {
 			recipeType
 		});
 
-		return generateRecipeStream.toTextStreamResponse();
+		// return generateRecipeStream.toTextStreamResponse();
+
+		const stream = generateRecipeStream.textStream;
+		return new Response(stream, {
+			headers: {
+				'Content-Type': 'text/event-stream',
+				'Cache-Control': 'no-cache',
+				Connection: 'keep-alive'
+			}
+		});
 	} catch (err) {
 		console.error(err);
 		return new Response(null, { status: 500 });

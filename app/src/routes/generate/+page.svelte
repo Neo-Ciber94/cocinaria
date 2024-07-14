@@ -38,11 +38,6 @@
 		try {
 			isGenerating = true;
 
-			console.log('Generating', {
-				selectedIngredients,
-				recipeType: recipeTypeStorage
-			});
-
 			const ingredients = selectedIngredients.map((e) => e.value);
 			const recipeType = recipeTypeStorage.value;
 
@@ -64,7 +59,7 @@
 				}
 			}
 
-			toast.success('Recipe was generated');
+			toast.success('Recipe was generated', { position: 'bottom-center' });
 		} catch (err) {
 			console.error(err);
 			toast.error('Failed to generate recipe', { position: 'bottom-center' });

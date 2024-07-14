@@ -45,19 +45,33 @@ export async function generateRecipe({
 		mode: 'json',
 		prompt,
 		abortSignal,
-		async onFinish({ object }) {
+		async onFinish({ object, error, warnings }) {
+			if (error) {
+				console.log(error);
+			}
+
+			if (warnings) {
+				console.warn(warnings);
+			}
+
 			if (!object) {
 				// The object did not matched the schema, return error somehow?
+				console.error('Generated object dit not matches the schema');
 				return;
 			}
 
-			await db.insert(recipes).values({
-				name: object.name,
-				ingredients: object.ingredients,
-				steps: object.steps,
-				prompt,
-				userId
-			});
+			try {
+				await db.insert(recipes).values({
+					name: object.name,
+					ingredients: object.ingredients,
+					steps: object.steps,
+					prompt,
+					userId
+				});
+			} catch (err) {
+				console.error('Failed to insert generated recipe into the database', err);
+				throw err;
+			}
 		}
 	});
 

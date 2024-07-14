@@ -57,10 +57,10 @@ export const recipes = pgTable('recipes', {
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });
 
-export const userRelations = relations(users, ({ one, many }) => ({
+export const userRelations = relations(users, ({ one }) => ({
 	account: one(accounts, {
 		fields: [users.id],
 		references: [accounts.userId]
-	}),
-	recipes: many(recipes)
+	})
+	// recipes: many(recipes)
 }));
