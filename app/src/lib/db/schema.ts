@@ -1,5 +1,14 @@
 import { relations } from 'drizzle-orm';
-import { pgEnum, pgTable, primaryKey, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+	json,
+	pgEnum,
+	pgTable,
+	primaryKey,
+	text,
+	timestamp,
+	uuid,
+	varchar
+} from 'drizzle-orm/pg-core';
 
 export const authProviderEnum = pgEnum('auth_provider', ['github', 'google', 'discord']);
 
@@ -33,6 +42,17 @@ export const sessions = pgTable('session', {
 		.notNull()
 		.references(() => users.id),
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const recipes = pgTable('recipes', {
+	id: uuid('id').primaryKey(),
+	name: text('name').notNull(),
+	prompt: text('prompt').notNull(), // Prompt used for generate this recipe
+	ingredients: json('ingredients').notNull(), // TODO: Set an array of strings
+	steps: json('steps').notNull(), // TODO: Set an array of strings
+	imageUrl: text('image_url'),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });
 
 export const userAccountRelation = relations(users, ({ one }) => ({
