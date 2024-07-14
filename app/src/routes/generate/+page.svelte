@@ -15,9 +15,11 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 
 	const recipeItems = useRecipeItems();
-	const selectedCount = $derived(
-		recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length
-	);
+	const selectedIngredients = $derived.by(() => {
+		return recipeItems.selectedItems.map((e) => e.ingredient).filter(Boolean) as Ingredient[];
+	});
+
+	const selectedCount = $derived(selectedIngredients.length);
 
 	let recipeType = useLocalStorage('cocinaria:generate-recipe-type', recipeTypeSchema.optional(), {
 		storage: () => sessionStorage
@@ -30,12 +32,8 @@
 		try {
 			isGenerating = true;
 
-			const ingredients = recipeItems.selectedItems
-				.map((e) => e.ingredient)
-				.filter(Boolean) as Ingredient[];
-
 			console.log('Generating', {
-				ingredients,
+				selectedIngredients,
 				recipeType
 			});
 
