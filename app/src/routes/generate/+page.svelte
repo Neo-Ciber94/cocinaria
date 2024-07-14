@@ -5,8 +5,8 @@
 	import IngredientSelect from './IngredientSelect.svelte';
 	import { flip } from 'svelte/animate';
 	import { quintOut } from 'svelte/easing';
-	import { fly } from 'svelte/transition';
-	import { fade } from 'svelte/transition';
+	import { fly, fade, scale } from 'svelte/transition';
+	import AmountIndicator from './AmountIndicator.svelte';
 
 	type Item = {
 		id: string;
@@ -17,8 +17,7 @@
 	const MAX_INGREDIENTS = 10;
 
 	let selectedItems = $state<Item[]>([]);
-
-	let ingredients = $derived.by(() => {
+	const ingredients = $derived.by(() => {
 		const selectedIngredients = selectedItems
 			.map((s) => s.ingredient)
 			.filter(Boolean) as Ingredient[];
@@ -27,6 +26,10 @@
 			return !isAlreadyAdded;
 		});
 	});
+
+	const selectedCount = $derived.by(
+		() => selectedItems.filter((e) => Boolean(e.ingredient)).length
+	);
 
 	function addIngredient() {
 		if (selectedItems.length === MAX_INGREDIENTS) {
@@ -51,14 +54,28 @@
 	}
 </script>
 
-<div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl">
+<div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl pt-10 sm:pt-20">
 	<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
 		<SparkIcon class="size-8 sm:size-12" />
 		<span>Generate Recipe</span>
 	</h1>
 
+	<p class="p-4 rounded-lg bg-orange-100 shadow-sm text-center">
+		You can select from <strong>2</strong> up to <strong>10</strong> to generate a new recipe using our
+		AI
+	</p>
+
 	<div class="w-full mx-auto mt-10 flex flex-col items-center gap-2">
 		<h2 class="font-bold font-mono text-xl">Ingredients</h2>
+
+		{#if selectedCount > 0}
+			<div
+				class="w-full"
+				transition:scale={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
+			>
+				<AmountIndicator min={MIN_INGREDIENTS} max={MAX_INGREDIENTS} count={selectedCount} />
+			</div>
+		{/if}
 
 		{#each selectedItems as item (item.id)}
 			<div

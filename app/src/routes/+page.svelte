@@ -12,7 +12,9 @@
 >
 	<div class="flex flex-col gap-2 justify-center p-4">
 		<section class="flex flex-row gap-4 items-center">
-			<SushiIcon class="w-[150px] md:w-[200px] lg:w-[30%] max-w-[500px] aspect-square bg-orange-100 p-4 sm:p-8 rounded-full" />
+			<SushiIcon
+				class="w-[150px] md:w-[200px] lg:w-[30%] max-w-[500px] aspect-square bg-orange-100 p-4 sm:p-8 rounded-full"
+			/>
 			<div class="flex flex-col gap-1">
 				<h2 class="text-orange-500 text-3xl sm:text-4xl md:text-5xl font-extrabold">CocinarIA</h2>
 				<h3 class="text-base sm:text-xl md:text-3xl font-bold text-neutral-600">
