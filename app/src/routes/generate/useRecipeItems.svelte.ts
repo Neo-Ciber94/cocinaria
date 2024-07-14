@@ -21,10 +21,6 @@ export function useRecipeItems() {
 		return items.value as ReadonlyArray<z.infer<typeof itemSchema>>;
 	});
 
-	$effect(() => {
-		console.log(selectedItems);
-	});
-
 	const ingredients = $derived.by(() => {
 		const selectedIngredients = selectedItems
 			.map((s) => s.ingredient)

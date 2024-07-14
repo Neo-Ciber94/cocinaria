@@ -14,10 +14,17 @@
 		contentClass?: string;
 		selectedIngredient?: Ingredient;
 		ingredients: Ingredient[];
+		disabled?: boolean;
 		onchange: (item: Ingredient | undefined) => void;
 	};
 
-	let { onchange, ingredients, selectedIngredient = $bindable(), ...rest }: Props = $props();
+	let {
+		onchange,
+		ingredients,
+		disabled,
+		selectedIngredient = $bindable(),
+		...rest
+	}: Props = $props();
 
 	const initialIngredients = $state<Ingredient[]>(ingredients);
 	const filteredIngredients = $derived.by(() => {
@@ -70,8 +77,10 @@
 		{/if}
 
 		<Combobox.Input
+			{disabled}
 			class={cn(
 				'inline-flex h-input w-full truncate rounded-lg border border-gray-200 bg-white px-11 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-white',
+				'disabled:cursor-not-allowed disabled:bg-neutral-100',
 				rest.inputClass
 			)}
 			placeholder="Search an ingredient"

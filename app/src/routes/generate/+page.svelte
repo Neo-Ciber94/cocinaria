@@ -14,6 +14,8 @@
 		return recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length;
 	});
 
+	let isGenerating = $state(false);
+
 	const canGenerate = $derived.by(() => {
 		return selectedCount >= MIN_INGREDIENTS;
 	});
@@ -53,35 +55,49 @@
 			>
 				<IngredientSelect
 					class="w-full"
+					disabled={isGenerating}
 					ingredients={recipeItems.ingredients}
 					selectedIngredient={item.ingredient}
 					onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
 				/>
 
-				<button
-					class="bg-red-500 text-white p-2 rounded-md"
-					onclick={() => recipeItems.remove(item.id)}>Remove</button
+				<Button.Root
+					disabled={isGenerating}
+					class={cn(
+						`bg-red-500 text-white p-2 rounded-md`,
+						isGenerating ? '' : 'hover:bg-red-600',
+						'disabled:opacity-70 disabled:cursor-not-allowed'
+					)}
+					onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
 				>
 			</div>
 		{/each}
 
 		<div class="w-full flex flex-row justify-between gap-2 mt-2">
 			<Button.Root
-				disabled={!canGenerate}
+				disabled={!canGenerate || isGenerating}
 				class={cn(
-					`relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700 
-                    ${canGenerate ? 'hover:bg-neutral-800' : ''} `,
+					`relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700`,
+					canGenerate || isGenerating ? '' : 'hover:bg-neutral-800',
 					'disabled:opacity-70 disabled:cursor-not-allowed'
 				)}
 			>
-				<SparkIcon class="size-6" />
-				Generate
+				{#if isGenerating}
+					<LoadingIcon class="text-white size-6" />
+					<span> Generating</span>
+				{:else}
+					<SparkIcon class="size-6" />
+					<span> Generate</span>
+				{/if}
 			</Button.Root>
 
 			<Button.Root
+				disabled={isGenerating}
 				onclick={recipeItems.add}
 				class={cn(
-					'relative rounded-lg px-4 py-2 bg-orange-500 hover:bg-orange-600 justify-center text-white w-full flex flex-row items-center gap-1',
+					'relative rounded-lg px-4 py-2 bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-1',
+					isGenerating ? '' : 'hover:bg-orange-600',
+					'disabled:opacity-70 disabled:cursor-not-allowed',
 					{
 						'animate-pulse': recipeItems.pending
 					}

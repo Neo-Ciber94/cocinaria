@@ -44,7 +44,7 @@ export function useLocalStorage<TSchema extends ZodType>(
 		}
 	}
 
-	$effect(() => {
+	$effect.pre(() => {
 		pending = true;
 
 		try {
