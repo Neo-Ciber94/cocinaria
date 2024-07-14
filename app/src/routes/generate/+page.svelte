@@ -7,7 +7,7 @@
 	import AmountIndicator from './AmountIndicator.svelte';
 	import { useRecipeItems, MIN_INGREDIENTS, MAX_INGREDIENTS } from './useRecipeItems.svelte';
 	import LoadingIcon from '$components/icons/loadingIcon.svelte';
-	import { cn } from '$lib';
+	import { cn, delay } from '$lib';
 
 	const recipeItems = useRecipeItems();
 	const selectedCount = $derived.by(() => {
@@ -19,6 +19,24 @@
 	const canGenerate = $derived.by(() => {
 		return selectedCount >= MIN_INGREDIENTS;
 	});
+
+	async function generateRecipe() {
+		try {
+			isGenerating = true;
+
+			const res = await fetch('/api/ai/generate', {
+				method: 'POST'
+			});
+
+			if (!res.ok) {
+				throw new Error('Generation failed');
+			}
+
+			await delay(2000);
+		} finally {
+			isGenerating = false;
+		}
+	}
 </script>
 
 <div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl pt-10 sm:pt-20">
@@ -76,9 +94,10 @@
 		<div class="w-full flex flex-row justify-between gap-2 mt-2">
 			<Button.Root
 				disabled={!canGenerate || isGenerating}
+				onclick={generateRecipe}
 				class={cn(
 					`relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700`,
-					canGenerate || isGenerating ? '' : 'hover:bg-neutral-800',
+					!canGenerate || isGenerating ? '' : 'hover:bg-neutral-800',
 					'disabled:opacity-70 disabled:cursor-not-allowed'
 				)}
 			>
