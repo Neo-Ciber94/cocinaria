@@ -70,38 +70,43 @@
 			{/if}
 
 			{#if isGenerating}
-				<RecipeLoading images={ingredientImges} />
-			{/if}
-
-			{#each recipeItems.selectedItems as item (item.id)}
 				<div
-					class="flex flex-row items-center gap-2 w-full"
-					transition:fly={{
-						duration: 300,
-						x: -100,
-						opacity: 0.1,
-						easing: quintOut
-					}}
+					class="w-[200px] my-5"
+					transition:scale={{ duration: 1000, opacity: 0.5, start: 0.3, easing: quintOut }}
 				>
-					<IngredientSelect
-						class="w-full"
-						disabled={isGenerating}
-						ingredients={recipeItems.ingredients}
-						selectedIngredient={item.ingredient}
-						onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
-					/>
-
-					<Button.Root
-						disabled={isGenerating}
-						class={cn(
-							`bg-red-500 text-white p-2 rounded-md`,
-							isGenerating ? '' : 'hover:bg-red-600',
-							'disabled:opacity-70 disabled:cursor-not-allowed'
-						)}
-						onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
-					>
+					<RecipeLoading images={ingredientImges} />
 				</div>
-			{/each}
+			{:else}
+				{#each recipeItems.selectedItems as item (item.id)}
+					<div
+						class="flex flex-row items-center gap-2 w-full"
+						transition:fly={{
+							duration: 300,
+							x: -100,
+							opacity: 0.1,
+							easing: quintOut
+						}}
+					>
+						<IngredientSelect
+							class="w-full"
+							disabled={isGenerating}
+							ingredients={recipeItems.ingredients}
+							selectedIngredient={item.ingredient}
+							onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
+						/>
+
+						<Button.Root
+							disabled={isGenerating}
+							class={cn(
+								`bg-red-500 text-white p-2 rounded-md`,
+								isGenerating ? '' : 'hover:bg-red-600',
+								'disabled:opacity-70 disabled:cursor-not-allowed'
+							)}
+							onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
+						>
+					</div>
+				{/each}
+			{/if}
 
 			<div class="w-full flex sm:flex-row flex-col justify-between gap-2 mt-2">
 				<Button.Root
