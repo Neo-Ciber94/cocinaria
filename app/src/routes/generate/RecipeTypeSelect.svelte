@@ -9,9 +9,10 @@
 	type Props = {
 		selected?: RecipeType;
 		class?: string;
+		disabled?: boolean;
 	};
 
-	let { selected = $bindable(), ...rest }: Props = $props();
+	let { selected = $bindable(), disabled, ...rest }: Props = $props();
 	const mounted = useIsMounted();
 
 	const recipeTypes = [
@@ -27,14 +28,17 @@
 <Select.Root
 	items={recipeTypes}
 	selected={selectedRecipe}
+	{disabled}
 	onSelectedChange={(item) => {
 		const recipeItem = recipeTypes.find((e) => e.value === item?.value);
 		selected = recipeItem?.value;
 	}}
 >
 	<Select.Trigger
+		{disabled}
 		class={cn(
 			'inline-flex h-10 w-[296px] items-center rounded-xl border border-gray-200 bg-white px-[11px] text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2',
+			'disabled:bg-gray-100 disabled:cursor-not-allowed',
 			rest.class
 		)}
 		aria-label="Select a recipe type"

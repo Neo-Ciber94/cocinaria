@@ -5,7 +5,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
-	import { useRecipeItems, MIN_INGREDIENTS, MAX_INGREDIENTS } from './useRecipeItems.svelte';
+	import { useRecipeItems } from './useRecipeItems.svelte';
 	import LoadingIcon from '$components/icons/loadingIcon.svelte';
 	import { cn, delay } from '$lib';
 	import RecipeLoading from './RecipeLoading.svelte';
@@ -13,6 +13,8 @@
 	import { recipeTypeSchema } from '$lib/common/recipe';
 	import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
 	import type { Ingredient } from '$lib/common/ingredients';
+	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
+	import toast from 'svelte-french-toast';
 
 	const recipeItems = useRecipeItems();
 	const selectedIngredients = $derived.by(() => {
@@ -21,12 +23,16 @@
 
 	const selectedCount = $derived(selectedIngredients.length);
 
-	let recipeType = useLocalStorage('cocinaria:generate-recipe-type', recipeTypeSchema.optional(), {
-		storage: () => sessionStorage
-	});
+	let recipeTypeStorage = useLocalStorage(
+		'cocinaria:generate-recipe-type',
+		recipeTypeSchema.optional(),
+		{
+			storage: () => sessionStorage
+		}
+	);
 
 	let isGenerating = $state(false);
-	const canGenerate = $derived(selectedCount >= MIN_INGREDIENTS);
+	const canGenerate = $derived(selectedCount >= MIN_RECIPE_INGREDIENTS);
 
 	async function generateRecipe() {
 		try {
@@ -34,18 +40,34 @@
 
 			console.log('Generating', {
 				selectedIngredients,
-				recipeType
+				recipeType: recipeTypeStorage
 			});
+
+			const ingredients = selectedIngredients.map((e) => e.value);
+			const recipeType = recipeTypeStorage.value;
 
 			const res = await fetch('/api/ai/generate', {
-				method: 'POST'
+				method: 'POST',
+				body: JSON.stringify({ ingredients, recipeType })
 			});
 
-			if (!res.ok) {
-				throw new Error('Generation failed');
+			if (!res.ok || res.body == null) {
+				throw new Error('Failed to generate recipe');
 			}
 
-			await delay(10000);
+			// We just consume the stream until it's done
+			const reader = res.body.getReader();
+			while (true) {
+				const { done } = await reader.read();
+				if (done) {
+					break;
+				}
+			}
+
+			toast.success('Recipe was generated');
+		} catch (err) {
+			console.error(err);
+			toast.error('Failed to generate recipe', { position: 'bottom-center' });
 		} finally {
 			isGenerating = false;
 		}
@@ -75,7 +97,7 @@
 				class="w-full"
 				transition:scale={{ duration: 1000, opacity: 0.5, start: 0.9, easing: quintOut }}
 			>
-				<RecipeTypeSelect class="w-full" bind:selected={recipeType.value} />
+				<RecipeTypeSelect class="w-full" bind:selected={recipeTypeStorage.value} />
 			</div>
 
 			<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
@@ -84,7 +106,11 @@
 					class="w-full"
 					transition:scale={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
 				>
-					<AmountIndicator min={MIN_INGREDIENTS} max={MAX_INGREDIENTS} count={selectedCount} />
+					<AmountIndicator
+						min={MIN_RECIPE_INGREDIENTS}
+						max={MAX_RECIPE_INGREDIENTS}
+						count={selectedCount}
+					/>
 				</div>
 			{/if}
 

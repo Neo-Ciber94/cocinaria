@@ -1,9 +1,7 @@
 import { z } from 'zod';
 import { ingredienSchema, INGREDIENTS, type Ingredient } from '$lib/common/ingredients';
 import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
-
-export const MIN_INGREDIENTS = 2;
-export const MAX_INGREDIENTS = 10;
+import { MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 
 const itemSchema = z.object({
 	id: z.string(),
@@ -11,7 +9,7 @@ const itemSchema = z.object({
 });
 
 export function useRecipeItems() {
-	const ingredientArraySchema = z.array(itemSchema).max(MAX_INGREDIENTS);
+	const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
 	const items = useLocalStorage('cocinaria:generate-recipe-ingredients', ingredientArraySchema, {
 		initialValue: [],
 		storage: () => sessionStorage
@@ -32,7 +30,7 @@ export function useRecipeItems() {
 	});
 
 	function add() {
-		if (selectedItems.length === MAX_INGREDIENTS) {
+		if (selectedItems.length === MAX_RECIPE_INGREDIENTS) {
 			return;
 		}
 

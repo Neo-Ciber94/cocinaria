@@ -44,20 +44,23 @@ export const sessions = pgTable('session', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const recipes = pgTable('recipes', {
-	id: uuid('id').primaryKey(),
+export const recipes = pgTable('recipes', {
+	id: uuid('id').primaryKey().defaultRandom(),
+	userId: uuid('user_id')
+		.notNull()
+		.references(() => users.id),
 	name: text('name').notNull(),
 	prompt: text('prompt').notNull(), // Prompt used for generate this recipe
-	ingredients: json('ingredients').notNull(), // TODO: Set an array of strings
-	steps: json('steps').notNull(), // TODO: Set an array of strings
+	ingredients: json('ingredients').$type<string[]>().notNull(),
+	steps: json('steps').$type<string[]>().notNull(),
 	imageUrl: text('image_url'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });
 
-export const userAccountRelation = relations(users, ({ one }) => ({
+export const userRelations = relations(users, ({ one, many }) => ({
 	account: one(accounts, {
 		fields: [users.id],
 		references: [accounts.userId]
-	})
+	}),
+	recipes: many(recipes)
 }));
