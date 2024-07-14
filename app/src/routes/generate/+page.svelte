@@ -9,21 +9,35 @@
 	import LoadingIcon from '$components/icons/loadingIcon.svelte';
 	import { cn, delay } from '$lib';
 	import RecipeLoading from './RecipeLoading.svelte';
+	import RecipeTypeSelect from './RecipeTypeSelect.svelte';
+	import { recipeTypeSchema } from '$lib/common/recipe';
+	import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
+	import type { Ingredient } from '$lib/common/ingredients';
 
 	const recipeItems = useRecipeItems();
-	const selectedCount = $derived.by(() => {
-		return recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length;
+	const selectedCount = $derived(
+		recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length
+	);
+
+	let recipeType = useLocalStorage('cocinaria:generate-recipe-type', recipeTypeSchema.optional(), {
+		storage: () => sessionStorage
 	});
 
 	let isGenerating = $state(false);
-
-	const canGenerate = $derived.by(() => {
-		return selectedCount >= MIN_INGREDIENTS;
-	});
+	const canGenerate = $derived(selectedCount >= MIN_INGREDIENTS);
 
 	async function generateRecipe() {
 		try {
 			isGenerating = true;
+
+			const ingredients = recipeItems.selectedItems
+				.map((e) => e.ingredient)
+				.filter(Boolean) as Ingredient[];
+
+			console.log('Generating', {
+				ingredients,
+				recipeType
+			});
 
 			const res = await fetch('/api/ai/generate', {
 				method: 'POST'
@@ -33,13 +47,13 @@
 				throw new Error('Generation failed');
 			}
 
-			await delay(50000);
+			await delay(10000);
 		} finally {
 			isGenerating = false;
 		}
 	}
 
-	const ingredientImges = $derived.by(() => {
+	const ingredientImages = $derived.by(() => {
 		return recipeItems.selectedItems
 			.filter((e) => Boolean(e.ingredient))
 			.map((e) => e.ingredient?.image) as string[];
@@ -58,8 +72,15 @@
 		</p>
 
 		<div class="w-full mx-auto mt-10 flex flex-col items-center gap-2">
-			<h2 class="font-bold font-mono text-xl">Ingredients</h2>
+			<h2 class="font-bold font-mono text-xl self-start">Recipe</h2>
+			<div
+				class="w-full"
+				transition:scale={{ duration: 1000, opacity: 0.5, start: 0.3, easing: quintOut }}
+			>
+				<RecipeTypeSelect class="w-full" bind:selected={recipeType.value} />
+			</div>
 
+			<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
 			{#if selectedCount > 0}
 				<div
 					class="w-full"
@@ -74,7 +95,7 @@
 					class="w-[200px] my-5"
 					transition:scale={{ duration: 1000, opacity: 0.5, start: 0.3, easing: quintOut }}
 				>
-					<RecipeLoading images={ingredientImges} />
+					<RecipeLoading images={ingredientImages} />
 				</div>
 			{:else}
 				{#each recipeItems.selectedItems as item (item.id)}
@@ -105,6 +126,8 @@
 							onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
 						>
 					</div>
+				{:else}
+					<h3 class="text-neutral-400/90">No ingredients selected</h3>
 				{/each}
 			{/if}
 

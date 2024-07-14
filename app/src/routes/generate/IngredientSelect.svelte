@@ -2,7 +2,7 @@
 	import { Combobox, type Selected } from 'bits-ui';
 	import { flyAndScale } from '$lib/utils/transitions';
 	import Icon from '@iconify/svelte';
-	import { type Ingredient } from './ingredients';
+	import { type Ingredient } from '$lib/common/ingredients';
 	import { cn } from '$lib';
 
 	let inputValue = $state('');
