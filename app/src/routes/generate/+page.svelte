@@ -46,7 +46,7 @@
 	});
 </script>
 
-<div class="p-4 container mx-auto w-full h-full max-w-xl pt-10 sm:pt-20">
+<div class="p-4 container mx-auto w-full h-full max-w-xl lg:max-w-3xl pt-10 sm:pt-20">
 	<div class="px-4 pt-8 pb-6 flex flex-col gap-2 shadow-md rounded-xl border border-gray-200">
 		<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
 			<SparkIcon class="size-8 sm:size-12" animated />
