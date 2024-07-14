@@ -53,7 +53,11 @@
 	}
 </script>
 
-<div class={cn('container mx-auto flex flex-row w-full min-h-[90%] justify-center items-center')}>
+<div
+	class={cn(
+		'container mx-auto flex flex-row w-full min-h-[calc(var(--main-height)*0.9)] justify-center items-center'
+	)}
+>
 	<div>
 		<LoginForm class="min-w-[95vw] sm:min-w-[400px] bg-white" />
 	</div>
