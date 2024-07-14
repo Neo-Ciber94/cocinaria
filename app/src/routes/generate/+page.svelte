@@ -21,7 +21,7 @@
 
 <div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl pt-10 sm:pt-20">
 	<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
-		<SparkIcon class="size-8 sm:size-12" />
+		<SparkIcon class="size-8 sm:size-12" animated />
 		<span>Generate Recipe</span>
 	</h1>
 
