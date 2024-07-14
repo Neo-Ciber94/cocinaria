@@ -1,14 +1,13 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
 	import SushiIcon from '$components/icons/sushiIcon.svelte';
-	import type { LayoutData } from './$types';
+	import { useAuth } from '$lib/hooks/useAuth';
 
-	export let data: LayoutData;
-	const user = data.auth?.user;
+	const auth = useAuth();
 </script>
 
 <section
-	class="w-full h-full flex flex-col justify-center items-center mx-auto md:max-w-3xl overflow-hidden"
+	class="w-full min-h-[var(--main-height)] flex flex-col justify-center items-center mx-auto md:max-w-3xl overflow-hidden"
 >
 	<div class="flex flex-col gap-2 justify-center p-4">
 		<section class="flex flex-row gap-4 items-center">
@@ -24,7 +23,7 @@
 		</section>
 
 		<a
-			href="/login"
+			href={auth ? '/generate' : '/login'}
 			class="mx-auto w-full max-w-[80vw] sm:max-w-[400px] font-bold text-white bg-orange-500 hover:bg-orange-600 py-2 px-8 shadow-md rounded-2xl flex flex-row gap-2 items-center justify-center"
 		>
 			<CookingIcon class="text-white size-5" />

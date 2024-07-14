@@ -27,12 +27,12 @@
 </svelte:head>
 
 <Header />
-<main class="h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
+<main class="min-h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
 	<slot />
 </main>
 
 <footer
-	class="h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"
+	class="mt-auto h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"
 >
 	<p class="flex flex-row gap-1 items-center">
 		<span class="text-lg"> &copy; </span>
