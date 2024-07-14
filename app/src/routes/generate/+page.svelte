@@ -13,6 +13,10 @@
 	const selectedCount = $derived.by(() => {
 		return recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length;
 	});
+
+	const canGenerate = $derived.by(() => {
+		return selectedCount >= MIN_INGREDIENTS;
+	});
 </script>
 
 <div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl pt-10 sm:pt-20">
@@ -56,34 +60,50 @@
 
 				<button
 					class="bg-red-500 text-white p-2 rounded-md"
-					onclick={() => recipeItems.remove(item.id)}>Delete</button
+					onclick={() => recipeItems.remove(item.id)}>Remove</button
 				>
 			</div>
 		{/each}
 
-		<Button.Root
-			onclick={recipeItems.add}
-			class={cn(
-				'relative rounded-lg px-4 py-2 bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-2',
-				{
-					'animate-pulse': recipeItems.pending
-				}
-			)}
-		>
-			<span> Add Ingredient </span>
+		<div class="w-full flex flex-row justify-between gap-2 mt-2">
+			<Button.Root
+				disabled={!canGenerate}
+				class={cn(
+					`relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700 
+                    ${canGenerate ? 'hover:bg-neutral-800' : ''} `,
+					'disabled:opacity-70 disabled:cursor-not-allowed'
+				)}
+			>
+				<SparkIcon class="size-6" />
+				Generate
+			</Button.Root>
 
-			{#if recipeItems.pending}
-				<div
-					class="absolute left-4"
-					transition:scale={{
-						duration: 400,
-						opacity: 0.2,
-						start: 0.2
-					}}
-				>
+			<Button.Root
+				onclick={recipeItems.add}
+				class={cn(
+					'relative rounded-lg px-4 py-2 bg-orange-500 hover:bg-orange-600 justify-center text-white w-full flex flex-row items-center gap-1',
+					{
+						'animate-pulse': recipeItems.pending
+					}
+				)}
+			>
+				{#if recipeItems.pending}
 					<LoadingIcon class="text-white size-6" />
-				</div>
-			{/if}
-		</Button.Root>
+				{:else}
+					<svg xmlns="http://www.w3.org/2000/svg" class="text-white size-6" viewBox="0 0 24 24">
+						<path
+							fill="none"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M5 12h14m-7-7v14"
+						/>
+					</svg>
+				{/if}
+
+				<span> Add Ingredient </span>
+			</Button.Root>
+		</div>
 	</div>
 </div>

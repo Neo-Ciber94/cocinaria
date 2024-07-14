@@ -12,8 +12,12 @@
 			return null;
 		}
 
-		if (count >= min) {
-			return 'bg-gradient-to-b from-green-500 to-green-600';
+		if (count === min) {
+			return 'bg-gradient-to-b from-orange-400 to-orange-600 animated-background';
+		}
+
+		if (count > min) {
+			return 'bg-gradient-to-b from-green-500 to-green-700 animated-background';
 		}
 
 		return 'bg-red-500';
