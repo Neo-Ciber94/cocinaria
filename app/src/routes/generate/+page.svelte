@@ -73,7 +73,7 @@
 			<h2 class="font-bold font-mono text-xl self-start">Recipe</h2>
 			<div
 				class="w-full"
-				transition:scale={{ duration: 1000, opacity: 0.5, start: 0.3, easing: quintOut }}
+				transition:scale={{ duration: 1000, opacity: 0.5, start: 0.9, easing: quintOut }}
 			>
 				<RecipeTypeSelect class="w-full" bind:selected={recipeType.value} />
 			</div>
