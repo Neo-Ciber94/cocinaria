@@ -25,7 +25,7 @@
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content
-		class="w-full max-w-[229px] rounded-xl border border-muted bg-background px-1 py-1.5 shadow-popover"
+		class="w-full max-w-[229px] rounded-xl border border-gray-200 px-1 py-1.5 shadow-sm bg-white"
 		sideOffset={8}
 		transition={flyAndScale}
 	>

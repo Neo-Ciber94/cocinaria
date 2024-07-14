@@ -69,22 +69,26 @@
 		</a>
 	</div>
 
-	{#if user}
-		<UserAvatar {user} />
-	{:else if !$isLoginPage}
-		<a
-			href="/login"
-			class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg md:flex flex-row gap-2 items-center hidden"
-		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
-				<path
-					fill="currentColor"
-					d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8z"
-				/>
-			</svg>
+	<div class="flex flex-row gap-2 items-center">
+		{#if user}
+			<UserAvatar {user} />
+		{:else if !$isLoginPage}
+			<a
+				href="/login"
+				class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg md:flex flex-row gap-2 items-center hidden"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+					<path
+						fill="currentColor"
+						d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8z"
+					/>
+				</svg>
 
-			<span> Login </span>
-		</a>
+				<span> Login </span>
+			</a>
+		{:else}
+			<div></div>
+		{/if}
 
 		<DropdownMenu.Root
 			open={isMenuOpen}
@@ -165,7 +169,5 @@
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
-	{:else}
-		<div></div>
-	{/if}
+	</div>
 </header>
