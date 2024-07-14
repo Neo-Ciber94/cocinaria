@@ -44,7 +44,7 @@
 
 	<div class="md:flex flex-row h-full items-center gap-4 hidden">
 		<a
-			href="/"
+			href="/explore"
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
 			data-active={false}
 		>
@@ -52,7 +52,7 @@
 			<span> Explore </span>
 		</a>
 		<a
-			href="/"
+			href="/my_recipes"
 			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
 			data-active={false}
 		>
