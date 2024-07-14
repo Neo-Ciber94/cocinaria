@@ -8,6 +8,7 @@
 	let recipes = $state<PageData['recipes']>([]);
 	const hasRecipes = $derived(data.recipes.length > 0);
 
+	// We do this to trigger entry transitions
 	$effect(() => {
 		recipes = Array.from(Array(30).keys())
 			.flatMap(() => data.recipes)
@@ -44,7 +45,11 @@
 				</a>
 			{/each}
 		{:else}
-			<h2 class="text-lg sm:text-xl font-bold text-center text-neutral-400">No recipes</h2>
+			<h2
+				class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none"
+			>
+				No recipes
+			</h2>
 		{/if}
 	</div>
 </div>
