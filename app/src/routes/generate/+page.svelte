@@ -6,6 +6,8 @@
 	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
 	import { useRecipeItems, MIN_INGREDIENTS, MAX_INGREDIENTS } from './useRecipeItems.svelte';
+	import LoadingIcon from '$components/icons/loadingIcon.svelte';
+	import { cn } from '$lib';
 
 	const recipeItems = useRecipeItems();
 	const selectedCount = $derived.by(() => {
@@ -61,7 +63,27 @@
 
 		<Button.Root
 			onclick={recipeItems.add}
-			class="rounded-lg px-4 py-2 bg-orange-500 text-white w-full">Add Ingredient</Button.Root
+			class={cn(
+				'relative rounded-lg px-4 py-2 bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-2',
+				{
+					'animate-pulse': recipeItems.pending
+				}
+			)}
 		>
+			<span> Add Ingredient </span>
+
+			{#if recipeItems.pending}
+				<div
+					class="absolute left-4"
+					transition:scale={{
+						duration: 400,
+						opacity: 0.2,
+						start: 0.2
+					}}
+				>
+					<LoadingIcon class="text-white size-6" />
+				</div>
+			{/if}
+		</Button.Root>
 	</div>
 </div>

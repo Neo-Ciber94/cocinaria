@@ -64,6 +64,9 @@ export function useRecipeItems() {
 		get selectedItems() {
 			return selectedItems;
 		},
+		get pending() {
+			return items.pending;
+		},
 		add,
 		remove,
 		update
