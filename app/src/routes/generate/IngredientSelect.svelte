@@ -19,12 +19,15 @@
 
 	let { onchange, ingredients, selectedIngredient = $bindable(), ...rest }: Props = $props();
 
-	// let selectedIngredient = $state<Ingredient>();
 	const initialIngredients = $state<Ingredient[]>(ingredients);
 	const filteredIngredients = $derived.by(() => {
-		return initialIngredients.filter((ingredient) =>
-			ingredient.value.includes(inputValue.toLowerCase())
-		);
+		if (inputValue && touchedInput) {
+			return initialIngredients.filter((ingredient) =>
+				ingredient.value.includes(inputValue.toLowerCase())
+			);
+		}
+
+		return initialIngredients;
 	});
 
 	function handleChange(selected: Selected<string> | undefined) {

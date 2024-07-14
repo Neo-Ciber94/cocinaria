@@ -1,76 +1,16 @@
 <script lang="ts">
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import { Button } from 'bits-ui';
-	import { ingredienSchema, INGREDIENTS, type Ingredient } from './ingredients';
 	import IngredientSelect from './IngredientSelect.svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
-	import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
-	import { z } from 'zod';
+	import { useRecipeItems, MIN_INGREDIENTS, MAX_INGREDIENTS } from './useRecipeItems.svelte';
 
-	type Item = {
-		id: string;
-		ingredient: Ingredient | undefined;
-	};
-
-	const MIN_INGREDIENTS = 2;
-	const MAX_INGREDIENTS = 10;
-
-	const itemSchema = z.object({
-		id: z.string(),
-		ingredient: ingredienSchema.optional()
+	const recipeItems = useRecipeItems();
+	const selectedCount = $derived.by(() => {
+		return recipeItems.selectedItems.filter((e) => Boolean(e.ingredient)).length;
 	});
-
-	const ingredientArraySchema = z.array(itemSchema).max(MAX_INGREDIENTS);
-	const items = useLocalStorage('cocineria-ingredients', ingredientArraySchema, {
-		initialValue: [],
-		storage: () => sessionStorage
-	});
-
-	const selectedItems = $derived.by(() => {
-		return items.value as ReadonlyArray<z.infer<typeof itemSchema>>;
-	});
-
-	$effect(() => {
-		console.log(selectedItems);
-	});
-
-	const ingredients = $derived.by(() => {
-		const selectedIngredients = selectedItems
-			.map((s) => s.ingredient)
-			.filter(Boolean) as Ingredient[];
-		return INGREDIENTS.filter((ingredient) => {
-			const isAlreadyAdded = selectedIngredients.some((e) => e.value === ingredient.value);
-			return !isAlreadyAdded;
-		});
-	});
-
-	const selectedCount = $derived.by(
-		() => selectedItems.filter((e) => Boolean(e.ingredient)).length
-	);
-
-	function addIngredient() {
-		if (selectedItems.length === MAX_INGREDIENTS) {
-			return;
-		}
-
-		items.value.push({ ingredient: undefined, id: crypto.randomUUID() });
-	}
-
-	function removeIngredient(id: string) {
-		items.value = selectedItems.filter((ingredient) => ingredient.id !== id);
-	}
-
-	function handleChangeIngredient(id: string, ingredient: Ingredient | undefined) {
-		items.value = selectedItems.map((item) => {
-			if (item.id === id) {
-				return { ...item, ingredient };
-			}
-
-			return item;
-		});
-	}
 </script>
 
 <div class="p-4 container mx-auto w-full h-full flex flex-col gap-2 max-w-xl pt-10 sm:pt-20">
@@ -95,7 +35,7 @@
 			</div>
 		{/if}
 
-		{#each selectedItems as item (item.id)}
+		{#each recipeItems.selectedItems as item (item.id)}
 			<div
 				class="flex flex-row items-center gap-2 w-full"
 				transition:fly={{
@@ -107,20 +47,20 @@
 			>
 				<IngredientSelect
 					class="w-full"
-					{ingredients}
+					ingredients={recipeItems.ingredients}
 					selectedIngredient={item.ingredient}
-					onchange={(ingredient) => handleChangeIngredient(item.id, ingredient)}
+					onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
 				/>
 
 				<button
 					class="bg-red-500 text-white p-2 rounded-md"
-					onclick={() => removeIngredient(item.id)}>Delete</button
+					onclick={() => recipeItems.remove(item.id)}>Delete</button
 				>
 			</div>
 		{/each}
 
 		<Button.Root
-			onclick={addIngredient}
+			onclick={recipeItems.add}
 			class="rounded-lg px-4 py-2 bg-orange-500 text-white w-full">Add Ingredient</Button.Root
 		>
 	</div>
