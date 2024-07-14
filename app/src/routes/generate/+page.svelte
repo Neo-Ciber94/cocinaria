@@ -7,7 +7,7 @@
 	import AmountIndicator from './AmountIndicator.svelte';
 	import { useRecipeItems } from './useRecipeItems.svelte';
 	import LoadingIcon from '$components/icons/loadingIcon.svelte';
-	import { cn, delay } from '$lib';
+	import { cn } from '$lib';
 	import RecipeLoading from './RecipeLoading.svelte';
 	import RecipeTypeSelect from './RecipeTypeSelect.svelte';
 	import { recipeTypeSchema } from '$lib/common/recipe';
@@ -88,7 +88,7 @@
 			<h2 class="font-bold font-mono text-xl self-start">Recipe</h2>
 			<div
 				class="w-full"
-				transition:scale={{ duration: 1000, opacity: 0.5, start: 0.9, easing: quintOut }}
+				in:scale|local={{ duration: 300, opacity: 0.5, start: 0.9, easing: quintOut }}
 			>
 				<RecipeTypeSelect class="w-full" bind:selected={recipeTypeStorage.value} />
 			</div>
@@ -97,7 +97,7 @@
 			{#if selectedCount > 0}
 				<div
 					class="w-full"
-					transition:scale={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
+					transition:scale|local={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
 				>
 					<AmountIndicator
 						min={MIN_RECIPE_INGREDIENTS}
@@ -110,7 +110,7 @@
 			{#if isGenerating}
 				<div
 					class="w-[200px] my-5"
-					transition:scale={{ duration: 1000, opacity: 0.5, start: 0.3, easing: quintOut }}
+					transition:scale|local={{ duration: 300, opacity: 0.5, start: 0.3, easing: quintOut }}
 				>
 					<RecipeLoading images={ingredientImages} />
 				</div>
@@ -118,7 +118,7 @@
 				{#each recipeItems.selectedItems as item (item.id)}
 					<div
 						class="flex flex-row items-center gap-2 w-full"
-						transition:fly={{
+						transition:fly|local={{
 							duration: 300,
 							x: -100,
 							opacity: 0.1,
