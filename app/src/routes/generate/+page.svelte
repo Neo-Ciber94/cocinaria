@@ -1,12 +1,13 @@
 <script lang="ts">
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import { Button } from 'bits-ui';
-	import { INGREDIENTS, type Ingredient } from './ingredients';
+	import { ingredienSchema, INGREDIENTS, type Ingredient } from './ingredients';
 	import IngredientSelect from './IngredientSelect.svelte';
-	import { flip } from 'svelte/animate';
 	import { quintOut } from 'svelte/easing';
-	import { fly, fade, scale } from 'svelte/transition';
+	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
+	import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
+	import { z } from 'zod';
 
 	type Item = {
 		id: string;
@@ -16,7 +17,25 @@
 	const MIN_INGREDIENTS = 2;
 	const MAX_INGREDIENTS = 10;
 
-	let selectedItems = $state<Item[]>([]);
+	const itemSchema = z.object({
+		id: z.string(),
+		ingredient: ingredienSchema.optional()
+	});
+
+	const ingredientArraySchema = z.array(itemSchema).max(MAX_INGREDIENTS);
+	const items = useLocalStorage('cocineria-ingredients', ingredientArraySchema, {
+		initialValue: [],
+		storage: () => sessionStorage
+	});
+
+	const selectedItems = $derived.by(() => {
+		return items.value as ReadonlyArray<z.infer<typeof itemSchema>>;
+	});
+
+	$effect(() => {
+		console.log(selectedItems);
+	});
+
 	const ingredients = $derived.by(() => {
 		const selectedIngredients = selectedItems
 			.map((s) => s.ingredient)
@@ -36,15 +55,15 @@
 			return;
 		}
 
-		selectedItems.push({ ingredient: undefined, id: crypto.randomUUID() });
+		items.value.push({ ingredient: undefined, id: crypto.randomUUID() });
 	}
 
 	function removeIngredient(id: string) {
-		selectedItems = selectedItems.filter((ingredient) => ingredient.id !== id);
+		items.value = selectedItems.filter((ingredient) => ingredient.id !== id);
 	}
 
 	function handleChangeIngredient(id: string, ingredient: Ingredient | undefined) {
-		selectedItems = selectedItems.map((item) => {
+		items.value = selectedItems.map((item) => {
 			if (item.id === id) {
 				return { ...item, ingredient };
 			}
@@ -61,8 +80,7 @@
 	</h1>
 
 	<p class="p-4 rounded-lg bg-orange-100 shadow-sm text-center">
-		You can select from <strong>2</strong> up to <strong>10</strong> to generate a new recipe using our
-		AI
+		Select from <strong>2</strong> up to <strong>10</strong> to generate a new recipe using our AI
 	</p>
 
 	<div class="w-full mx-auto mt-10 flex flex-col items-center gap-2">
@@ -90,6 +108,7 @@
 				<IngredientSelect
 					class="w-full"
 					{ingredients}
+					selectedIngredient={item.ingredient}
 					onchange={(ingredient) => handleChangeIngredient(item.id, ingredient)}
 				/>
 

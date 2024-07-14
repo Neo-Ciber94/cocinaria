@@ -1,18 +1,23 @@
-export type IngredientCategory =
-	| 'meat'
-	| 'vegetable'
-	| 'fish'
-	| 'fruit'
-	| 'dairy'
-	| 'grain'
-	| 'nut'
-	| 'other';
+import { z } from 'zod';
 
-export interface Ingredient {
-	value: string;
-	image: string;
-	category: IngredientCategory;
-}
+export const ingredientCategorySchema = z.enum([
+	'meat',
+	'vegetable',
+	'fish',
+	'fruit',
+	'dairy',
+	'grain',
+	'nut',
+	'other'
+]);
+
+export const ingredienSchema = z.object({
+	value: z.string(),
+	image: z.string(),
+	category: ingredientCategorySchema
+});
+
+export type Ingredient = z.infer<typeof ingredienSchema>;
 
 export const INGREDIENTS: Ingredient[] = [
 	{ value: 'tomato', image: '🍅', category: 'vegetable' },

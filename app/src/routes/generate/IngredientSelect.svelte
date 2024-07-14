@@ -12,13 +12,14 @@
 		class?: string;
 		inputClass?: string;
 		contentClass?: string;
+		selectedIngredient?: Ingredient;
 		ingredients: Ingredient[];
 		onchange: (item: Ingredient | undefined) => void;
 	};
 
-	let { onchange, ingredients, ...rest }: Props = $props();
+	let { onchange, ingredients, selectedIngredient = $bindable(), ...rest }: Props = $props();
 
-	let selectedIngredient = $state<Ingredient>();
+	// let selectedIngredient = $state<Ingredient>();
 	const initialIngredients = $state<Ingredient[]>(ingredients);
 	const filteredIngredients = $derived.by(() => {
 		return initialIngredients.filter((ingredient) =>
@@ -36,12 +37,21 @@
 			onchange(undefined);
 		}
 	}
+
+	const selectedItem = $derived.by(() => {
+		if (!selectedIngredient) {
+			return undefined;
+		}
+
+		return { label: selectedIngredient.value, value: selectedIngredient.value };
+	});
 </script>
 
 <Combobox.Root
 	items={filteredIngredients}
 	bind:inputValue
 	bind:touchedInput
+	selected={selectedItem}
 	onSelectedChange={handleChange}
 >
 	<div class={cn('relative', rest.class)}>
