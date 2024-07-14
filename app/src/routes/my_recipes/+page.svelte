@@ -12,7 +12,7 @@
 	$effect(() => {
 		recipes = Array.from(Array(30).keys())
 			.flatMap(() => data.recipes)
-			.map((e) => ({ ...e, id: crypto.randomUUID() }));
+			.map((e) => ({ ...e }));
 	});
 </script>
 
@@ -24,7 +24,7 @@
 
 	<div class="flex flex-row gap-4 flex-wrap py-5 justify-center">
 		{#if hasRecipes}
-			{#each recipes as recipe, index (recipe.id)}
+			{#each recipes as recipe, index}
 				<a
 					href={`/recipes/${recipe.id}`}
 					class="flex flex-col gap-2 p-2 rounded-lg shadow-md border border-gray-200 w-[180px] md:w-[220px] xl:w-[300px] bg-white"

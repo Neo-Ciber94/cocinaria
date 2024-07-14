@@ -62,11 +62,14 @@ export async function generateRecipe({
 
 			try {
 				await db.insert(recipes).values({
+					userId,
+					prompt,
 					name: object.name,
 					ingredients: object.ingredients,
-					steps: object.steps,
-					prompt,
-					userId
+					recipe: {
+						ingredients: object.ingredients,
+						steps: object.steps
+					}
 				});
 			} catch (err) {
 				console.error('Failed to insert generated recipe into the database', err);

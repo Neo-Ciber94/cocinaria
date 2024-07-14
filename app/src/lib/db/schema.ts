@@ -44,6 +44,11 @@ export const sessions = pgTable('session', {
 	expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
+type RecipeType = {
+	ingredients: string[];
+	steps: string[];
+};
+
 export const recipes = pgTable('recipes', {
 	id: uuid('id').primaryKey().defaultRandom(),
 	userId: uuid('user_id')
@@ -52,7 +57,7 @@ export const recipes = pgTable('recipes', {
 	name: text('name').notNull(),
 	prompt: text('prompt').notNull(), // Prompt used for generate this recipe
 	ingredients: json('ingredients').$type<string[]>().notNull(),
-	steps: json('steps').$type<string[]>().notNull(),
+	recipe: json('recipe').$type<RecipeType>().notNull(),
 	imageUrl: text('image_url'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });

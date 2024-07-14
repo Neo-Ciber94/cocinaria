@@ -32,7 +32,7 @@
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Ingredients</h2>
 					<ul class="grid gap-2 text-muted-foreground">
-						{#each data.recipe.ingredients as ingredient}
+						{#each data.recipe.recipe.ingredients as ingredient}
 							<li>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Instructions</h2>
 					<ol class="grid gap-4 text-muted-foreground">
-						{#each data.recipe.steps as step, idx}
+						{#each data.recipe.recipe.steps as step, idx}
 							<li>
 								<div class="flex items-start gap-2">
 									<div
