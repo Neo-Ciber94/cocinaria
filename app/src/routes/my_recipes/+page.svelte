@@ -45,7 +45,12 @@
 						delay: index * 100
 					}}
 				>
-					<img alt={recipe.name} src={recipe.imageUrl ?? 'https://placehold.co/400'} />
+					<img
+						width={400}
+						height={400}
+						alt={recipe.name}
+						src={recipe.imageUrl ?? 'https://placehold.co/400x400/FDBA74/B45309?text=Not+Found'}
+					/>
 
 					<h3 class="text-center font-bold text-base sm:text-lg mt-1">{recipe.name}</h3>
 					<small class="text-neutral-300 text-center w-full font-medium font-sans tracking-wide">
