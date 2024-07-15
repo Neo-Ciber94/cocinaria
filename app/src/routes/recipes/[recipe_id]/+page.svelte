@@ -5,8 +5,8 @@
 	export let data: PageData;
 </script>
 
-<div class="w-full min-h-screen mx-auto container max-w-xl md:max-w-3xl pt-4 sm:pt-12 md:pt-20">
-	<div class="flex flex-col">
+<div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
+	<div class="flex flex-col p-4 shadow-md border border-gray-200 rounded-lg">
 		<section class="w-full pt-5 md:pt-12 lg:pt-16">
 			<div class="container space-y-10 xl:space-y-16 px-4 md:px-6">
 				<div class="grid gap-4 md:grid-cols-2 md:gap-16">
@@ -27,8 +27,8 @@
 				</div>
 			</div>
 		</section>
-		<hr class="border-b my-2" />
-		<section class="w-full py-4 md:py-24 lg:py-12">
+		<hr class="border-b my-8" />
+		<section class="w-full py-2 md:py-4 lg:py-6">
 			<div class="container grid gap-12 px-4 md:px-6 lg:grid-cols-[1fr_2fr]">
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Ingredients</h2>
