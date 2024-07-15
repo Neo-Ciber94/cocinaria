@@ -60,7 +60,6 @@
 	$: appTitle = (() => {
 		const _ = $page.url.pathname;
 		const defaultTitle = useSeoBaseTitle();
-		console.log({ _, title, defaultTitle });
 
 		if (typeof title === 'string') {
 			return title;
