@@ -1,5 +1,5 @@
 import { getAuth } from '$lib/auth/utils';
-import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai';
+import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async (event) => {
@@ -29,8 +29,6 @@ export const POST: RequestHandler = async (event) => {
 			ingredients,
 			recipeType
 		});
-
-		// return generateRecipeStream.toTextStreamResponse();
 
 		const stream = generateRecipeStream.textStream;
 		return new Response(stream, {

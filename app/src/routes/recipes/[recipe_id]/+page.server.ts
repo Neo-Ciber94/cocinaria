@@ -2,7 +2,7 @@ import { invariant } from '$lib';
 import { db } from '$lib/db';
 import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { generateRecipeImage } from '$lib/server/ai';
+import { generateRecipeImage } from '$lib/server/ai/recipe';
 
 export const actions = {
 	async generateImage(event) {
