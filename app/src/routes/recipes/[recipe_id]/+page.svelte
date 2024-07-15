@@ -18,7 +18,7 @@
 						</h1>
 					</div>
 					<img
-						src={getNotFoundImageUrl(600)}
+						src={data.recipe.imageUrl ?? getNotFoundImageUrl(600)}
 						width="600"
 						height="600"
 						alt={data.recipe.name}
