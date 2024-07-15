@@ -11,9 +11,7 @@
 
 	// We do this to trigger entry transitions
 	$effect(() => {
-		recipes = Array.from(Array(30).keys())
-			.flatMap(() => data.recipes)
-			.map((e) => ({ ...e }));
+		recipes = data.recipes;
 	});
 
 	function getIngredientImages(recipeIngredients: string[]) {
