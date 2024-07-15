@@ -90,7 +90,11 @@
 				class="w-full"
 				in:scale|local={{ duration: 300, opacity: 0.5, start: 0.9, easing: quintOut }}
 			>
-				<RecipeTypeSelect class="w-full" bind:selected={recipeTypeStorage.value} />
+				<RecipeTypeSelect
+					class="w-full"
+					bind:selected={recipeTypeStorage.value}
+					disabled={isGenerating}
+				/>
 			</div>
 
 			<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
