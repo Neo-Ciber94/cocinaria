@@ -59,6 +59,7 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'peanut', image: '🥜', category: 'nut' },
 	{ value: 'chestnut', image: '🌰', category: 'nut' },
 	{ value: 'coffee beans', image: '🫘', category: 'nut' },
+	{ value: "ginger", image: '🫚', category: 'vegetable' },
 	{ value: 'rice', image: '🍚', category: 'grain' },
 	{ value: 'pumpkin', image: '🎃', category: 'vegetable' },
 	{ value: 'milk', image: '🥛', category: 'dairy' },
@@ -71,5 +72,7 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'chocolate', image: '🍫', category: 'other' },
 	{ value: 'ice', image: '🧊', category: 'other' },
 	{ value: 'water', image: '💧', category: 'other' },
-	{ value: 'salt', image: '🧂', category: 'other' }
+	{ value: 'salt', image: '🧂', category: 'other' },
+	{ value: "sugar", image: '🌸', category: 'other' },
+	{ value: "honey", image: '🍯', category: 'other' },
 ];
