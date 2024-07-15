@@ -3,18 +3,22 @@
 	import { useAuth } from '$lib/hooks/useAuth';
 	import { Button } from 'bits-ui';
 	import type { PageData } from './$types';
-	import GenerateImageIcon from '$components/icons/generateImageIcon.svelte';
 	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
+	import { INGREDIENTS } from '$lib/common/ingredients';
 
 	let { data }: { data: PageData } = $props();
 
 	const auth = useAuth();
 	const isCurrentUserRecipe = $derived(auth?.user.id === data.recipe.userId);
 
-	async function deleteRecipe() {}
+	function getIngredientImages(recipeIngredients: string[]) {
+		const images = INGREDIENTS.filter((ingredient) =>
+			recipeIngredients.includes(ingredient.value)
+		).map((ingredient) => ingredient.image);
 
-	async function regenerateRecipeImage() {}
+		return images;
+	}
 </script>
 
 <div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
@@ -33,12 +37,17 @@
 		<section class="w-full pt-5 md:pt-12 lg:pt-16">
 			<div class="container space-y-10 xl:space-y-16 px-4 md:px-6 mx-auto">
 				<div class="grid gap-4 md:grid-cols-2 md:gap-16">
-					<div>
+					<div class="flex flex-col">
 						<h1
 							class="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem]"
 						>
 							{data.recipe.name}
 						</h1>
+						<p class="flex flex-row gap-0.5 w-full justify-start">
+							{#each getIngredientImages(data.recipe.ingredients) as ingredientImage}
+								<span class="text-xl sm:text-2xl">{ingredientImage}</span>
+							{/each}
+						</p>
 					</div>
 					<div class="flex flex-col gap-1">
 						<img
