@@ -69,6 +69,9 @@
 			// toast.success('Recipe was generated', { position: 'bottom-center' });
 
 			if (recipeJson) {
+				recipeItems.clear();
+				recipeTypeStorage.remove();
+
 				console.log(recipeJson);
 				goto(`/recipes/${recipeJson.recipeId}`);
 			}
