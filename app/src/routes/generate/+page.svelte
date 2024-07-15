@@ -15,7 +15,6 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
-	import { dev } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
 
