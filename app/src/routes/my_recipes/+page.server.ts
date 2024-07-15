@@ -12,7 +12,8 @@ export const load: PageServerLoad = async (event) => {
 			userId: true,
 			name: true,
 			imageUrl: true,
-			createdAt: true
+			createdAt: true,
+			ingredients: true
 		},
 		where(fields, { and, eq }) {
 			return and(eq(fields.userId, auth.user.id));

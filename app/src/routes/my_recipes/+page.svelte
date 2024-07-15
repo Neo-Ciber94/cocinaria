@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
+	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { PageData } from './$types';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
@@ -14,6 +15,14 @@
 			.flatMap(() => data.recipes)
 			.map((e) => ({ ...e }));
 	});
+
+	function getIngredientImages(recipeIngredients: string[]) {
+		const images = INGREDIENTS.filter((ingredient) =>
+			recipeIngredients.includes(ingredient.value)
+		).map((ingredient) => ingredient.image);
+
+		return images;
+	}
 </script>
 
 <div class="p-4 container mx-auto w-full h-full max-w-3xl lg:max-w-5xl pt-10 sm:pt-20">
@@ -27,7 +36,7 @@
 			{#each recipes as recipe, index}
 				<a
 					href={`/recipes/${recipe.id}`}
-					class="flex flex-col gap-2 p-2 rounded-lg shadow-md border border-gray-200 w-[180px] md:w-[220px] xl:w-[300px] bg-white"
+					class="flex flex-col gap-1 p-2 rounded-lg shadow-md border border-gray-200 w-[180px] md:w-[220px] xl:w-[300px] bg-white"
 					in:scale|local={{
 						duration: 500,
 						opacity: 0.01,
@@ -41,7 +50,17 @@
 						src={recipe.imageUrl ?? 'https://placehold.co/400'}
 						class="aspect-square"
 					/>
-					<h3 class="text-center font-bold text-base sm:text-lg">{recipe.name}</h3>
+
+					<h3 class="text-center font-bold text-base sm:text-lg mt-1">{recipe.name}</h3>
+					<small
+						class="text-neutral-300 text-center w-full font-medium font-sans tracking-wide"
+						>Ingredients</small
+					>
+					<div class="flex flex-row gap-1 items-center w-full justify-center text-xl">
+						{#each getIngredientImages(recipe.ingredients) as ingredientImage}
+							<span>{ingredientImage}</span>
+						{/each}
+					</div>
 				</a>
 			{/each}
 		{:else}

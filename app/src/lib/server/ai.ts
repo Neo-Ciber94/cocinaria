@@ -65,7 +65,7 @@ export async function generateRecipe({
 					userId,
 					prompt,
 					name: object.name,
-					ingredients: object.ingredients,
+					ingredients: ingredientsList,
 					recipe: {
 						ingredients: object.ingredients,
 						steps: object.steps
