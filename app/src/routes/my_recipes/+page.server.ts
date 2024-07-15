@@ -17,6 +17,9 @@ export const load: PageServerLoad = async (event) => {
 		},
 		where(fields, { and, eq }) {
 			return and(eq(fields.userId, auth.user.id));
+		},
+		orderBy(fields, { desc }) {
+			return desc(fields.createdAt);
 		}
 	});
 
