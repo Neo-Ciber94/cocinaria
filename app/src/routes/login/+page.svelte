@@ -7,6 +7,7 @@
 	import { cn } from '$lib';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { spring } from 'svelte/motion';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 
 	$effect(() => {
 		const error = $page.url.searchParams.get('AuthError') as AuthError | undefined;
@@ -52,6 +53,8 @@
 		}, ms);
 	}
 </script>
+
+<SvelteSeo title={(baseTitle) => `${baseTitle} | Login`} />
 
 <div
 	class={cn(

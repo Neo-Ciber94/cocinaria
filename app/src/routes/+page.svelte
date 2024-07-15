@@ -1,10 +1,13 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
 	import SushiIcon from '$components/icons/sushiIcon.svelte';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { useAuth } from '$lib/hooks/useAuth';
 
 	const auth = useAuth();
 </script>
+
+<SvelteSeo />
 
 <section
 	class="w-full min-h-[var(--main-height)] flex flex-col justify-center items-center mx-auto md:max-w-3xl overflow-hidden"

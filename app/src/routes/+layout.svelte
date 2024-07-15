@@ -6,18 +6,21 @@
 	import { setAuth } from '$lib/hooks/useAuth';
 	import Header from './Header.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import { setSeoBaseTitle } from '$components/seo/context';
 
 	export let data: LayoutData;
+	const icon = data.icon;
 
 	setAuth(data.auth);
 	setFoodIcon(data.icon);
-
-	const icon = data.icon;
+	setSeoBaseTitle(`CocinarIA ${icon}`);
 </script>
 
-<svelte:head>
-	<title>CocinarIA {icon}</title>
+<SvelteSeo />
 
+<svelte:head>
+	<title>{`CocinarIA ${icon}`}</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
 	<link

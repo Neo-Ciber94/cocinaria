@@ -17,6 +17,7 @@
 	import toast from 'svelte-french-toast';
 	import { goto } from '$app/navigation';
 	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 
 	const recipeItems = useRecipeItems();
 	const selectedIngredients = $derived.by(() => {
@@ -83,6 +84,8 @@
 		}
 	}
 </script>
+
+<SvelteSeo title={(baseTitle) => `${baseTitle} | Generate`} />
 
 <div class="p-4 container mx-auto w-full h-full max-w-xl lg:max-w-3xl pt-10 sm:pt-20">
 	<div class="px-4 pt-8 pb-6 flex flex-col gap-2 shadow-md rounded-xl border border-gray-200">

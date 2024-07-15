@@ -6,6 +6,7 @@
 	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 	import { INGREDIENTS } from '$lib/common/ingredients';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -19,7 +20,11 @@
 
 		return images;
 	}
+
+	const { recipe } = data;
 </script>
+
+<SvelteSeo title={(baseTitle) => `${baseTitle} | ${recipe.name}`} />
 
 <div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
 	{#if isCurrentUserRecipe}
@@ -41,20 +46,20 @@
 						<h1
 							class="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem]"
 						>
-							{data.recipe.name}
+							{recipe.name}
 						</h1>
 						<p class="flex flex-row gap-0.5 w-full justify-start">
-							{#each getIngredientImages(data.recipe.ingredients) as ingredientImage}
+							{#each getIngredientImages(recipe.ingredients) as ingredientImage}
 								<span class="text-xl sm:text-2xl">{ingredientImage}</span>
 							{/each}
 						</p>
 					</div>
 					<div class="flex flex-col gap-1">
 						<img
-							src={data.recipe.imageUrl ?? getNotFoundImageUrl(600)}
+							src={recipe.imageUrl ?? getNotFoundImageUrl(600)}
 							width="600"
 							height="600"
-							alt={data.recipe.name}
+							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
 						/>
 						{#if isCurrentUserRecipe}
@@ -72,7 +77,7 @@
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Ingredients</h2>
 					<ul class="grid gap-2 text-muted-foreground">
-						{#each data.recipe.recipe.ingredients as ingredient}
+						{#each recipe.recipe.ingredients as ingredient}
 							<li>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +101,7 @@
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Instructions</h2>
 					<ol class="grid gap-4 text-muted-foreground">
-						{#each data.recipe.recipe.steps as step, idx}
+						{#each recipe.recipe.steps as step, idx}
 							<li>
 								<div class="flex items-start gap-2">
 									<div

@@ -3,6 +3,7 @@
 	import DiscordIcon from '$components/icons/discordIcon.svelte';
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import type { PageServerData } from './$types';
 	import { Avatar } from 'bits-ui';
 
@@ -22,6 +23,8 @@
 
 	const authIcon = authIcons[data.authProvider];
 </script>
+
+<SvelteSeo title={(baseTitle) => `${baseTitle} | ${data.user.username}`} />
 
 <section
 	class="container mx-auto w-full h-[calc(100vh-var(--header-height)*2)] flex flex-col justify-center items-center"

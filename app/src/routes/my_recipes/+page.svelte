@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getNotFoundImageUrl } from '$lib/common/images';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { PageData } from './$types';
@@ -23,6 +24,8 @@
 		return images;
 	}
 </script>
+
+<SvelteSeo title={(baseTitle) => `${baseTitle} | My Recipes`} />
 
 <div class="p-4 container mx-auto w-full h-full max-w-4xl lg:max-w-6xl pt-10 sm:pt-20">
 	<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
