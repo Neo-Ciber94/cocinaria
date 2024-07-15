@@ -1,8 +1,8 @@
 import { env } from '$env/dynamic/private';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 type UploadedFile = {
-	fileId: string;
+	key: string;
 	url: string;
 };
 
@@ -23,24 +23,49 @@ export async function uploadFile({ data, metadata }: UploadFileArgs): Promise<Up
 	const fileId = generateFileId();
 	const fileType = data.type.split('/')[1];
 	const ext = fileType ? `.${fileType}` : '';
-	const key = `/images/${fileId}${ext}`;
+	const key = `images/${fileId}${ext}`;
 
+	const buffer = Buffer.from(await data.arrayBuffer());
 	const result = await s3Client.send(
 		new PutObjectCommand({
 			Bucket: env.S3_BUCKET_NAME,
 			Key: key,
-			Body: data,
+			Body: buffer,
 			ContentType: data.type,
 			Metadata: metadata
 		})
 	);
 
-	console.log(`File uploaded: ${key}`, result);
+	const url = `${env.ASSETS_URL}/${key}`;
+	console.log(`File uploaded: ${url}`, result);
 
 	return {
-		fileId,
-		url: `${env.ASSETS_URL}${key}`
+		key,
+		url
 	};
+}
+
+export async function deleteFile(url: string) {
+	try {
+		let key = url.replaceAll(env.ASSETS_URL, '');
+		if (key.startsWith('/')) {
+			key = key.slice(1);
+		}
+
+		console.log('Deleting file: ', key);
+
+		await s3Client.send(
+			new DeleteObjectCommand({
+				Bucket: env.S3_BUCKET_NAME,
+				Key: key
+			})
+		);
+
+		return true;
+	} catch (err) {
+		console.error(err);
+		return false;
+	}
 }
 
 function generateFileId() {

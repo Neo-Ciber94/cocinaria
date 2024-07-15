@@ -6,7 +6,7 @@ import { db } from '$lib/db';
 import { recipes } from '$lib/db/schema';
 import { recipeTypeSchema } from '$lib/common/recipe';
 import OpenAI from 'openai';
-import { uploadFile } from './upload';
+import { deleteFile, uploadFile } from './blob';
 import { and, eq } from 'drizzle-orm';
 import type { Recipe } from '$lib/db/types';
 
@@ -130,12 +130,18 @@ export async function generateRecipeImage({ userId, input }: GenerateRecipeImage
 		return null;
 	}
 
-	const { id: recipeId, name: recipeName, recipeType, ingredients } = recipe;
+	const {
+		id: recipeId,
+		name: recipeName,
+		recipeType,
+		ingredients,
+		imageUrl: prevImageUrl
+	} = recipe;
 
 	const prompt = `An image in a single color background of a ${recipeType} 
 	containing only the following ingredients and not any other: ${ingredients.join(',')}
 	of a dish named '${recipeName}',
-	in a watercolor style`;
+	in an anime watercolor style, only the dish and not other artifacts like text`;
 
 	const resultImage = await generateImage({
 		userId,
@@ -149,6 +155,16 @@ export async function generateRecipeImage({ userId, input }: GenerateRecipeImage
 		.returning()
 		.then((ret) => ret[0]);
 
+	if (prevImageUrl) {
+		try {
+			if (!(await deleteFile(prevImageUrl))) {
+				console.error('Unable to delete file ' + prevImageUrl);
+			}
+		} catch (err) {
+			console.error('Failed to delete image', err);
+		}
+	}
+
 	return result;
 }
 
@@ -160,11 +176,11 @@ type GenerateImageArgs = {
 export async function generateImage({ prompt, userId }: GenerateImageArgs) {
 	const openAI = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
+	console.log('Generating image: ', prompt);
 	const response = await openAI.images.generate({
 		model: 'dall-e-3',
 		response_format: 'url',
 		user: userId,
-		style: 'natural',
 		prompt
 	});
 
@@ -184,11 +200,11 @@ export async function generateImage({ prompt, userId }: GenerateImageArgs) {
 	const uploadedImage = await uploadFile({
 		data: blob,
 		metadata: {
-			prompt,
-			userId,
-			aiGenerated: 'true',
-			model: 'dall-e-3',
-			date: new Date().toISOString()
+			// prompt,
+			// userId,
+			// aiGenerated: 'true',
+			// model: 'dall-e-3',
+			// date: new Date().toISOString()
 		}
 	});
 	return uploadedImage;

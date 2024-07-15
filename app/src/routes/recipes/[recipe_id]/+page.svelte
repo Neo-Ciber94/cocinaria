@@ -1,14 +1,37 @@
 <script lang="ts">
 	import { getNotFoundImageUrl } from '$lib/common/images';
+	import { useAuth } from '$lib/hooks/useAuth';
+	import { Button } from 'bits-ui';
 	import type { PageData } from './$types';
+	import GenerateImageIcon from '$components/icons/generateImageIcon.svelte';
+	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
+	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
+
+	const auth = useAuth();
+	const isCurrentUserRecipe = $derived(auth?.user.id === data.recipe.userId);
+
+	async function deleteRecipe() {}
+
+	async function regenerateRecipeImage() {}
 </script>
 
 <div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
-	<div class="flex flex-col p-4 shadow-md border border-gray-200 rounded-lg">
+	{#if isCurrentUserRecipe}
+		<div class="w-full flex flex-row justify-end">
+			<Button.Root
+				class="px-10 py-2 rounded-md shadow-sm bg-red-500 hover:bg-red-600  text-white flex flex-row gap-2 items-center justify-center mb-2"
+			>
+				<TrashCanIcon class="size-6" />
+				<span class="leading-none">Delete</span>
+			</Button.Root>
+		</div>
+	{/if}
+
+	<div class="flex flex-col p-4 shadow-md border border-gray-200 rounded-lg bg-white">
 		<section class="w-full pt-5 md:pt-12 lg:pt-16">
-			<div class="container space-y-10 xl:space-y-16 px-4 md:px-6">
+			<div class="container space-y-10 xl:space-y-16 px-4 md:px-6 mx-auto">
 				<div class="grid gap-4 md:grid-cols-2 md:gap-16">
 					<div>
 						<h1
@@ -17,13 +40,20 @@
 							{data.recipe.name}
 						</h1>
 					</div>
-					<img
-						src={data.recipe.imageUrl ?? getNotFoundImageUrl(600)}
-						width="600"
-						height="600"
-						alt={data.recipe.name}
-						class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
-					/>
+					<div class="flex flex-col gap-1">
+						<img
+							src={data.recipe.imageUrl ?? getNotFoundImageUrl(600)}
+							width="600"
+							height="600"
+							alt={data.recipe.name}
+							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
+						/>
+						{#if isCurrentUserRecipe}
+							<div class="flex flex-row gap-2 w-full">
+								<RegenerateRecipeImageButton />
+							</div>
+						{/if}
+					</div>
 				</div>
 			</div>
 		</section>
