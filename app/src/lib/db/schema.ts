@@ -1,3 +1,4 @@
+import { RECIPE_TYPES } from '$lib/common/recipe';
 import { relations } from 'drizzle-orm';
 import {
 	json,
@@ -11,6 +12,8 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const authProviderEnum = pgEnum('auth_provider', ['github', 'google', 'discord']);
+
+export const recipeTypeEnum = pgEnum('recipe_type', RECIPE_TYPES);
 
 export const users = pgTable('user', {
 	id: uuid('id').primaryKey(),
@@ -58,6 +61,7 @@ export const recipes = pgTable('recipes', {
 	prompt: text('prompt').notNull(), // Prompt used for generate this recipe
 	ingredients: json('ingredients').$type<string[]>().notNull(),
 	recipe: json('recipe').$type<RecipeType>().notNull(),
+	recipeType: recipeTypeEnum('recipe_type').notNull(),
 	imageUrl: text('image_url'),
 	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
 });

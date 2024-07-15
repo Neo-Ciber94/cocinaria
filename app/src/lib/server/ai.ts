@@ -8,6 +8,7 @@ import { recipeTypeSchema } from '$lib/common/recipe';
 import OpenAI from 'openai';
 import { uploadFile } from './upload';
 import { and, eq } from 'drizzle-orm';
+import type { Recipe } from '$lib/db/types';
 
 const openai = createOpenAI({
 	apiKey: env.OPENAI_API_KEY ?? ''
@@ -41,27 +42,6 @@ export async function generateRecipe({
 	const prompt = `Create a food recipe of a ${recipeType} 
     that include only the following ingredients and not any other: ${ingredientsList.join(',')}`;
 
-	async function addRecipeImage(recipeName: string, recipeId: string) {
-		try {
-			const prompt = `An image in a single color background of a ${recipeType} 
-				containing only the following ingredients and not any other: ${ingredientsList.join(',')}
-				of a dish named '${recipeName}',
-				in a watercolor style`;
-
-			const resultImage = await generateImage({
-				userId,
-				prompt
-			});
-
-			await db
-				.update(recipes)
-				.set({ imageUrl: resultImage.url })
-				.where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)));
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 	// We gonna stream the result in case the platform where the app is hosted timeout if the object generation takes too much time
 	const stream = await streamObject({
 		model: openai('gpt-4-turbo'),
@@ -90,6 +70,7 @@ export async function generateRecipe({
 					.values({
 						userId,
 						prompt,
+						recipeType,
 						name: object.name,
 						ingredients: ingredientsList,
 						recipe: {
@@ -101,7 +82,10 @@ export async function generateRecipe({
 					.then((ret) => ret[0]);
 
 				// We do not generate the image in a transaction, both can fail independently
-				await addRecipeImage(recipe.name, recipe.id).catch(() => null);
+				await generateRecipeImage({
+					userId,
+					input: { action: 'update', recipe }
+				}).catch(console.error);
 			} catch (err) {
 				console.error('Failed to insert generated recipe into the database', err);
 				throw err;
@@ -110,6 +94,62 @@ export async function generateRecipe({
 	});
 
 	return stream;
+}
+
+type GenerateRecipeImageArgs = {
+	userId: string;
+	input:
+		| {
+				action: 'find-and-update';
+				recipeId: string;
+		  }
+		| {
+				action: 'update';
+				recipe: Recipe;
+		  };
+};
+
+export async function generateRecipeImage({ userId, input }: GenerateRecipeImageArgs) {
+	const recipe = await (async () => {
+		switch (input.action) {
+			case 'update': {
+				return input.recipe;
+			}
+			case 'find-and-update': {
+				// query and update in the same transaction?
+				return db.query.recipes.findFirst({
+					where(fields, { eq, and }) {
+						return and(eq(fields.id, input.recipeId), eq(fields.userId, userId));
+					}
+				});
+			}
+		}
+	})();
+
+	if (recipe == null) {
+		return null;
+	}
+
+	const { id: recipeId, name: recipeName, recipeType, ingredients } = recipe;
+
+	const prompt = `An image in a single color background of a ${recipeType} 
+	containing only the following ingredients and not any other: ${ingredients.join(',')}
+	of a dish named '${recipeName}',
+	in a watercolor style`;
+
+	const resultImage = await generateImage({
+		userId,
+		prompt
+	});
+
+	const result = await db
+		.update(recipes)
+		.set({ imageUrl: resultImage.url })
+		.where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)))
+		.returning()
+		.then((ret) => ret[0]);
+
+	return result;
 }
 
 type GenerateImageArgs = {
