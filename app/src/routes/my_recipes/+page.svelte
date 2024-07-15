@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
+	import { getNotFoundImageUrl } from '$lib/common/images';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { PageData } from './$types';
 	import { backOut } from 'svelte/easing';
@@ -49,7 +50,7 @@
 						width={400}
 						height={400}
 						alt={recipe.name}
-						src={recipe.imageUrl ?? 'https://placehold.co/400x400/FDBA74/B45309?text=Not+Found'}
+						src={recipe.imageUrl ?? getNotFoundImageUrl(400)}
 					/>
 
 					<h3 class="text-center font-bold text-base sm:text-lg mt-1">{recipe.name}</h3>

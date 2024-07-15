@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getNotFoundImageUrl } from '$lib/common/images';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -17,7 +18,7 @@
 						</h1>
 					</div>
 					<img
-						src="https://placehold.co/600"
+						src={getNotFoundImageUrl(600)}
 						width="600"
 						height="600"
 						alt={data.recipe.name}
