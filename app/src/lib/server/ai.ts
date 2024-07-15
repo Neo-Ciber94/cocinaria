@@ -141,7 +141,7 @@ export async function generateRecipeImage({ userId, input }: GenerateRecipeImage
 	const prompt = `An image in a single color background of a ${recipeType} 
 	containing only the following ingredients and not any other: ${ingredients.join(',')}
 	of a dish named '${recipeName}',
-	in an anime watercolor style, only the dish and not other artifacts like text`;
+	in an anime watercolor style, only the dish and not other artifacts like text or characters`;
 
 	const resultImage = await generateImage({
 		userId,
@@ -197,14 +197,18 @@ export async function generateImage({ prompt, userId }: GenerateImageArgs) {
 	}
 
 	const blob = await imageResponse.blob();
+
+	// For some reason s3 fails to upload with line breaks:
+	// TypeError [ERR_INVALID_CHAR]: Invalid character in header content ["x-amz-meta-prompt"]
+	const promptMetadata = prompt.split('\n').join(' ');
 	const uploadedImage = await uploadFile({
 		data: blob,
 		metadata: {
-			// prompt,
-			// userId,
-			// aiGenerated: 'true',
-			// model: 'dall-e-3',
-			// date: new Date().toISOString()
+			userId,
+			prompt: promptMetadata,
+			aiGenerated: 'true',
+			model: 'dall-e-3',
+			date: new Date().toISOString()
 		}
 	});
 	return uploadedImage;

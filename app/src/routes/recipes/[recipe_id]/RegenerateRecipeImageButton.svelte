@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, invalidateAll } from '$app/navigation';
 	import GenerateImageIcon from '$components/icons/generateImageIcon.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import { cn } from '$lib/index';
@@ -15,9 +15,9 @@
 	action={`?/generateImage`}
 	use:enhance={() => {
 		loading = true;
-		return ({ result }) => {
+		return async ({ result }) => {
 			console.log({ result });
-			invalidate((url) => url.pathname.startsWith('/recipes'));
+			await invalidateAll();
 			loading = false;
 		};
 	}}
