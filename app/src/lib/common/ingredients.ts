@@ -35,6 +35,7 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'potato', image: '🥔', category: 'vegetable' },
 	{ value: 'garlic', image: '🧄', category: 'vegetable' },
 	{ value: 'corn', image: '🌽', category: 'vegetable' },
+	{ value: 'bellPepper', image: '🫑', category: 'vegetable' },
 	{ value: 'lemon', image: '🍋', category: 'fruit' },
 	{ value: 'meat', image: '🥩', category: 'meat' },
 	{ value: 'chicken', image: '🍗', category: 'meat' },
@@ -57,6 +58,7 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'broccoli', image: '🥦', category: 'vegetable' },
 	{ value: 'peanut', image: '🥜', category: 'nut' },
 	{ value: 'chestnut', image: '🌰', category: 'nut' },
+	{ value: 'coffee beans', image: '🫘', category: 'nut' },
 	{ value: 'rice', image: '🍚', category: 'grain' },
 	{ value: 'pumpkin', image: '🎃', category: 'vegetable' },
 	{ value: 'milk', image: '🥛', category: 'dairy' },
@@ -69,6 +71,5 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'chocolate', image: '🍫', category: 'other' },
 	{ value: 'ice', image: '🧊', category: 'other' },
 	{ value: 'water', image: '💧', category: 'other' },
-	{ value: 'salt', image: '🧂', category: 'other' },
-	{ value: 'bellPepper', image: '🫑', category: 'vegetable' }
+	{ value: 'salt', image: '🧂', category: 'other' }
 ];
