@@ -64,6 +64,8 @@ export const INGREDIENTS: Ingredient[] = [
 	{ value: 'shrimp', image: '🍤', category: 'fish' },
 	{ value: 'squid', image: '🦑', category: 'fish' },
 	{ value: 'oyster', image: '🦪', category: 'fish' },
+	{ value: 'wheat', image: '🌾', category: 'grain' },
+	{ value: 'bread', image: '🍞', category: 'other' },
 	{ value: 'ice', image: '🧊', category: 'other' },
 	{ value: 'water', image: '💧', category: 'other' },
 	{ value: 'salt', image: '🧂', category: 'other' },
