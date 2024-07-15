@@ -16,6 +16,8 @@
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
 	import { dev } from '$app/environment';
+	import { goto } from '$app/navigation';
+	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
 
 	const recipeItems = useRecipeItems();
 	const selectedIngredients = $derived.by(() => {
@@ -34,7 +36,17 @@
 	let isGenerating = $state(false);
 	const canGenerate = $derived(selectedCount >= MIN_RECIPE_INGREDIENTS);
 
+	const ingredientImages = $derived.by(() => {
+		return recipeItems.selectedItems
+			.filter((e) => Boolean(e.ingredient))
+			.map((e) => e.ingredient?.image) as string[];
+	});
+
 	async function generateRecipe() {
+		if (!confirm(`Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`)) {
+			return;
+		}
+
 		try {
 			isGenerating = true;
 
@@ -51,13 +63,16 @@
 			}
 
 			// We just consume the stream until it's done
+
 			const recipeContents = await res.text();
+			const recipeJson = JSON.parse(recipeContents) as GeneratedRecipeType;
 
-			if (dev) {
-				console.log(recipeContents);
+			// toast.success('Recipe was generated', { position: 'bottom-center' });
+
+			if (recipeJson) {
+				console.log(recipeJson);
+				goto(`/recipes/${recipeJson.recipeId}`);
 			}
-
-			toast.success('Recipe was generated', { position: 'bottom-center' });
 		} catch (err) {
 			console.error(err);
 			toast.error('Failed to generate recipe', { position: 'bottom-center' });
@@ -65,12 +80,6 @@
 			isGenerating = false;
 		}
 	}
-
-	const ingredientImages = $derived.by(() => {
-		return recipeItems.selectedItems
-			.filter((e) => Boolean(e.ingredient))
-			.map((e) => e.ingredient?.image) as string[];
-	});
 </script>
 
 <div class="p-4 container mx-auto w-full h-full max-w-xl lg:max-w-3xl pt-10 sm:pt-20">

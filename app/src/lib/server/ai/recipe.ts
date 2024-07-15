@@ -34,6 +34,8 @@ export const generateRecipeInputSchema = z.object({
 	recipeType: recipeTypeSchema
 });
 
+export type GeneratedRecipeType = z.infer<ReturnType<typeof recipeJsonSchema>>;
+
 type GenerateRecipeInput = z.infer<typeof generateRecipeInputSchema>;
 
 type GenerateRecipeArgs = GenerateRecipeInput & {
@@ -93,6 +95,7 @@ export async function generateRecipe({
 						recipeType,
 						name: object.name,
 						ingredients: ingredientsList,
+						id: recipeId,
 						recipe: {
 							ingredients: object.ingredients,
 							steps: object.steps
