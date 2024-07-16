@@ -6,6 +6,7 @@
 	import { Tooltip } from 'bits-ui';
 	import type { Account } from '$lib/db/types';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
+	import DiamongIcon from '$components/icons/diamongIcon.svelte';
 
 	let { user, account }: { user: User; account: Account } = $props();
 </script>
@@ -40,11 +41,25 @@
 				<span>{user.username}</span>
 			</a>
 		</DropdownMenu.Item>
+
+		{#if account.isPremium}
+			<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+			<DropdownMenu.Item
+				class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-purple-300 group hover:text-white cursor-pointer"
+			>
+				<div class="flex items-center w-full p-2 rounded-lg flex-row gap-2">
+					<DiamongIcon class="size-5 group-hover:scale-110 transition-transform" />
+					<span> Premium </span>
+				</div>
+			</DropdownMenu.Item>
+		{/if}
+
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
 		>
 			{@const hasCredits = account.credits > 0}
+
 			<Tooltip.Root openDelay={0}>
 				<Tooltip.Trigger>
 					<button
