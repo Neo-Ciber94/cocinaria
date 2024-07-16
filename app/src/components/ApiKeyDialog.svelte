@@ -6,12 +6,28 @@
 	import KeyIcon from './icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import AiProviderSelect from './AIProviderSelect.svelte';
+	import { useApiKey } from '$lib/hooks/useApiKey.svelte';
+	import { type AIProvider } from '$lib/common/types';
 
 	const apiKeyDialogOpen = useApiKeyDialog();
+	const apiKey = useApiKey();
 
-	$effect(() => {
-		console.log(apiKeyDialogOpen);
-	});
+	let key = $state<string | undefined>(apiKey.value?.key);
+	let provider = $state<AIProvider | undefined>(apiKey.value?.provider);
+
+	function handleSave() {
+		if (key && provider) {
+			apiKey.value = { key, provider };
+			apiKeyDialogOpen.isOpen = false;
+		}
+
+	}
+
+	function handleRemove() {
+		apiKey.value = null;
+		key = '';
+		provider = undefined;
+	}
 </script>
 
 <Dialog.Root
@@ -50,26 +66,30 @@
 							type="password"
 							name="api_key"
 							autocomplete="off"
+							bind:value={key}
+							required
 						/>
 
 						<KeyIcon
 							class="absolute right-4 top-0 bottom-0 translate-y-1/2 size-[22px] text-black/30"
 						/>
 					</form>
-					<AiProviderSelect />
+					<AiProviderSelect bind:selected={provider} />
 				</div>
 			</div>
 			<div class="flex w-full gap-2 justify-end">
-				<Dialog.Close
-					class="inline-flex h-12 items-center justify-center rounded-lg bg-red-500 min-w-[100px] px-4 text-[15px] font-semibold text-white shadow hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[98]"
+				<button
+					onclick={handleRemove}
+					class="inline-flex h-12 items-center justify-center rounded-lg bg-red-500 min-w-[100px] px-4 text-[15px] font-semibold text-white shadow hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 				>
 					Remove
-				</Dialog.Close>
-				<Dialog.Close
-					class="inline-flex h-12 items-center justify-center rounded-lg bg-black/80 min-w-[100px] px-4 text-[15px] font-semibold text-white shadow hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[98]"
+				</button>
+				<button
+					onclick={handleSave}
+					class="inline-flex h-12 items-center justify-center rounded-lg bg-black/80 min-w-[100px] px-4 text-[15px] font-semibold text-white shadow hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 				>
 					Save
-				</Dialog.Close>
+				</button>
 			</div>
 			<Dialog.Close
 				class="absolute right-5 top-5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"

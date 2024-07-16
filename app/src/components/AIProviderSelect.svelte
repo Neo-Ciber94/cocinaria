@@ -7,11 +7,10 @@
 	import OpenaiIcon from './icons/openaiIcon.svelte';
 	import GeminiAi from './icons/geminiAiIcon.svelte';
 	import ClaudeaiIcon from './icons/claudeaiIcon.svelte';
-
-	type AIProvider = 'openai' | 'claude' | 'gemini' | 'grok';
+	import type { AIProvider } from '$lib/common/types';
 
 	type Props = {
-		selected?: AIProvider;
+		selected?: AIProvider | null;
 		class?: string;
 		disabled?: boolean;
 	};
@@ -26,6 +25,10 @@
 	] satisfies { value: AIProvider; label: string; icon: any }[];
 
 	let selectedProvider = $derived(aiProviderItems.find((e) => e.value === selected));
+
+	$effect(() => {
+		console.log(selected);
+	});
 </script>
 
 <Select.Root
@@ -35,6 +38,7 @@
 	onSelectedChange={(item) => {
 		const recipeItem = aiProviderItems.find((e) => e.value === item?.value);
 		selected = recipeItem?.value;
+		console.log({ item });
 	}}
 >
 	<Select.Trigger
@@ -44,7 +48,7 @@
 			'disabled:bg-gray-100 disabled:cursor-not-allowed',
 			rest.class
 		)}
-		aria-label="Select a recipe type"
+		aria-label="Select an AI provider"
 	>
 		{#if mounted.value && selectedProvider}
 			<svelte:component this={selectedProvider.icon} class="mr-[9px] size-6" />
