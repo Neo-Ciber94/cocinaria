@@ -1,4 +1,5 @@
 import { getAuth } from '$lib/auth/utils';
+import { ApplicationError } from '$lib/common/error';
 import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
@@ -40,6 +41,11 @@ export const POST: RequestHandler = async (event) => {
 		});
 	} catch (err) {
 		console.error(err);
+
+		if (err instanceof ApplicationError) {
+			error(400, { message: err.message });
+		}
+
 		return new Response(null, { status: 500 });
 	}
 };

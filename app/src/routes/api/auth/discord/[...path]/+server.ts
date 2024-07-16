@@ -1,11 +1,12 @@
 import { discordAuth } from '$lib/auth/providers';
 import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
-import { accounts, users } from '$lib/db/schema';
+import { accounts } from '$lib/db/schema';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
 import { generateState } from 'arctic';
 import { and, eq } from 'drizzle-orm';
 import { AuthError, redirectToAuthError } from '../../utils';
+import { createUserAccount } from '$lib/server/users';
 
 const COOKIE_DISCORD_OAUTH_STATE = 'discord-oauth-state';
 
@@ -108,20 +109,13 @@ async function handleCallback(event: RequestEvent) {
 		}
 
 		const accountId = crypto.randomUUID();
-
-		await db.transaction(async (tx) => {
-			await tx.insert(users).values({
-				id: userId,
-				accountId,
-				username: discordUser.username,
-				picture: getUserAvatar(discordUser)
-			});
-
-			await tx.insert(accounts).values({
-				userId,
-				authAccountId: discordUser.id.toString(),
-				authProvider: 'discord'
-			});
+		await createUserAccount({
+			userId,
+			accountId,
+			username: discordUser.username,
+			picture: getUserAvatar(discordUser),
+			authAccountId: discordUser.id.toString(),
+			authProvider: 'discord'
 		});
 
 		const session = await lucia.createSession(userId, {});

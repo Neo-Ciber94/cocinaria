@@ -1,6 +1,8 @@
 import { RECIPE_TYPES } from '$lib/common/recipe';
 import { relations } from 'drizzle-orm';
 import {
+	boolean,
+	integer,
 	json,
 	pgEnum,
 	pgTable,
@@ -30,6 +32,8 @@ export const accounts = pgTable(
 			.notNull()
 			.references(() => users.id),
 		authAccountId: varchar('auth_account_id').notNull(),
+		isPremium: boolean('is_premium').default(false).notNull(),
+		credits: integer('credits').default(0).notNull(),
 		authProvider: authProviderEnum('auth_provider').notNull()
 	},
 	(table) => {

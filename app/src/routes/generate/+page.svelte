@@ -34,7 +34,9 @@
 	);
 
 	let isGenerating = $state(false);
-	const canGenerate = $derived(selectedCount >= MIN_RECIPE_INGREDIENTS);
+	const canGenerate = $derived.by(() => {
+		return selectedCount >= MIN_RECIPE_INGREDIENTS && recipeTypeStorage.value != null;
+	});
 
 	const ingredientImages = $derived.by(() => {
 		return recipeItems.selectedItems
@@ -59,7 +61,16 @@
 			});
 
 			if (!res.ok || res.body == null) {
-				throw new Error('Failed to generate recipe');
+				let error: string = 'Failed to generate recipe';
+
+				if (res.headers.get('Content-Type') == 'application/json') {
+					const json = await res.json();
+					if (typeof json?.message === 'string') {
+						error = json.message;
+					}
+				}
+
+				throw new Error(error);
 			}
 
 			// We just consume the stream until it's done
@@ -78,7 +89,9 @@
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error('Failed to generate recipe', { position: 'bottom-center' });
+
+			const message = err instanceof Error ? err.message : 'Failed to generate recipe';
+			toast.error(message, { position: 'bottom-center' });
 		} finally {
 			isGenerating = false;
 		}

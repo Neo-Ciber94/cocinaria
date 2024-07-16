@@ -3,27 +3,38 @@ import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { generateRecipeImage } from '$lib/server/ai/recipe';
 import { deleteRecipe, getRecipeById } from '$lib/server/recipes';
+import { ApplicationError } from '$lib/common/error';
 
 export const actions = {
 	async generateImage(event) {
 		const auth = event.locals.auth;
 		invariant(auth, 'Auth is required');
 
-		const imageResult = await generateRecipeImage({
-			userId: auth.user.id,
-			input: {
-				action: 'find-and-update',
-				recipeId: event.params.recipe_id
+		try {
+			const imageResult = await generateRecipeImage({
+				userId: auth.user.id,
+				input: {
+					action: 'find-and-update',
+					recipeId: event.params.recipe_id
+				}
+			});
+
+			if (!imageResult) {
+				fail(400, { message: 'Failed to generate image' });
 			}
-		});
 
-		if (!imageResult) {
-			fail(400, { message: 'Failed to generate image' });
+			return {
+				url: imageResult?.imageUrl
+			};
+		} catch (err) {
+			console.error(err);
+
+			if (err instanceof ApplicationError) {
+				fail(400, { message: err.message });
+			}
+
+			throw err;
 		}
-
-		return {
-			url: imageResult?.imageUrl
-		};
 	},
 	async deleteRecipe(event) {
 		const auth = event.locals.auth;
