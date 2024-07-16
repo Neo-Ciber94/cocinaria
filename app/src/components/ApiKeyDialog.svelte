@@ -5,27 +5,28 @@
 	import { fade } from 'svelte/transition';
 	import KeyIcon from './icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
-	import AiProviderSelect from './AIProviderSelect.svelte';
+	import AiProviderSelect, { type AIProviderSelectItem } from './AIProviderSelect.svelte';
 	import { useApiKey } from '$lib/hooks/useApiKey.svelte';
 	import { type AIProvider } from '$lib/common/types';
 
 	const apiKeyDialogOpen = useApiKeyDialog();
 	const apiKey = useApiKey();
 
-	let key = $state<string | undefined>(apiKey.value?.key);
-	let provider = $state<AIProvider | undefined>(apiKey.value?.provider);
+	let key = $state(apiKey.value?.key);
+	let provider = $state<AIProviderSelectItem>();
 
 	function handleSave() {
-		if (key && provider) {
-			apiKey.value = { key, provider };
+		if (key && provider?.value) {
+			apiKey.value = { key, provider: provider?.value };
 			apiKeyDialogOpen.isOpen = false;
 		}
 	}
 
 	function handleRemove() {
-		apiKey.value = null;
+		// @ts-expect-error Only setting it to null is what resets the select
+		provider = null;
 		key = '';
-		provider = undefined;
+		apiKey.value = null;
 	}
 </script>
 

@@ -1,3 +1,13 @@
+<script lang="ts" context="module">
+	export type AIProviderSelectItem = { value: AIProvider; label: string; icon: any };
+
+	const AI_PROVIDER_ITEMS = [
+		{ value: 'openai', label: 'OpenAI', icon: OpenaiIcon },
+		{ value: 'claude', label: 'Claude', icon: ClaudeaiIcon },
+		{ value: 'gemini', label: 'Gemini', icon: GeminiAi }
+	] satisfies AIProviderSelectItem[];
+</script>
+
 <script lang="ts">
 	import { Select } from 'bits-ui';
 	import { flyAndScale } from '$lib/utils/transitions';
@@ -10,7 +20,7 @@
 	import type { AIProvider } from '$lib/common/types';
 
 	type Props = {
-		selected?: AIProvider | null;
+		selected: AIProviderSelectItem | undefined;
 		class?: string;
 		disabled?: boolean;
 	};
@@ -18,29 +28,10 @@
 	let { selected = $bindable(), disabled, ...rest }: Props = $props();
 	const mounted = useIsMounted();
 
-	const aiProviderItems = [
-		{ value: 'openai', label: 'OpenAI', icon: OpenaiIcon },
-		{ value: 'claude', label: 'Claude', icon: ClaudeaiIcon },
-		{ value: 'gemini', label: 'Gemini', icon: GeminiAi }
-	] satisfies { value: AIProvider; label: string; icon: any }[];
-
-	let selectedProvider = $derived(aiProviderItems.find((e) => e.value === selected));
-
-	$effect(() => {
-		console.log(selected);
-	});
+	const selectedProvider = $derived(AI_PROVIDER_ITEMS.find((e) => e.value === selected?.value));
 </script>
 
-<Select.Root
-	items={aiProviderItems}
-	selected={selectedProvider}
-	{disabled}
-	onSelectedChange={(item) => {
-		const recipeItem = aiProviderItems.find((e) => e.value === item?.value);
-		selected = recipeItem?.value;
-		console.log({ item });
-	}}
->
+<Select.Root items={AI_PROVIDER_ITEMS} bind:selected {disabled}>
 	<Select.Trigger
 		{disabled}
 		class={cn(
@@ -54,17 +45,17 @@
 			<svelte:component this={selectedProvider.icon} class="mr-[9px] size-6" />
 		{/if}
 
-		<Select.Value class="text-sm" placeholder="Provider" />
+		<Select.Value class="text-sm data-[placeholder]:text-neutral-400" placeholder="Provider" />
 
-		<Icon icon="heroicons:chevron-up-down-16-solid" class="ml-auto size-6 text-neutral-300" />
+		<Icon icon="heroicons:chevron-up-down-16-solid" class="ml-auto size-6" />
 	</Select.Trigger>
 	<Select.Content
 		class="w-full rounded-xl border border-gray-200 bg-white px-1 py-3 shadow-md outline-none space-y-1"
 		transition={flyAndScale}
 		sideOffset={8}
 	>
-		{#each aiProviderItems as aiProvider}
-			{@const isSelected = selectedProvider?.value === aiProvider.value}
+		{#each AI_PROVIDER_ITEMS as aiProvider}
+			{@const isSelected = selected?.value === aiProvider.value}
 
 			<Select.Item
 				class={cn(
