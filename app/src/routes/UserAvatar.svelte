@@ -7,8 +7,11 @@
 	import type { Account } from '$lib/db/types';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
 	import DiamongIcon from '$components/icons/diamongIcon.svelte';
+	import KeyIcon from '$components/icons/keyIcon.svelte';
+	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 
 	let { user, account }: { user: User; account: Account } = $props();
+	const apiKeyDialogOpen = useApiKeyDialog();
 </script>
 
 <DropdownMenu.Root>
@@ -40,6 +43,21 @@
 				<Icon icon="solar:user-circle-linear" class="size-5 text-gray-500" />
 				<span>{user.username}</span>
 			</a>
+		</DropdownMenu.Item>
+
+		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+		<DropdownMenu.Item
+			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+		>
+			<button
+				class="flex items-center w-full p-2 rounded-lg flex-row gap-2"
+				onclick={() => {
+					apiKeyDialogOpen.isOpen = true;
+				}}
+			>
+				<KeyIcon class="size-5 text-gray-500" />
+				<span>API Key</span>
+			</button>
 		</DropdownMenu.Item>
 
 		{#if account.isPremium}
@@ -101,6 +119,7 @@
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</DropdownMenu.Item>
+
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"

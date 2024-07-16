@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CopyLabel from '$components/copyLabel.svelte';
+	import CopyLabel from '$components/CopyLabel.svelte';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
 	import DiamongIcon from '$components/icons/diamongIcon.svelte';
 	import DiscordIcon from '$components/icons/discordIcon.svelte';

@@ -8,8 +8,11 @@
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { setSeoBaseTitle } from '$components/seo/context';
+	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
+	import ApiKeyDialog from '$components/ApiKeyDialog.svelte';
 
 	export let data: LayoutData;
+	const apiKeyDialogOpen = useApiKeyDialog();
 	const icon = data.icon;
 
 	setAuth(data.auth);
@@ -61,3 +64,4 @@
 ></div> -->
 
 <Toaster />
+<ApiKeyDialog />
