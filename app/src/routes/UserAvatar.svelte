@@ -3,16 +3,19 @@
 	import Icon from '@iconify/svelte';
 	import { Avatar, DropdownMenu } from 'bits-ui';
 	import type { User } from 'lucia';
+	import { Tooltip } from 'bits-ui';
+	import type { Account } from '$lib/db/types';
+	import CoinIcon from '$components/icons/coinIcon.svelte';
 
-	export let user: User;
+	let { user, account }: { user: User; account: Account } = $props();
 </script>
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="focus-visible hover:opacity-90 inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background-alt text-sm font-medium text-foreground shadow-btn hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
+		class="focus-visible hover:opacity-90 inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background-alt text-sm font-medium text-foreground shadow-btn hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
 	>
 		<Avatar.Root
-			class="rounded-full bg-muted text-[17px] font-medium uppercase text-muted-foreground border border-gray-400 w-full h-full"
+			class="rounded-full bg-gray-200 text-[17px] font-medium uppercase text-gray-200 border border-gray-400 w-full h-full"
 		>
 			<div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
 				<Avatar.Image src={user.picture} alt={user.username} />
@@ -25,29 +28,69 @@
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content
-		class="w-full max-w-[229px] rounded-xl border border-gray-200 px-1 py-1.5 shadow-sm bg-white"
+		class="w-full max-w-[229px] space-y-1 rounded-xl border border-gray-200 px-1 py-1.5 shadow-sm bg-white"
 		sideOffset={8}
 		transition={flyAndScale}
 	>
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
+			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
-			<a
-				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg flex-row gap-2"
-				href="/user/@me"
-			>
+			<a class="flex items-center w-full p-2 rounded-lg flex-row gap-2" href="/user/@me">
 				<Icon icon="solar:user-circle-linear" class="size-5 text-gray-500" />
 				<span>{user.username}</span>
 			</a>
 		</DropdownMenu.Item>
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-button py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-muted"
+			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
 		>
-			<a
-				class="flex items-center hover:bg-neutral-200/60 w-full p-2 rounded-lg flex-row gap-2"
-				href="/api/auth/logout"
-			>
+			{@const hasCredits = account.credits > 0}
+			<Tooltip.Root openDelay={0}>
+				<Tooltip.Trigger>
+					<button
+						class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
+						onclick={() => {
+							if (!hasCredits) {
+								alert('Sorry, there is no way to become premium, use an API key instead');
+							}
+						}}
+					>
+						<CoinIcon
+							class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
+						/>
+						<p class="flex flex-row gap-0.5 items-center">
+							<span>Credits:</span>
+							<span>{account.credits}</span>
+						</p>
+					</button>
+				</Tooltip.Trigger>
+				<Tooltip.Content
+					transition={flyAndScale}
+					transitionConfig={{ y: 8, duration: 150 }}
+					sideOffset={8}
+				>
+					<div class="bg-white">
+						<Tooltip.Arrow class="rounded-[2px] border-l border-t border-dark-10" />
+					</div>
+					<div
+						class="flex items-center justify-center rounded-input border border-dark-10 bg-white p-3 text-sm font-medium shadow-popover outline-none"
+					>
+						{#if hasCredits}
+							<span>You can generate some more recipes</span>
+						{:else}
+							<button>
+								You need more credits or become <strong class="text-amber-600">premium</strong>
+							</button>
+						{/if}
+					</div>
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</DropdownMenu.Item>
+		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+		<DropdownMenu.Item
+			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+		>
+			<a class="flex items-center w-full p-2 rounded-lg flex-row gap-2" href="/api/auth/logout">
 				<Icon icon="solar:logout-2-outline" class="size-5 text-gray-500" />
 				<span>Logout</span>
 			</a>

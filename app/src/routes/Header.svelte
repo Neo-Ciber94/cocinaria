@@ -71,7 +71,7 @@
 
 	<div class="flex flex-row gap-2 items-center">
 		{#if user}
-			<UserAvatar {user} />
+			<UserAvatar {user} account={auth.account} />
 		{:else if !$isLoginPage}
 			<a
 				href="/login"
