@@ -39,7 +39,7 @@
 					await invalidateAll();
 
 					toast.success('Recipe deleted successfully');
-					setTimeout(() => goto('/my_recipes'), 500);
+					setTimeout(() => goto('/my-recipes'), 500);
 					break;
 				}
 				case 'error':

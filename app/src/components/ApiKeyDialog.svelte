@@ -6,8 +6,7 @@
 	import KeyIcon from './icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import AiProviderSelect, { type AIProviderSelectItem } from './AIProviderSelect.svelte';
-	import { useApiKey } from '$lib/hooks/useApiKey.svelte';
-	import { type AIProvider } from '$lib/common/types';
+	import { useApiKey } from '$lib/hooks/useApiKey.svelte';;
 
 	const apiKeyDialogOpen = useApiKeyDialog();
 	const apiKey = useApiKey();
@@ -85,6 +84,7 @@
 						Remove
 					</button>
 					<button
+						type="button"
 						onclick={handleSave}
 						class="inline-flex h-12 items-center justify-center rounded-lg bg-black/80 min-w-[100px] px-4 text-[15px] font-semibold text-white shadow hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2 focus-visible:ring-offset-white"
 					>
