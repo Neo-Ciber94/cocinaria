@@ -6,8 +6,9 @@
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import { flyAndScale } from '$lib/utils/transitions';
 	import type { PageServerData } from './$types';
-	import { Avatar } from 'bits-ui';
+	import { Avatar, Tooltip } from 'bits-ui';
 
 	export let data: PageServerData;
 
@@ -105,13 +106,38 @@
 				<span>Joined {formatter.format(data.user.createdAt)}</span>
 			</div>
 
-			<div class="text-xs text-neutral-700 font-medium flex flex-row items-center gap-1">
-				<CoinIcon class="size-4 text-neutral-500" />
-				<span> Credits: </span>
-				<span>
-					{data.account.credits}
-				</span>
-			</div>
+			<Tooltip.Root openDelay={1000}>
+				<Tooltip.Trigger>
+					<div class="text-xs text-neutral-700 font-medium flex flex-row items-center gap-1">
+						<CoinIcon class="size-4 text-neutral-500" />
+						<span> Credits: </span>
+						<span>
+							{data.account.credits}
+						</span>
+					</div>
+				</Tooltip.Trigger>
+				<Tooltip.Content
+					transition={flyAndScale}
+					transitionConfig={{ y: 8, duration: 150 }}
+					sideOffset={8}
+					side="bottom"
+				>
+					<div class="bg-white">
+						<Tooltip.Arrow class="rounded-[2px] border-l border-t border-dark-10" />
+					</div>
+					<div
+						class="flex items-center justify-center rounded-input border border-dark-10 bg-white p-3 text-sm font-medium shadow-popover outline-none"
+					>
+						{#if data.account.credits > 0}
+							<span>You can generate recipes</span>
+						{:else}
+							<button>
+								You need more credits or become <strong class="text-amber-600">premium</strong>
+							</button>
+						{/if}
+					</div>
+				</Tooltip.Content>
+			</Tooltip.Root>
 		</div>
 	</div>
 </section>

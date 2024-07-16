@@ -3,7 +3,6 @@
 	import Icon from '@iconify/svelte';
 	import { Avatar, DropdownMenu } from 'bits-ui';
 	import type { User } from 'lucia';
-	import { Tooltip } from 'bits-ui';
 	import type { Account } from '$lib/db/types';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
 	import DiamongIcon from '$components/icons/diamongIcon.svelte';
@@ -76,48 +75,22 @@
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
 		>
-			{@const hasCredits = account.credits > 0}
-
-			<Tooltip.Root openDelay={0}>
-				<Tooltip.Trigger>
-					<button
-						class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
-						onclick={() => {
-							if (!hasCredits) {
-								alert('Sorry, there is no way to become premium, use an API key instead');
-							}
-						}}
-					>
-						<CoinIcon
-							class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
-						/>
-						<p class="flex flex-row gap-0.5 items-center">
-							<span>Credits:</span>
-							<span>{account.credits}</span>
-						</p>
-					</button>
-				</Tooltip.Trigger>
-				<Tooltip.Content
-					transition={flyAndScale}
-					transitionConfig={{ y: 8, duration: 150 }}
-					sideOffset={8}
-				>
-					<div class="bg-white">
-						<Tooltip.Arrow class="rounded-[2px] border-l border-t border-dark-10" />
-					</div>
-					<div
-						class="flex items-center justify-center rounded-input border border-dark-10 bg-white p-3 text-sm font-medium shadow-popover outline-none"
-					>
-						{#if hasCredits}
-							<span>You can generate some more recipes</span>
-						{:else}
-							<button>
-								You need more credits or become <strong class="text-amber-600">premium</strong>
-							</button>
-						{/if}
-					</div>
-				</Tooltip.Content>
-			</Tooltip.Root>
+			<button
+				class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
+				onclick={() => {
+					if (account.credits <= 0) {
+						alert('Sorry, there is no way to become premium, use an API key instead');
+					}
+				}}
+			>
+				<CoinIcon
+					class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
+				/>
+				<p class="flex flex-row gap-0.5 items-center">
+					<span>Credits:</span>
+					<span>{account.credits}</span>
+				</p>
+			</button>
 		</DropdownMenu.Item>
 
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
