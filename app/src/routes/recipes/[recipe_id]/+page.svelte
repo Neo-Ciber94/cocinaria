@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { getNotFoundImageUrl } from '$lib/common/images';
 	import { useAuth } from '$lib/hooks/useAuth';
-	import { Button } from 'bits-ui';
 	import type { PageData } from './$types';
-	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -22,6 +21,7 @@
 	}
 
 	const { recipe } = data;
+	let isDeleted = $state(false);
 </script>
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | ${recipe.name}`} />
@@ -29,12 +29,7 @@
 <div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
 	{#if isCurrentUserRecipe}
 		<div class="w-full flex flex-row justify-end">
-			<Button.Root
-				class="px-10 py-2 rounded-md shadow-sm bg-red-500 hover:bg-red-600  text-white flex flex-row gap-2 items-center justify-center mb-2"
-			>
-				<TrashCanIcon class="size-6" />
-				<span class="leading-none">Delete</span>
-			</Button.Root>
+			<DeleteRecipeButton disabled={isDeleted} onDeleted={() => (isDeleted = true)} />
 		</div>
 	{/if}
 
@@ -64,7 +59,7 @@
 						/>
 						{#if isCurrentUserRecipe}
 							<div class="flex flex-row gap-2 w-full">
-								<RegenerateRecipeImageButton />
+								<RegenerateRecipeImageButton disabled={isDeleted} class="w-full" />
 							</div>
 						{/if}
 					</div>
