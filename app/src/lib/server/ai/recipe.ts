@@ -54,10 +54,11 @@ export async function generateRecipe({
 	abortSignal,
 	aiProviderKey
 }: GenerateRecipeArgs) {
-	const model = await getAIProviderForUser({
+	const { model, provider } = await getAIProviderForUser({
 		userId,
 		aiProviderKey,
-		error: "Your account doesn't have enough credits to generate a new recipe"
+		error:
+			"Your account doesn't have enough credits to generate a new recipe, use an API Key instead"
 	});
 
 	const ingredientsList = Array.from(ingredients);
@@ -121,7 +122,7 @@ export async function generateRecipe({
 				});
 
 				// We only use OpenAI to generate images
-				if (aiProviderKey?.aiProvider === 'openai') {
+				if (provider === 'openai') {
 					// We do not generate the image in a transaction, both can fail independently
 					await generateRecipeImage({
 						userId,
@@ -294,14 +295,20 @@ type GetAIProviderForUserArgs = {
 
 async function getAIProviderForUser({ userId, aiProviderKey, error }: GetAIProviderForUserArgs) {
 	if (aiProviderKey) {
-		return getAIProvider(aiProviderKey.aiProvider, aiProviderKey.apiKey);
+		return {
+			model: getAIProvider(aiProviderKey.aiProvider, aiProviderKey.apiKey),
+			provider: aiProviderKey.aiProvider
+		};
 	}
 
 	if (!(await isUserAllowedToUseAI(userId))) {
 		throw new ApplicationError(error);
 	}
 
-	return getAIProvider('openai', env.OPENAI_API_KEY);
+	return {
+		model: getAIProvider('openai', env.OPENAI_API_KEY),
+		provider: 'openai'
+	};
 }
 
 function getAIProvider(aiProvider: AIProvider, apiKey: string) {

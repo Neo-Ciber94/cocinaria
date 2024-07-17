@@ -65,5 +65,5 @@
 	class="fixed select-none pointer-events-none -z-10 top-0 left-0 pattern-cross pattern-orange-500 pattern-bg-white pattern-size-6 pattern-opacity-20 w-full h-full"
 ></div> -->
 
-<Toaster />
+<Toaster toastOptions={{ duration: 6000 }} />
 <ApiKeyDialog />
