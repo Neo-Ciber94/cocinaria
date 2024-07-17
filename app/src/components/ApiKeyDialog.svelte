@@ -1,31 +1,66 @@
 <script lang="ts">
 	import { flyAndScale } from '$lib/utils/transitions';
 	import { Dialog, Separator, Label } from 'bits-ui';
-
 	import { fade } from 'svelte/transition';
 	import KeyIcon from './icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import AiProviderSelect, { type AIProviderSelectItem } from './AIProviderSelect.svelte';
-	import { useApiKey } from '$lib/hooks/useApiKey.svelte';;
+	import toast from 'svelte-french-toast';
+	import { getResponseError } from '$lib/client/getResponseError';
+	import type { AIProviderKey } from '../routes/api/ai-provider/schema';
+	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
+	import { cn } from '$lib/index';
 
 	const apiKeyDialogOpen = useApiKeyDialog();
-	const apiKey = useApiKey();
+	const aiProvider = useAIProvider();
+	const hasAIProvider = $derived(aiProvider.value != null);
 
-	let key = $state(apiKey.value?.key);
-	let provider = $state<AIProviderSelectItem>();
+	let key = $state('');
+	let aiProviderItem = $state<AIProviderSelectItem>();
 
-	function handleSave() {
-		if (key && provider?.value) {
-			apiKey.value = { key, provider: provider?.value };
-			apiKeyDialogOpen.isOpen = false;
+	async function handleSave() {
+		if (key == null) {
+			toast.error('Missing key');
+			return;
 		}
+
+		if (aiProviderItem?.value == null) {
+			toast.error('Missing api provider');
+			return;
+		}
+
+		const res = await fetch('/api/ai-provider', {
+			method: 'POST',
+			body: JSON.stringify({
+				apiKey: $state.snapshot(key),
+				aiProvider: $state.snapshot(aiProviderItem)?.value
+			} as AIProviderKey)
+		});
+
+		if (!res.ok) {
+			const message = await getResponseError(res, 'Failed to set API Key');
+			toast.error(message);
+			return;
+		}
+
+		aiProvider.value = aiProviderItem.value;
 	}
 
-	function handleRemove() {
-		// @ts-expect-error Only setting it to null is what resets the select
-		provider = null;
+	async function handleRemove() {
+		const res = await fetch('/api/ai-provider', {
+			method: 'DELETE'
+		});
+
+		// @ts-expect-error We need to set null to reset it
+		aiProviderItem = null;
 		key = '';
-		apiKey.value = null;
+
+		if (!res.ok) {
+			const message = await getResponseError(res, 'Failed to remove API Key');
+			toast.error(message);
+		}
+
+		aiProvider.value = null;
 	}
 </script>
 
@@ -60,11 +95,15 @@
 					<div class="flex flex-row gap-1 items-center w-full">
 						<input
 							id="apiKey"
-							class="inline-flex h-10 w-full items-center rounded-lg border border-neutral-200 bg-white px-4 text-sm hover:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-white"
+							class={cn(
+								'inline-flex h-10 w-full items-center rounded-lg border border-neutral-200 bg-white px-4 text-sm hover:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 focus:ring-offset-white',
+								'disabled:cursor-not-allowed disabled:bg-neutral-200'
+							)}
 							placeholder="API Key"
 							type="password"
 							name="api_key"
 							autocomplete="off"
+							disabled={hasAIProvider}
 							bind:value={key}
 							required
 						/>
@@ -72,7 +111,7 @@
 						<KeyIcon
 							class="absolute right-4 top-0 bottom-0 translate-y-1/2 size-[22px] text-black/30"
 						/>
-						<AiProviderSelect bind:selected={provider} />
+						<AiProviderSelect bind:selected={aiProviderItem} disabled={hasAIProvider} />
 					</div>
 				</div>
 				<div class="flex w-full gap-2 justify-end">

@@ -13,10 +13,10 @@ import { generateImage } from './images';
 import { isUserAllowedToUseAI } from '../users';
 import { ApplicationError } from '$lib/common/error';
 import { invariant } from '$lib/index';
-
-const openai = createOpenAI({
-	apiKey: env.OPENAI_API_KEY ?? ''
-});
+import type { AIProvider } from '$lib/common/types';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import type { AIProviderKey } from '../../../routes/api/ai-provider/schema';
 
 function recipeJsonSchema(recipeId: string) {
 	return z.object({
@@ -44,17 +44,21 @@ type GenerateRecipeInput = z.infer<typeof generateRecipeInputSchema>;
 type GenerateRecipeArgs = GenerateRecipeInput & {
 	userId: string;
 	abortSignal?: AbortSignal;
+	aiProviderKey: AIProviderKey | null;
 };
 
 export async function generateRecipe({
 	userId,
 	recipeType,
 	ingredients,
-	abortSignal
+	abortSignal,
+	aiProviderKey
 }: GenerateRecipeArgs) {
-	if (!(await isUserAllowedToUseAI(userId))) {
-		throw new ApplicationError("Your account doesn't have enough credits to generate a new recipe");
-	}
+	const model = await getAIProviderForUser({
+		userId,
+		aiProviderKey,
+		error: "Your account doesn't have enough credits to generate a new recipe"
+	});
 
 	const ingredientsList = Array.from(ingredients);
 
@@ -73,11 +77,11 @@ export async function generateRecipe({
 	const recipeId = crypto.randomUUID();
 	const schema = recipeJsonSchema(recipeId);
 	const stream = await streamObject({
-		model: openai('gpt-4-turbo'),
-		mode: 'json',
+		model,
 		schema,
 		prompt,
 		abortSignal,
+		mode: 'json',
 		async onFinish({ object, error, warnings }) {
 			if (error) {
 				console.log(error);
@@ -116,11 +120,16 @@ export async function generateRecipe({
 					return resultingRecipe;
 				});
 
-				// We do not generate the image in a transaction, both can fail independently
-				await generateRecipeImage({
-					userId,
-					input: { action: 'update', recipe }
-				}).catch(console.error);
+				// We only use OpenAI to generate images
+				if (aiProviderKey?.aiProvider === 'openai') {
+					// We do not generate the image in a transaction, both can fail independently
+					await generateRecipeImage({
+						userId,
+						consumeCredits: false,
+						aiProviderKey,
+						input: { action: 'update', recipe }
+					}).catch(console.error);
+				}
 			} catch (err) {
 				console.error('Failed to insert generated recipe into the database', err);
 				throw err;
@@ -133,6 +142,8 @@ export async function generateRecipe({
 
 type GenerateRecipeImageArgs = {
 	userId: string;
+	consumeCredits?: boolean;
+	aiProviderKey: AIProviderKey | null;
 	input:
 		| {
 				action: 'find-and-update';
@@ -144,11 +155,33 @@ type GenerateRecipeImageArgs = {
 		  };
 };
 
-export async function generateRecipeImage({ userId, input }: GenerateRecipeImageArgs) {
-	if (!(await isUserAllowedToUseAI(userId))) {
-		throw new ApplicationError("Your account doesn't have enough credits to generate a recipe image");
+export async function generateRecipeImage({
+	userId,
+	input,
+	aiProviderKey,
+	consumeCredits = true
+}: GenerateRecipeImageArgs) {
+	async function getProviderAPIKey() {
+		if (aiProviderKey) {
+			if (aiProviderKey.aiProvider !== 'openai') {
+				throw new ApplicationError('Only OpenAI provider supports generating images');
+			}
+
+			return aiProviderKey.apiKey;
+		}
+
+		const isAllowed = await isUserAllowedToUseAI(userId);
+
+		if (!isAllowed) {
+			throw new ApplicationError(
+				"Your account doesn't have enough credits to generate a recipe image"
+			);
+		}
+
+		return env.OPENAI_API_KEY;
 	}
 
+	const apiKey = await getProviderAPIKey();
 	const recipe = await (async () => {
 		switch (input.action) {
 			case 'update': {
@@ -186,7 +219,8 @@ export async function generateRecipeImage({ userId, input }: GenerateRecipeImage
 	const prevImageUrl = recipe.imageUrl;
 	const resultImage = await generateImage({
 		userId,
-		prompt
+		prompt,
+		apiKey
 	});
 
 	const result = await db.transaction(async (tx) => {
@@ -197,7 +231,10 @@ export async function generateRecipeImage({ userId, input }: GenerateRecipeImage
 			.returning()
 			.then((ret) => ret[0]);
 
-		await consumeCreditFromUserAccount(userId, tx);
+		if (consumeCredits === true) {
+			await consumeCreditFromUserAccount(userId, tx);
+		}
+
 		return updatedRecipe;
 	});
 
@@ -247,4 +284,49 @@ function validIngredients(ingredientList: string[]) {
 	return ingredientList.every((ingredientName) => {
 		return INGREDIENTS.some((e) => e.value === ingredientName);
 	});
+}
+
+type GetAIProviderForUserArgs = {
+	userId: string;
+	aiProviderKey: AIProviderKey | null;
+	error: string;
+};
+
+async function getAIProviderForUser({ userId, aiProviderKey, error }: GetAIProviderForUserArgs) {
+	if (aiProviderKey) {
+		return getAIProvider(aiProviderKey.aiProvider, aiProviderKey.apiKey);
+	}
+
+	if (!(await isUserAllowedToUseAI(userId))) {
+		throw new ApplicationError(error);
+	}
+
+	return getAIProvider('openai', env.OPENAI_API_KEY);
+}
+
+function getAIProvider(aiProvider: AIProvider, apiKey: string) {
+	const provider = (() => {
+		switch (aiProvider) {
+			case 'openai': {
+				const openAI = createOpenAI({ apiKey });
+				return openAI('gpt-4-turbo');
+			}
+			case 'claude': {
+				const anthropic = createAnthropic({ apiKey });
+				return anthropic('claude-3-opus-20240229');
+			}
+			case 'gemini': {
+				const googleAI = createGoogleGenerativeAI({
+					apiKey
+				});
+
+				return googleAI('models/gemini-pro');
+			}
+			default: {
+				throw new Error(`Unknown AI provider ${aiProvider}`);
+			}
+		}
+	})();
+
+	return provider;
 }

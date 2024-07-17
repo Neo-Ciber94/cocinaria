@@ -1,15 +1,18 @@
-import { env } from '$env/dynamic/private';
 import OpenAI from 'openai';
 import { uploadFile } from '../blob';
+import { invariant } from '$lib/index';
 
 type GenerateImageArgs = {
 	prompt: string;
 	userId: string;
+	apiKey: string;
 };
 
-const openAI = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+export async function generateImage({ prompt, userId, apiKey }: GenerateImageArgs) {
+	invariant(apiKey, 'API key is required');
 
-export async function generateImage({ prompt, userId }: GenerateImageArgs) {
+	const openAI = new OpenAI({ apiKey });
+
 	console.log('Generating image: ', prompt);
 	const response = await openAI.images.generate({
 		model: 'dall-e-3',

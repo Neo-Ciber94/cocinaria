@@ -18,6 +18,7 @@
 	import { goto } from '$app/navigation';
 	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import { getResponseError } from '$lib/client/getResponseError';
 
 	const recipeItems = useRecipeItems();
 	const selectedIngredients = $derived.by(() => {
@@ -61,24 +62,14 @@
 			});
 
 			if (!res.ok || res.body == null) {
-				let error: string = 'Failed to generate recipe';
-
-				if (res.headers.get('Content-Type') == 'application/json') {
-					const json = await res.json();
-					if (typeof json?.message === 'string') {
-						error = json.message;
-					}
-				}
-
-				throw new Error(error);
+				const message = await getResponseError(res, 'Failed to generate recipe');
+				toast.error(message);
+				return;
 			}
 
 			// We just consume the stream until it's done
-
 			const recipeContents = await res.text();
 			const recipeJson = JSON.parse(recipeContents) as GeneratedRecipeType;
-
-			// toast.success('Recipe was generated', { position: 'bottom-center' });
 
 			if (recipeJson) {
 				recipeItems.clear();

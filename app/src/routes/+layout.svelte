@@ -9,9 +9,13 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { setSeoBaseTitle } from '$components/seo/context';
 	import ApiKeyDialog from '$components/ApiKeyDialog.svelte';
+	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
 
 	export let data: LayoutData;
 	const icon = data.icon;
+
+	const aiProvider = useAIProvider();
+	aiProvider.value = data.aiProvider;
 
 	setAuth(data.auth);
 	setFoodIcon(data.icon);

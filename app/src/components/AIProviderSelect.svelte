@@ -1,10 +1,12 @@
 <script lang="ts" context="module">
 	export type AIProviderSelectItem = { value: AIProvider; label: string; icon: any };
 
+	// We only use openAI because we generate the images also using OpenAI, 
+	// the recipes text could be generated with any provider
 	const AI_PROVIDER_ITEMS = [
-		{ value: 'openai', label: 'OpenAI', icon: OpenaiIcon },
-		{ value: 'claude', label: 'Claude', icon: ClaudeaiIcon },
-		{ value: 'gemini', label: 'Gemini', icon: GeminiAi }
+		{ value: 'openai', label: 'OpenAI', icon: OpenaiIcon }
+		// { value: 'claude', label: 'Claude', icon: ClaudeaiIcon },
+		// { value: 'gemini', label: 'Gemini', icon: GeminiAi }
 	] satisfies AIProviderSelectItem[];
 </script>
 
@@ -14,10 +16,10 @@
 	import Icon from '@iconify/svelte';
 	import { cn } from '$lib';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
-	import OpenaiIcon from './icons/openaiIcon.svelte';
-	import GeminiAi from './icons/geminiAiIcon.svelte';
-	import ClaudeaiIcon from './icons/claudeaiIcon.svelte';
 	import type { AIProvider } from '$lib/common/types';
+	import OpenaiIcon from './icons/openaiIcon.svelte';
+	// import GeminiAi from './icons/geminiAiIcon.svelte';
+	// import ClaudeaiIcon from './icons/claudeaiIcon.svelte';
 
 	type Props = {
 		selected: AIProviderSelectItem | undefined;
