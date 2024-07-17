@@ -189,7 +189,7 @@ export async function generateRecipeImage({
 			);
 		}
 
-		return env.OPENAI_API_KEY;
+		return env.OPENAI_API_KEY!;
 	}
 
 	const apiKey = await getProviderAPIKey();
@@ -325,7 +325,7 @@ async function getAIProviderForUser({ userId, aiConfig, error }: GetAIProviderFo
 	}
 
 	return {
-		model: getAIProvider('openai', env.OPENAI_API_KEY),
+		model: getAIProvider('openai', env.OPENAI_API_KEY!),
 		provider: 'openai'
 	};
 }

@@ -12,10 +12,10 @@ type UploadFileArgs = {
 };
 
 const s3Client = new S3Client({
-	endpoint: env.S3_API_ENDPOINT,
+	endpoint: env.S3_API_ENDPOINT!,
 	credentials: {
-		accessKeyId: env.S3_ACCESS_KEY,
-		secretAccessKey: env.S3_ACCESS_SECRET_KEY
+		accessKeyId: env.S3_ACCESS_KEY!,
+		secretAccessKey: env.S3_ACCESS_SECRET_KEY!
 	}
 });
 
@@ -28,7 +28,7 @@ export async function uploadFile({ data, metadata }: UploadFileArgs): Promise<Up
 	const buffer = Buffer.from(await data.arrayBuffer());
 	const result = await s3Client.send(
 		new PutObjectCommand({
-			Bucket: env.S3_BUCKET_NAME,
+			Bucket: env.S3_BUCKET_NAME!,
 			Key: key,
 			Body: buffer,
 			ContentType: data.type,
@@ -47,7 +47,7 @@ export async function uploadFile({ data, metadata }: UploadFileArgs): Promise<Up
 
 export async function deleteFile(url: string) {
 	try {
-		let key = url.replaceAll(env.ASSETS_URL, '');
+		let key = url.replaceAll(env.ASSETS_URL!, '');
 		if (key.startsWith('/')) {
 			key = key.slice(1);
 		}
@@ -56,7 +56,7 @@ export async function deleteFile(url: string) {
 
 		await s3Client.send(
 			new DeleteObjectCommand({
-				Bucket: env.S3_BUCKET_NAME,
+				Bucket: env.S3_BUCKET_NAME!,
 				Key: key
 			})
 		);
