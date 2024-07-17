@@ -21,10 +21,10 @@ async function createDatabase() {
 		const db = drizzle(client, { schema });
 		return { client, db };
 	} else {
-		const { neon } = await import('@neondatabase/serverless');
-		const { drizzle } = await import('drizzle-orm/neon-http');
+		const { createPool } = await import('@vercel/postgres');
+		const { drizzle } = await import('drizzle-orm/vercel-postgres');
 
-		const client = neon(process.env.DATABASE_URL);
+		const client = createPool({ connectionString: process.env.DATABASE_URL });
 		const db = drizzle(client, { schema });
 		return { client, db };
 	}
