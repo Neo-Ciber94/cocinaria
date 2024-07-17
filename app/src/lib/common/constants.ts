@@ -1,5 +1,5 @@
 // Cookies
-export const COOKIE_AI_PROVIDER_KEY = "cocinaria-api-key";
+export const COOKIE_AI_PROVIDER_KEY = "cocinaria-ai-provider";
 
 // Misc
 export const MIN_RECIPE_INGREDIENTS = 2;

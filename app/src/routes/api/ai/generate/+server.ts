@@ -11,7 +11,7 @@ export const POST: RequestHandler = async (event) => {
 		const result = generateRecipeInputSchema.safeParse(body);
 
 		if (!result.success) {
-			console.log(
+			console.error(
 				'Failed to generate recipe, input was invalid',
 				result.error.issues.map((e) => `${e.path}: ${e.message}`)
 			);

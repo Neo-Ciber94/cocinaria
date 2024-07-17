@@ -13,8 +13,18 @@ export function checkAuthenticated(event: RequestEvent) {
 export function getAIProviderConfig(cookies: Cookies) {
 	const cookieValue = cookies.get(COOKIE_AI_PROVIDER_KEY);
 
+	if (!cookieValue) {
+		return null;
+	}
+
 	try {
-		const result = aiProviderConfig.safeParse(cookieValue);
+		const json = JSON.parse(cookieValue);
+		const result = aiProviderConfig.safeParse(json);
+
+		if (result.error) {
+			console.error(result.error);
+		}
+
 		return result.success ? result.data : null;
 	} catch {
 		return null;

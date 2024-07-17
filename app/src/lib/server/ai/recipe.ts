@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createOpenAI } from '@ai-sdk/openai';
 import { env } from '$env/dynamic/private';
-import { streamObject } from 'ai';
+import { APICallError, streamObject } from 'ai';
 import { db } from '$lib/db';
 import { accounts, recipes } from '$lib/db/schema';
 import { recipeTypeSchema } from '$lib/common/recipe';
@@ -17,6 +17,7 @@ import type { AIProvider } from '$lib/common/types';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import type { AIProviderConfig } from '../../../routes/api/ai-provider/schema';
+import { OpenAIError } from 'openai';
 
 function recipeJsonSchema(recipeId: string) {
 	return z.object({
@@ -77,68 +78,77 @@ export async function generateRecipe({
 	// We gonna stream the result in case the platform where the app is hosted timeout if the object generation takes too much time
 	const recipeId = crypto.randomUUID();
 	const schema = recipeJsonSchema(recipeId);
-	const stream = await streamObject({
-		model,
-		schema,
-		prompt,
-		abortSignal,
-		mode: 'json',
-		async onFinish({ object, error, warnings }) {
-			if (error) {
-				console.log(error);
-			}
 
-			if (warnings) {
-				console.warn(warnings);
-			}
-
-			if (!object) {
-				// The object did not matched the schema, return error somehow?
-				console.error('Generated object dit not matches the schema');
-				return;
-			}
-
-			try {
-				const recipe = await db.transaction(async (tx) => {
-					const resultingRecipe = await tx
-						.insert(recipes)
-						.values({
-							userId,
-							prompt,
-							recipeType,
-							name: object.name,
-							ingredients: ingredientsList,
-							id: recipeId,
-							recipe: {
-								ingredients: object.ingredients,
-								steps: object.steps
-							}
-						})
-						.returning()
-						.then((ret) => ret[0]);
-
-					await consumeCreditFromUserAccount(userId, tx);
-					return resultingRecipe;
-				});
-
-				// We only use OpenAI to generate images
-				if (provider === 'openai') {
-					// We do not generate the image in a transaction, both can fail independently
-					await generateRecipeImage({
-						userId,
-						consumeCredits: false,
-						aiConfig: aiConfig,
-						input: { action: 'update', recipe }
-					}).catch(console.error);
+	try {
+		const stream = await streamObject({
+			model,
+			schema,
+			prompt,
+			abortSignal,
+			mode: 'json',
+			async onFinish({ object, error, warnings }) {
+				if (error) {
+					console.error(error);
 				}
-			} catch (err) {
-				console.error('Failed to insert generated recipe into the database', err);
-				throw err;
-			}
-		}
-	});
 
-	return stream;
+				if (warnings) {
+					console.warn(warnings);
+				}
+
+				if (!object) {
+					// The object did not matched the schema, return error somehow?
+					console.error('Generated object dit not matches the schema');
+					return;
+				}
+
+				try {
+					const recipe = await db.transaction(async (tx) => {
+						const resultingRecipe = await tx
+							.insert(recipes)
+							.values({
+								userId,
+								prompt,
+								recipeType,
+								name: object.name,
+								ingredients: ingredientsList,
+								id: recipeId,
+								recipe: {
+									ingredients: object.ingredients,
+									steps: object.steps
+								}
+							})
+							.returning()
+							.then((ret) => ret[0]);
+
+						await consumeCreditFromUserAccount(userId, tx);
+						return resultingRecipe;
+					});
+
+					// We only use OpenAI to generate images
+					if (provider === 'openai') {
+						// We do not generate the image in a transaction, both can fail independently
+						await generateRecipeImage({
+							userId,
+							aiConfig,
+							consumeCredits: false,
+							input: { action: 'update', recipe }
+						}).catch(console.error);
+					}
+				} catch (err) {
+					console.error('Failed to insert generated recipe into the database', err);
+					throw err;
+				}
+			}
+		});
+
+		return stream;
+	} catch (err) {
+		if (err instanceof APICallError) {
+			throw new ApplicationError(err.message);
+		}
+
+		throw err;
+	}
 }
 
 type GenerateRecipeImageArgs = {
@@ -218,38 +228,47 @@ export async function generateRecipeImage({
 	${recipeSteps}`;
 
 	const prevImageUrl = recipe.imageUrl;
-	const resultImage = await generateImage({
-		userId,
-		prompt,
-		apiKey
-	});
 
-	const result = await db.transaction(async (tx) => {
-		const updatedRecipe = await tx
-			.update(recipes)
-			.set({ imageUrl: resultImage.url })
-			.where(and(eq(recipes.id, recipe.id), eq(recipes.userId, userId)))
-			.returning()
-			.then((ret) => ret[0]);
+	try {
+		const resultImage = await generateImage({
+			userId,
+			prompt,
+			apiKey
+		});
 
-		if (consumeCredits === true) {
-			await consumeCreditFromUserAccount(userId, tx);
-		}
+		const result = await db.transaction(async (tx) => {
+			const updatedRecipe = await tx
+				.update(recipes)
+				.set({ imageUrl: resultImage.url })
+				.where(and(eq(recipes.id, recipe.id), eq(recipes.userId, userId)))
+				.returning()
+				.then((ret) => ret[0]);
 
-		return updatedRecipe;
-	});
-
-	if (prevImageUrl) {
-		try {
-			if (!(await deleteFile(prevImageUrl))) {
-				console.error('Unable to delete file ' + prevImageUrl);
+			if (consumeCredits === true) {
+				await consumeCreditFromUserAccount(userId, tx);
 			}
-		} catch (err) {
-			console.error('Failed to delete image', err);
-		}
-	}
 
-	return result;
+			return updatedRecipe;
+		});
+
+		if (prevImageUrl) {
+			try {
+				if (!(await deleteFile(prevImageUrl))) {
+					console.error('Unable to delete file ' + prevImageUrl);
+				}
+			} catch (err) {
+				console.error('Failed to delete image', err);
+			}
+		}
+
+		return result;
+	} catch (err) {
+		if (err instanceof OpenAIError) {
+			throw new ApplicationError(err.message);
+		}
+
+		throw err;
+	}
 }
 
 async function consumeCreditFromUserAccount(userId: string, database: typeof db) {
