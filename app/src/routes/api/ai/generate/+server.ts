@@ -1,14 +1,10 @@
-import { getAuth } from '$lib/auth/utils';
 import { ApplicationError } from '$lib/common/error';
 import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe';
+import { checkAuthenticated, getAIProviderKey } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async (event) => {
-	const session = await getAuth(event.cookies);
-
-	if (!session) {
-		error(401, { message: 'Unauthorized' });
-	}
+	const { session } = checkAuthenticated(event);
 
 	try {
 		const body = await event.request.json();
@@ -23,12 +19,14 @@ export const POST: RequestHandler = async (event) => {
 		}
 
 		const { ingredients, recipeType } = result.data;
+		const aiProviderKey = getAIProviderKey(event.cookies);
 
 		const generateRecipeStream = await generateRecipe({
-			userId: session.user.id,
+			userId: session.userId,
 			abortSignal: event.request.signal,
 			ingredients,
-			recipeType
+			recipeType,
+			aiProviderKey
 		});
 
 		const stream = generateRecipeStream.textStream;

@@ -4,15 +4,17 @@ import type { Actions, PageServerLoad } from './$types';
 import { generateRecipeImage } from '$lib/server/ai/recipe';
 import { deleteRecipe, getRecipeById } from '$lib/server/recipes';
 import { ApplicationError } from '$lib/common/error';
+import { checkAuthenticated, getAIProviderKey } from '$lib/server/utils';
 
 export const actions = {
 	async generateImage(event) {
-		const auth = event.locals.auth;
-		invariant(auth, 'Auth is required');
+		const { session } = checkAuthenticated(event);
+		const aiProviderKey = getAIProviderKey(event.cookies);
 
 		try {
 			const imageResult = await generateRecipeImage({
-				userId: auth.user.id,
+				aiProviderKey,
+				userId: session.userId,
 				input: {
 					action: 'find-and-update',
 					recipeId: event.params.recipe_id
