@@ -13,6 +13,7 @@ type UploadFileArgs = {
 
 const s3Client = new S3Client({
 	endpoint: env.S3_API_ENDPOINT!,
+	region: env.S3_REGION!,
 	credentials: {
 		accessKeyId: env.S3_ACCESS_KEY!,
 		secretAccessKey: env.S3_ACCESS_SECRET_KEY!
