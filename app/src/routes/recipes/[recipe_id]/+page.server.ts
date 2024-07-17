@@ -1,43 +1,9 @@
 import { invariant } from '$lib';
-import { error, fail } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { generateRecipeImage } from '$lib/server/ai/recipe';
 import { deleteRecipe, getRecipeById } from '$lib/server/recipes';
-import { ApplicationError } from '$lib/common/error';
-import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 
 export const actions = {
-	async generateImage(event) {
-		const { session } = checkAuthenticated(event);
-		const aiConfig = getAIProviderConfig(event.cookies);
-
-		try {
-			const imageResult = await generateRecipeImage({
-				userId: session.userId,
-				aiConfig,
-				input: {
-					action: 'find-and-update',
-					recipeId: event.params.recipe_id
-				}
-			});
-
-			if (!imageResult) {
-				fail(400, { message: 'Failed to generate image' });
-			}
-
-			return {
-				url: imageResult?.imageUrl
-			};
-		} catch (err) {
-			console.error(err);
-
-			if (err instanceof ApplicationError) {
-				fail(400, { message: err.message });
-			}
-
-			throw err;
-		}
-	},
 	async deleteRecipe(event) {
 		const auth = event.locals.auth;
 		invariant(auth, 'Auth is required');
