@@ -56,7 +56,7 @@
 			const ingredients = selectedIngredients.map((e) => e.value);
 			const recipeType = recipeTypeStorage.value;
 
-			const res = await fetch('/api/ai/generate', {
+			const res = await fetch('/api/ai/recipe/generate', {
 				method: 'POST',
 				body: JSON.stringify({ ingredients, recipeType })
 			});
