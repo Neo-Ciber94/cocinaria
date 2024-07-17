@@ -34,7 +34,7 @@ export const POST: RequestHandler = async (event) => {
 			aiConfig
 		});
 
-		const stream = generateRecipeStream.textStream;
+		const stream = generateRecipeStream.textStream.pipeThrough(new TextEncoderStream());
 		return new Response(stream, {
 			headers: {
 				'Content-Type': 'text/event-stream',
