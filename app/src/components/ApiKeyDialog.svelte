@@ -37,6 +37,7 @@
 		}
 
 		aiProvider.value = selectedProvider;
+		apiKeyDialogOpen.isOpen = false;
 	}
 
 	async function handleRemove() {
