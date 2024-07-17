@@ -1,9 +1,6 @@
 const SERVER_ERROR = 'Internal Error';
 
-export async function getResponseError(
-	response: Response,
-	clientError: string = 'Response Error'
-) {
+export async function getResponseError(response: Response, clientError: string = 'Response Error') {
 	const status = response.status;
 	const defaultMessage = isServerError(status) ? SERVER_ERROR : clientError || SERVER_ERROR;
 
