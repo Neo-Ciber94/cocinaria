@@ -1,0 +1,77 @@
+import { z } from 'zod';
+import { ingredienSchema, INGREDIENTS, type Ingredient } from '$lib/common/ingredients';
+import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
+import { MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
+
+const itemSchema = z.object({
+	id: z.string(),
+	ingredient: ingredienSchema.optional()
+});
+
+export function useRecipeItems() {
+	const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
+	const recipeStorage = useLocalStorage(
+		'cocinaria:generate-recipe-ingredients',
+		ingredientArraySchema,
+		{
+			initialValue: [],
+			storage: () => sessionStorage
+		}
+	);
+
+	const selectedItems = $derived.by(() => {
+		return recipeStorage.value as ReadonlyArray<z.infer<typeof itemSchema>>;
+	});
+
+	const remainingIngredients = $derived.by(() => {
+		const selectedIngredients = selectedItems
+			.map((s) => s.ingredient)
+			.filter(Boolean) as Ingredient[];
+		return INGREDIENTS.filter((ingredient) => {
+			const isAlreadyAdded = selectedIngredients.some((e) => e.value === ingredient.value);
+			return !isAlreadyAdded;
+		});
+	});
+
+	function add() {
+		if (selectedItems.length === MAX_RECIPE_INGREDIENTS) {
+			return;
+		}
+
+		recipeStorage.value.push({ ingredient: undefined, id: crypto.randomUUID() });
+	}
+
+	function remove(id: string) {
+		recipeStorage.value = selectedItems.filter((ingredient) => ingredient.id !== id);
+	}
+
+	function update(id: string, ingredient: Ingredient | undefined) {
+		recipeStorage.value = selectedItems.map((item) => {
+			if (item.id === id) {
+				return { ...item, ingredient };
+			}
+
+			return item;
+		});
+	}
+
+	function clear() {
+		recipeStorage.remove();
+	}
+
+	return {
+		get remainingIngredients() {
+			return remainingIngredients;
+		},
+		get selectedItems() {
+			return selectedItems;
+		},
+		get pending() {
+			return recipeStorage.pending;
+		},
+		add,
+		remove,
+		update,
+		clear
+	};
+}

@@ -1,14 +1,17 @@
 import type { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
 import twPatterns from 'tailwindcss-bg-patterns';
 
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
-			extend: {
-				fontFamily: {
-					franklin: ['Sofia Sans', 'sans-serif']
-				}
+			screens: {
+				xs: '475px',
+				...defaultTheme.screens
+			},
+			fontFamily: {
+				franklin: ['Sofia Sans', 'sans-serif']
 			}
 		},
 		patterns: {

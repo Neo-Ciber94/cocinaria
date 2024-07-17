@@ -7,12 +7,14 @@
 	import { cn } from '$lib';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { spring } from 'svelte/motion';
+	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 
 	$effect(() => {
 		const error = $page.url.searchParams.get('AuthError') as AuthError | undefined;
 		const isAuthError = (() => {
 			switch (error) {
 				case AuthError.InvalidState:
+				case AuthError.LoginError:
 				case AuthError.CallbackError:
 					return true;
 				default:
@@ -52,9 +54,11 @@
 	}
 </script>
 
+<SvelteSeo title={(baseTitle) => `${baseTitle} | Login`} />
+
 <div
 	class={cn(
-		'container mx-auto flex flex-row w-full min-h-[calc(100vh-var(--header-height)*2)] justify-center items-center'
+		'container mx-auto flex flex-row w-full min-h-[calc(var(--main-height)*0.9)] justify-center items-center'
 	)}
 >
 	<div>
@@ -65,7 +69,7 @@
 <button
 	onclick={handleIconClick}
 	style="--food-icon-right: {$iconRight}px; --food-icon-bottom: {$iconBottom}px"
-	class="select-none text-[min(50vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
+	class="select-none text-[min(40vh,500px)] fixed right-[var(--food-icon-right)] bottom-[var(--food-icon-bottom)] leading-none translate-x-1/3 translate-y-1/3"
 >
 	{icon}
 </button>

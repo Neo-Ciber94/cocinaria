@@ -1,11 +1,12 @@
 import { googleAuth } from '$lib/auth/providers';
 import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
-import { accounts, users } from '$lib/db/schema';
+import { accounts } from '$lib/db/schema';
 import type { RequestEvent, RequestHandler } from '@sveltejs/kit';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { and, eq } from 'drizzle-orm';
 import { AuthError, redirectToAuthError } from '../../utils';
+import { createUserAccount } from '$lib/server/users';
 
 const COOKIE_GOOGLE_OAUTH_STATE = 'google-oauth-state';
 const COOKIE_GOOGLE_CODE_VERIFIER = 'google-oauth-verifier';
@@ -120,20 +121,13 @@ async function handleCallback(event: RequestEvent) {
 		}
 
 		const accountId = crypto.randomUUID();
-
-		await db.transaction(async (tx) => {
-			await tx.insert(users).values({
-				id: userId,
-				accountId,
-				username: googleUser.name,
-				picture: googleUser.picture
-			});
-
-			await tx.insert(accounts).values({
-				userId,
-				authAccountId: googleUser.sub,
-				authProvider: 'google'
-			});
+		await createUserAccount({
+			userId,
+			accountId,
+			username: googleUser.name,
+			picture: googleUser.picture,
+			authAccountId: googleUser.sub,
+			authProvider: 'google'
 		});
 
 		const session = await lucia.createSession(userId, {});

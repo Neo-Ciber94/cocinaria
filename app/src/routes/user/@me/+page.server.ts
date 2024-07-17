@@ -9,6 +9,6 @@ export const load: PageServerLoad = async (event) => {
 	}
 
 	const user = auth.user;
-	const authProvider = auth.authProvider;
-	return { user, authProvider };
+	const account = auth.account;
+	return { user, account };
 };
