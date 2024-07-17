@@ -52,7 +52,7 @@
 		<Icon icon="heroicons:chevron-up-down-16-solid" class="ml-auto size-6" />
 	</Select.Trigger>
 	<Select.Content
-		class="w-full rounded-xl border border-gray-200 bg-white px-1 py-3 shadow-md outline-none space-y-1"
+		class="w-full rounded-xl border border-gray-200 bg-white px-1 py-3 shadow-md outline-none space-y-1 z-[1]"
 		transition={flyAndScale}
 		sideOffset={8}
 	>
