@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	export type AIProviderSelectItem = { value: AIProvider; label: string; icon: any };
+	export type AIProviderSelectItem = { value: AIProvider; label: string; icon: unknown };
 
 	// We only use openAI because we generate the images also using OpenAI,
 	// the recipes text could be generated with any provider

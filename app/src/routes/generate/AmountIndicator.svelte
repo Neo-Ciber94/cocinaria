@@ -25,6 +25,7 @@
 </script>
 
 <div class="w-full flex flex-row gap-1">
+	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 	{#each Array(max) as _, idx}
 		<div
 			class={cn('h-8 border border-gray-200 -skew-x-[15deg] rounded-md', getClass(idx))}

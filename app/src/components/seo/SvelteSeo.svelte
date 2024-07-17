@@ -54,10 +54,11 @@
 	/**@type {import("./types").SvelteSeo['facebook']}*/
 	export let facebook = undefined;
 
-	/**@type {import("./types").SvelteSeo['jsonLd']}*/
-	export let jsonLd = undefined;
+	// /**@type {import("./types").SvelteSeo['jsonLd']}*/
+	// export let jsonLd = undefined;
 
 	$: appTitle = (() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const _ = $page.url.pathname;
 		const defaultTitle = useSeoBaseTitle();
 
@@ -155,10 +156,10 @@
 		<OpenGraphComponent {openGraph} />
 	{/if}
 
-	{#if jsonLd}
+	<!-- {#if jsonLd}
 		{@const data = Object.assign({ '@context': 'https://schema.org' }, jsonLd)}
 		{@html `<script type="application/ld+json">${JSON.stringify(data) + '<'}/script>`}
-	{/if}
+	{/if} -->
 
 	<slot />
 </svelte:head>
