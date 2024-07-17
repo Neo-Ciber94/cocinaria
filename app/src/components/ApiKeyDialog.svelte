@@ -7,7 +7,7 @@
 	import AiProviderSelect, { type AIProviderSelectItem } from './AIProviderSelect.svelte';
 	import toast from 'svelte-french-toast';
 	import { getResponseError } from '$lib/client/getResponseError';
-	import type { AIProviderKey } from '../routes/api/ai-provider/schema';
+	import type { AIProviderConfig } from '../routes/api/ai-provider/schema';
 	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
 	import { cn } from '$lib/index';
 
@@ -34,7 +34,7 @@
 			body: JSON.stringify({
 				apiKey: $state.snapshot(key),
 				aiProvider: $state.snapshot(aiProviderItem)?.value
-			} as AIProviderKey)
+			} as AIProviderConfig)
 		});
 
 		if (!res.ok) {

@@ -2,14 +2,14 @@ import { dev } from '$app/environment';
 import { COOKIE_AI_PROVIDER_KEY } from '$lib/common/constants';
 import { checkAuthenticated } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
-import { aiProviderKeySchema } from './schema';
+import { aiProviderConfig } from './schema';
 
 export const POST: RequestHandler = async (event) => {
 	checkAuthenticated(event);
 
 	try {
 		const json = await event.request.json();
-		const result = aiProviderKeySchema.safeParse(json);
+		const result = aiProviderConfig.safeParse(json);
 
 		if (!result.success) {
 			const message = result.error.issues

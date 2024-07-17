@@ -16,7 +16,7 @@ import { invariant } from '$lib/index';
 import type { AIProvider } from '$lib/common/types';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import type { AIProviderKey } from '../../../routes/api/ai-provider/schema';
+import type { AIProviderConfig } from '../../../routes/api/ai-provider/schema';
 
 function recipeJsonSchema(recipeId: string) {
 	return z.object({
@@ -44,7 +44,7 @@ type GenerateRecipeInput = z.infer<typeof generateRecipeInputSchema>;
 type GenerateRecipeArgs = GenerateRecipeInput & {
 	userId: string;
 	abortSignal?: AbortSignal;
-	aiProviderKey: AIProviderKey | null;
+	aiConfig: AIProviderConfig | null;
 };
 
 export async function generateRecipe({
@@ -52,11 +52,11 @@ export async function generateRecipe({
 	recipeType,
 	ingredients,
 	abortSignal,
-	aiProviderKey
+	aiConfig
 }: GenerateRecipeArgs) {
 	const { model, provider } = await getAIProviderForUser({
 		userId,
-		aiProviderKey,
+		aiConfig,
 		error:
 			"Your account doesn't have enough credits to generate a new recipe, use an API Key instead"
 	});
@@ -127,7 +127,7 @@ export async function generateRecipe({
 					await generateRecipeImage({
 						userId,
 						consumeCredits: false,
-						aiProviderKey,
+						aiConfig: aiConfig,
 						input: { action: 'update', recipe }
 					}).catch(console.error);
 				}
@@ -144,7 +144,7 @@ export async function generateRecipe({
 type GenerateRecipeImageArgs = {
 	userId: string;
 	consumeCredits?: boolean;
-	aiProviderKey: AIProviderKey | null;
+	aiConfig: AIProviderConfig | null;
 	input:
 		| {
 				action: 'find-and-update';
@@ -159,16 +159,16 @@ type GenerateRecipeImageArgs = {
 export async function generateRecipeImage({
 	userId,
 	input,
-	aiProviderKey,
+	aiConfig,
 	consumeCredits = true
 }: GenerateRecipeImageArgs) {
 	async function getProviderAPIKey() {
-		if (aiProviderKey) {
-			if (aiProviderKey.aiProvider !== 'openai') {
+		if (aiConfig) {
+			if (aiConfig.aiProvider !== 'openai') {
 				throw new ApplicationError('Only OpenAI provider supports generating images');
 			}
 
-			return aiProviderKey.apiKey;
+			return aiConfig.apiKey;
 		}
 
 		const isAllowed = await isUserAllowedToUseAI(userId);
@@ -289,15 +289,15 @@ function validIngredients(ingredientList: string[]) {
 
 type GetAIProviderForUserArgs = {
 	userId: string;
-	aiProviderKey: AIProviderKey | null;
+	aiConfig: AIProviderConfig | null;
 	error: string;
 };
 
-async function getAIProviderForUser({ userId, aiProviderKey, error }: GetAIProviderForUserArgs) {
-	if (aiProviderKey) {
+async function getAIProviderForUser({ userId, aiConfig, error }: GetAIProviderForUserArgs) {
+	if (aiConfig) {
 		return {
-			model: getAIProvider(aiProviderKey.aiProvider, aiProviderKey.apiKey),
-			provider: aiProviderKey.aiProvider
+			model: getAIProvider(aiConfig.aiProvider, aiConfig.apiKey),
+			provider: aiConfig.aiProvider
 		};
 	}
 

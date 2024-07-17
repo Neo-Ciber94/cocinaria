@@ -1,6 +1,6 @@
 import { ApplicationError } from '$lib/common/error';
 import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe';
-import { checkAuthenticated, getAIProviderKey } from '$lib/server/utils';
+import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async (event) => {
@@ -19,14 +19,14 @@ export const POST: RequestHandler = async (event) => {
 		}
 
 		const { ingredients, recipeType } = result.data;
-		const aiProviderKey = getAIProviderKey(event.cookies);
+		const aiConfig = getAIProviderConfig(event.cookies);
 
 		const generateRecipeStream = await generateRecipe({
 			userId: session.userId,
 			abortSignal: event.request.signal,
 			ingredients,
 			recipeType,
-			aiProviderKey
+			aiConfig
 		});
 
 		const stream = generateRecipeStream.textStream;
