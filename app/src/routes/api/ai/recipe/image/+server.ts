@@ -31,7 +31,7 @@ export const GET: RequestHandler = async (event) => {
 		}
 	});
 
-	function write(data: unknown, event?: 'fail') {
+	function write(data: unknown, event?: 'fail' | 'wait') {
 		invariant(controller, 'Stream controller is not ready');
 
 		const json = JSON.stringify(data);
@@ -40,7 +40,10 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		controller.enqueue(encoder.encode(`data: ${json}\n\n`));
-		controller.close();
+
+		if (event !== 'wait') {
+			controller.close();
+		}
 	}
 
 	if (!recipeId) {
@@ -49,6 +52,7 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	try {
+		write('wait');
 		const imageResult = await generateRecipeImage({
 			userId: session.userId,
 			aiConfig,
