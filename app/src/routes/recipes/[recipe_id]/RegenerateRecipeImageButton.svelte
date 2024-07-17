@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import GenerateImageIcon from '$components/icons/generateImageIcon.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
-	import { getResponseError } from '$lib/client/getResponseError';
 	import { cn } from '$lib/index';
 	import { Button } from 'bits-ui';
 	import toast from 'svelte-french-toast';
