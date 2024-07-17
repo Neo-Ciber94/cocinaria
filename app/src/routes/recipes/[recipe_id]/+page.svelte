@@ -20,7 +20,7 @@
 		return images;
 	}
 
-	const { recipe } = data;
+	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 </script>
 

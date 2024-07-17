@@ -31,7 +31,7 @@
 				}
 				case 'error':
 				case 'failure': {
-					const message = toast.error('Failed to generate recipe image');
+					toast.error('Failed to generate recipe image');
 					break;
 				}
 			}
