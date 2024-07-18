@@ -16,7 +16,7 @@ import { invariant } from '$lib/index';
 import type { AIProvider } from '$lib/common/types';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import type { AIProviderConfig } from '../../../routes/api/ai-provider/schema';
+import type { AIProviderConfig } from '../../../routes/api/ai/provider/schema';
 import { OpenAIError } from 'openai';
 
 function recipeJsonSchema(recipeId: string) {

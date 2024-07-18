@@ -7,7 +7,7 @@
 	import AiProviderSelect, { type AIProviderSelectItem } from './AIProviderSelect.svelte';
 	import toast from 'svelte-french-toast';
 	import { getResponseError } from '$lib/client/getResponseError';
-	import type { AIProviderConfig } from '../routes/api/ai-provider/schema';
+	import type { AIProviderConfig } from '../routes/api/ai/provider/schema';
 	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
 	import { cn } from '$lib/index';
 	import Icon from '@iconify/svelte';
@@ -16,16 +16,16 @@
 	const aiProvider = useAIProvider();
 	const hasAIProvider = $derived(aiProvider.value != null);
 
-	let key = $state('');
+	let apiKey = $state('');
 	let aiProviderItem = $state<AIProviderSelectItem>();
 	const selectedProvider = $derived(aiProviderItem?.value ?? null);
-	const canSubmit = $derived(key != null && selectedProvider != null);
+	const canSubmit = $derived(apiKey != null && selectedProvider != null);
 
 	async function handleSave() {
-		const res = await fetch('/api/ai-provider', {
+		const res = await fetch('/api/ai/provider', {
 			method: 'POST',
 			body: JSON.stringify({
-				apiKey: $state.snapshot(key),
+				apiKey: $state.snapshot(apiKey),
 				aiProvider: selectedProvider
 			} as AIProviderConfig)
 		});
@@ -41,13 +41,13 @@
 	}
 
 	async function handleRemove() {
-		const res = await fetch('/api/ai-provider', {
+		const res = await fetch('/api/ai/provider', {
 			method: 'DELETE'
 		});
 
 		// @ts-expect-error We need to set null to reset it
 		aiProviderItem = null;
-		key = '';
+		apiKey = '';
 
 		if (!res.ok) {
 			const message = await getResponseError(res, 'Failed to remove API Key');
@@ -99,7 +99,7 @@
 								name="api_key"
 								autocomplete="off"
 								disabled={hasAIProvider}
-								bind:value={key}
+								bind:value={apiKey}
 								required
 							/>
 

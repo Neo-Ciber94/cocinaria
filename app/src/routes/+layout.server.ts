@@ -2,7 +2,7 @@ import { COOKIE_AI_PROVIDER_KEY } from '$lib/common/constants';
 import { getFoodIcon } from '$lib/hooks/foodIcon';
 import type { Cookies } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { aiProviderConfig } from './api/ai-provider/schema';
+import { aiProviderConfig } from './api/ai/provider/schema';
 
 export const load: LayoutServerLoad = async (event) => {
 	const auth = event.locals.auth;
