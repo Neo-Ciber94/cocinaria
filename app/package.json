@@ -40,14 +40,16 @@
     "svelte-french-toast": "1.2.0",
     "tailwind-merge": "2.4.0",
     "tailwindcss-bg-patterns": "0.3.0",
+    "ws": "8.18.0",
     "zod": "3.23.8"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.0.0",
-    "@sveltejs/adapter-vercel": "^5.4.1",
+    "@sveltejs/adapter-vercel": "5.4.1",
     "@sveltejs/kit": "2.5.18",
     "@sveltejs/vite-plugin-svelte": "3.0.0",
     "@types/eslint": "8.56.7",
+    "@types/ws": "^8.5.11",
     "autoprefixer": "10.4.19",
     "dotenv": "16.4.5",
     "drizzle-kit": "0.23.0",

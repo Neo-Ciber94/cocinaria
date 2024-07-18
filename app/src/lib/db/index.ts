@@ -1,10 +1,3 @@
-import * as schema from './schema';
-import { createPool } from '@vercel/postgres';
-import { drizzle } from 'drizzle-orm/vercel-postgres';
-
-if (!process.env.DATABASE_URL) {
-	throw new Error('"DATABASE_URL" environment variable is not set');
-}
-
-export const client = createPool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(client, { schema });
+// We are deploying to vercel, so we use a serverless adapter,
+// if you are using a serverfull environment you can use the `adapters/pg` instead
+export * from './adapters/neon';
