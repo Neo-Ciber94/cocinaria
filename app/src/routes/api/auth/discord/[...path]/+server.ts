@@ -103,7 +103,7 @@ async function handleCallback(event: RequestEvent) {
 				status: 302,
 				headers: {
 					'Set-Cookie': sessionCookie.serialize(),
-					Location: '/'
+					Location: '/generate'
 				}
 			});
 		}
@@ -125,7 +125,7 @@ async function handleCallback(event: RequestEvent) {
 			status: 302,
 			headers: {
 				'Set-Cookie': sessionCookie.serialize(),
-				Location: '/'
+				Location: '/generate'
 			}
 		});
 	} catch (err) {
