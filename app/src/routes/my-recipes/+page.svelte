@@ -33,10 +33,10 @@
 		<span>My Recipes</span>
 	</h1>
 
-	<div
-		class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
-	>
-		{#if hasRecipes}
+	{#if hasRecipes}
+		<div
+			class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
+		>
 			{#each recipes as recipe, index}
 				<a
 					href={`/recipes/${recipe.id}`}
@@ -69,12 +69,12 @@
 					</div>
 				</a>
 			{/each}
-		{:else}
-			<h2
-				class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none"
-			>
-				No recipes
-			</h2>
-		{/if}
-	</div>
+		</div>
+	{:else}
+		<h2
+			class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none w-full"
+		>
+			No recipes
+		</h2>
+	{/if}
 </div>

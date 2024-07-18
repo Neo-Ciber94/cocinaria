@@ -2,6 +2,11 @@ import { ApplicationError } from '$lib/common/error';
 import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe';
 import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
+import type { Config } from '@sveltejs/adapter-vercel';
+
+export const config: Config = {
+	runtime: 'edge'
+};
 
 export const POST: RequestHandler = async (event) => {
 	const { session } = checkAuthenticated(event);
@@ -29,7 +34,7 @@ export const POST: RequestHandler = async (event) => {
 			aiConfig
 		});
 
-		const stream = generateRecipeStream.textStream;
+		const stream = generateRecipeStream.textStream.pipeThrough(new TextEncoderStream());
 		return new Response(stream, {
 			headers: {
 				'Content-Type': 'text/event-stream',
