@@ -6,12 +6,13 @@
 	import { cn } from '$lib/index';
 	import { Button } from 'bits-ui';
 	import toast from 'svelte-french-toast';
+	import { GenerateImageEvent } from '../../api/ai/recipe/image/events';
+	import { consume } from 'sse';
 
 	const recipeId = $derived($page.params.recipe_id);
 	let props: { class?: string; disabled?: boolean } = $props();
 	let loading = $state(false);
 
-	// FIXME: this is a mess
 	async function regenerateRecipeImage() {
 		if (!confirm('Generate a new recipe image')) {
 			return;
@@ -19,51 +20,65 @@
 
 		loading = true;
 
-		try {
-			// const res = await fetch(`/api/ai/recipe/image?recipe_id=${recipeId}`);
-
-			// if (!res.ok) {
-			// 	const message = await getResponseError(res);
-			// 	toast.error(message);
-			// 	return;
-			// }
-
-			// await invalidateAll();
-			const source = new EventSource(`/api/ai/recipe/image?recipe_id=${recipeId}`);
-
-			source.addEventListener('fail', (e) => {
-				source.close();
-
-				const err = JSON.parse(e.data);
-				toast.error(err);
+		consume(`/api/ai/recipe/image?recipe_id=${recipeId}`, {
+			onClose() {
 				loading = false;
-			});
+			},
+			onError() {
+				toast.error('Internal Error');
+			},
+			async onData(eventName, data) {
+				switch (eventName) {
+					case GenerateImageEvent.Failure:
+					case GenerateImageEvent.InternalError: {
+						toast.error(data as string);
+						break;
+					}
+					case GenerateImageEvent.Success: {
+						console.log({ data });
+						const defaultError = 'Failed to generate recipe image';
 
-			source.addEventListener('data', async (e) => {
-				source.close();
+						try {
+							const result = data as { url?: string };
 
-				const url = JSON.parse(e.data)?.url;
+							if (!result.url) {
+								toast.error(defaultError);
+							}
 
-				if (!url) {
-					toast.error('Failed to regenerate recipe image');
+							await invalidateAll();
+						} catch (err) {
+							toast.error(defaultError);
+						}
+						break;
+					}
 				}
+			}
+		});
 
-				loading = false;
-			});
+		// eventSource.select(GenerateImageEvent.Failure).subscribe((msg) => {
+		// 	toast.error(msg);
+		// });
 
-			source.onerror = async (e) => {
-				if (e.eventPhase !== EventSource.CLOSED) {
-					toast.error('Internal Error');
-				}
+		// eventSource.select(GenerateImageEvent.InternalError).subscribe((msg) => {
+		// 	toast.error(msg);
+		// });
 
-				source.close();
-				await invalidateAll();
-				loading = false;
-			};
-		} catch (err) {
-			console.error(err);
-			toast.error('Internal Error');
-		}
+		// eventSource.select(GenerateImageEvent.Success).subscribe((data) => {
+		// 	console.log({ data });
+		// 	const defaultError = 'Failed to generate recipe image';
+
+		// 	try {
+		// 		const url = JSON.parse(data)?.url;
+
+		// 		if (!url) {
+		// 			toast.error(defaultError);
+		// 		}
+
+		// 		await invalidateAll();
+		// 	} catch (err) {
+		// 		toast.error(defaultError);
+		// 	}
+		// });
 	}
 </script>
 

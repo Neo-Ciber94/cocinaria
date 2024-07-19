@@ -4,12 +4,60 @@ import { generateRecipeImage } from '$lib/server/ai/recipe';
 import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 import type { Config } from '@sveltejs/adapter-vercel';
 import { error, type RequestHandler } from '@sveltejs/kit';
+import { stream } from 'sse';
+import { GenerateImageEvent } from './events';
 
 export const config: Config = {
 	runtime: 'edge'
 };
 
 const encoder = new TextEncoder();
+
+export const POST: RequestHandler = async (event) => {
+	const { session } = checkAuthenticated(event);
+	const aiConfig = getAIProviderConfig(event.cookies);
+	const recipeId = event.url.searchParams.get('recipe_id');
+
+	return stream(
+		async function start({ emit, close }) {
+			// In some enviroments like vercel, we need to send the first bytes as fast as possible,
+			// maybe using a short timeout for ping could be enough
+			emit(GenerateImageEvent.Wait, '');
+
+			if (!recipeId) {
+				emit(GenerateImageEvent.Failure, 'Missing recipe_id in request search params');
+				close();
+				return;
+			}
+
+			try {
+				const imageResult = await generateRecipeImage({
+					userId: session.userId,
+					aiConfig,
+					input: {
+						action: 'find-and-update',
+						recipeId
+					}
+				});
+
+				emit(GenerateImageEvent.Success, { url: imageResult?.imageUrl });
+			} catch (err) {
+				console.error(err);
+
+				if (err instanceof ApplicationError) {
+					emit(GenerateImageEvent.Failure, err.message);
+				} else {
+					emit(GenerateImageEvent.InternalError, 'Internal Error');
+				}
+			} finally {
+				close();
+			}
+		},
+		{
+			ping: 10_000
+		}
+	);
+};
 
 export const GET: RequestHandler = async (event) => {
 	const { session } = checkAuthenticated(event);
