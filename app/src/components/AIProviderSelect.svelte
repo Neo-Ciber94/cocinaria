@@ -14,7 +14,7 @@
 	import { Select } from 'bits-ui';
 	import { flyAndScale } from '$lib/utils/transitions';
 	import Icon from '@iconify/svelte';
-	import { cn } from '$lib';
+	import { cn } from '$lib/utils';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 	import type { AIProvider } from '$lib/common/types';
 	import OpenaiIcon from './icons/openaiIcon.svelte';

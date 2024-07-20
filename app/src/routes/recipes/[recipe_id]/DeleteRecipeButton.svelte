@@ -3,7 +3,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import { Button } from 'bits-ui';
 	import type { ActionData } from './$types';
 	import toast from 'svelte-french-toast';

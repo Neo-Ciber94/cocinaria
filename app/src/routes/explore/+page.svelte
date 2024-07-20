@@ -3,7 +3,7 @@
 	import RecipeItem from '$components/RecipeItem.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import { Button, type Selected } from 'bits-ui';
 	import IngredientSearchSelect from './IngredientSearchSelect.svelte';
 	import { goto } from '$app/navigation';

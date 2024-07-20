@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import GenerateImageIcon from '$components/icons/generateImageIcon.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import { Button } from 'bits-ui';
 	import toast from 'svelte-french-toast';
 	import { execute, TaskError } from 'svelte-stream/task';

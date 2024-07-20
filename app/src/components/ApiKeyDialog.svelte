@@ -9,7 +9,7 @@
 	import { getResponseError } from '$lib/client/getResponseError';
 	import type { AIProviderConfig } from '../routes/api/ai/provider/schema';
 	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 
 	const apiKeyDialogOpen = useApiKeyDialog();

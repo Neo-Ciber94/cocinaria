@@ -3,7 +3,7 @@
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { Recipe as RecipeEntity } from '$lib/db/types';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 

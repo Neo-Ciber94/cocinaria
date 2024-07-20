@@ -3,7 +3,7 @@
 	import { flyAndScale } from '$lib/utils/transitions';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import Icon from '@iconify/svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import OrangeSlice from '$components/icons/orangeSliceIcon.svelte';
 
 	type Props = {

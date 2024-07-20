@@ -3,7 +3,7 @@
 	import { flyAndScale } from '$lib/utils/transitions';
 	import Icon from '@iconify/svelte';
 	import { type Ingredient } from '$lib/common/ingredients';
-	import { cn } from '$lib';
+	import { cn } from '$lib/utils';
 	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
 
 	let inputValue = $state('');
