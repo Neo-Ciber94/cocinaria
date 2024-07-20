@@ -36,7 +36,7 @@
 		touched = true;
 	}}
 >
-	<Select.Trigger class={cn('w-[180px]', rest.class)}>
+	<Select.Trigger class={cn('w-[180px] data-[placeholder]:text-start', rest.class)}>
 		{#if mounted.value && selectedRecipe}
 			<Icon icon={selectedRecipe.icon} class="mr-[9px] size-6" />
 		{:else}
@@ -59,7 +59,7 @@
 			{#each recipeTypes as recipeType}
 				{@const isSelected = selectedRecipe?.value === recipeType.value}
 
-				<Select.Item value={recipeType.value} label={recipeType.label}>
+				<Select.Item value={recipeType.value} label={recipeType.label} class="flex flex-row gap-2">
 					<Icon
 						icon={recipeType.icon}
 						class={cn('size-6 opacity-50', isSelected && 'opacity-90')}

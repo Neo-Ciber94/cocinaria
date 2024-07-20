@@ -9,7 +9,6 @@
 	import LoadingIcon from '$components/icons/loadingIcon.svelte';
 	import { cn } from '$lib/utils';
 	import RecipeLoading from './RecipeLoading.svelte';
-	import RecipeTypeSelect from './RecipeTypeSelect.svelte';
 	import { recipeTypeSchema } from '$lib/common/recipe';
 	import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
 	import type { Ingredient } from '$lib/common/ingredients';
@@ -23,6 +22,7 @@
 	import { useDebounce } from '$lib/hooks/useDebounced.svelte';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 	import SelectRecipeType from './SelectRecipeType.svelte';
+	import SelectIngredient from './SelectIngredient.svelte';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -115,11 +115,6 @@
 		<div class="w-full mx-auto mt-10 flex flex-col items-center gap-2">
 			<h2 class="font-bold font-mono text-xl self-start">Recipe</h2>
 			<div class="w-full" in:scale={{ duration: 300, opacity: 0.5, start: 0.9, easing: quintOut }}>
-				<!-- <RecipeTypeSelect
-					class="w-full"
-					bind:selected={recipeTypeStorage.value}
-					disabled={isGenerating}
-				/> -->
 				<SelectRecipeType
 					class="w-full"
 					bind:selected={recipeTypeStorage.value}
@@ -166,11 +161,18 @@
 									easing: quintOut
 								}}
 							>
-								<IngredientSelect
+								<!-- <IngredientSelect
 									class="w-full"
 									disabled={isGenerating}
 									ingredients={recipeItems.remainingIngredients}
 									selectedIngredient={item.ingredient}
+									onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
+								/> -->
+								<SelectIngredient
+									class="w-full"
+									disabled={isGenerating}
+									ingredients={recipeItems.remainingIngredients}
+									selected={item.ingredient}
 									onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
 								/>
 
