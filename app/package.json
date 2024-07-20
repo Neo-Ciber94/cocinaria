@@ -37,7 +37,7 @@
     "openai": "4.52.7",
     "oslo": "1.2.1",
     "postgres": "3.4.4",
-    "sse": "workspace:*",
+    "svelte-stream": "workspace:*",
     "svelte-french-toast": "1.2.0",
     "tailwind-merge": "2.4.0",
     "tailwindcss-bg-patterns": "0.3.0",

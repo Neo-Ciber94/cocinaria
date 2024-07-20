@@ -1,5 +1,5 @@
 {
-	"name": "sse",
+	"name": "svelte-stream",
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
@@ -17,6 +17,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
+		},
+		"./task": {
+			"types": "./dist/task/index.d.ts",
+			"import": "./dist/task/index.js"
 		}
 	},
 	"files": [
