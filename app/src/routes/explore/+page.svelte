@@ -4,17 +4,16 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { cn } from '$lib/index';
 	import { Button, type Selected } from 'bits-ui';
-	import type { PageData } from './$types';
 	import IngredientSearchSelect from './IngredientSearchSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/common/utils';
 	import toast from 'svelte-french-toast';
-
-	let { data }: { data: PageData } = $props();
-	let recipes = $state<PageData['recipes']>([]);
-
-	const hasRecipes = $derived(data.recipes.length > 0);
+	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
+	import { createInfiniteQuery } from '@tanstack/svelte-query';
+	import { fetchServer } from '$lib/client/fetchServer';
+	import type { GetRecipesResult } from '../api/recipes/types';
+	import OnViewport from './OnViewport.svelte';
 
 	function getInitialIngredients() {
 		const values = $page.url.searchParams
@@ -27,41 +26,67 @@
 
 	let search = $state($page.url.searchParams.get('search'));
 	let ingredients = $state<Selected<string>[] | undefined>(getInitialIngredients());
-	const isSearching = $derived.by(() => {
-		return search || (ingredients ?? []).length > 0;
-	});
+	const isSearching = $derived(search || (ingredients ?? []).length > 0);
 
-	// We do this to trigger entry transitions
-	$effect(() => {
-		recipes = data.recipes;
-	});
-
-	$effect(() => {
-		if (data.error) {
-			toast.error(data.error);
-		}
-	});
-
-	function handleReset() {
-		search = '';
-		ingredients = [];
-		goto('?');
-	}
-
-	async function doSearch() {
-		const searchParams = new URLSearchParams();
+	const searchParams = $derived.by(() => {
+		const ret = new URLSearchParams();
 
 		if (search && search.trim().length > 0) {
-			searchParams.set('search', search);
+			ret.set('search', search);
 		}
 
 		if (ingredients && ingredients.length > 0) {
 			const values = JSON.stringify(ingredients.filter(Boolean).map((x) => x.value));
-			searchParams.set('ingredients', values);
+			ret.set('ingredients', values);
 		}
 
-		recipes = [];
+		return ret;
+	});
+
+	const query = createInfiniteQuery({
+		queryKey: ['recipes'],
+		queryFn: async ({ pageParam, signal }) => {
+			const sp = new URLSearchParams(searchParams);
+
+			if (pageParam) {
+				sp.set('cursor', pageParam);
+			}
+
+			const result = await fetchServer<GetRecipesResult>(`/api/recipes?${sp}`, {
+				signal
+			});
+			return result;
+		},
+		initialPageParam: null as string | null,
+		getNextPageParam({ next }) {
+			return next;
+		}
+	});
+
+	const showNoMoreRecipes = $derived.by(() => {
+		const MIN_RESULTS = 10;
+		const records = ($query.data?.pages || []).flatMap((x) => x.recipes);
+		return records.length > MIN_RESULTS;
+	});
+
+	const queryError = $query.error;
+
+	$effect(() => {
+		if (queryError) {
+			toast.error(queryError.message);
+		}
+	});
+
+	async function handleReset() {
+		search = '';
+		ingredients = [];
+		await goto('?', { replaceState: true, invalidateAll: true });
+		await $query.refetch();
+	}
+
+	async function doSearch() {
 		await goto(`?${searchParams}`, { replaceState: true, keepFocus: true, invalidateAll: true });
+		await $query.refetch();
 	}
 
 	const debouncedSearch = debounce(doSearch, 500);
@@ -117,18 +142,56 @@
 		</div>
 	</form>
 
-	{#if hasRecipes}
+	{#if $query.isLoading || $query.data == null}
+		<h2
+			class="flex flex-row justify-center items-center text-orange-400 h-[50vh] select-none w-full"
+		>
+			<LoadingDotsIcon class="size-10 sm:size-20" />
+		</h2>
+	{:else if $query.data}
+		{@const pages = $query.data.pages}
 		<div
 			class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
 		>
-			{#each recipes as recipe, index}
-				<RecipeItem
-					{recipe}
-					{index}
-					class={cn(index % 6 === 0 && 'col-span-1 row-span-1 md:col-span-2 md:row-span-2')}
-				/>
+			{#each pages as page}
+				{@const recipes = page.recipes}
+
+				{#each recipes as recipe, index}
+					<RecipeItem
+						{recipe}
+						{index}
+						class={cn(index % 6 === 0 && 'col-span-1 row-span-1 md:col-span-2 md:row-span-2')}
+					/>
+				{/each}
 			{/each}
 		</div>
+
+		{#if $query.isFetchingNextPage}
+			<h2
+				class="flex flex-row justify-center items-center text-orange-400 h-[10vh] select-none w-full"
+			>
+				<LoadingDotsIcon class="size-10 sm:size-16" />
+			</h2>
+		{/if}
+
+		{#if !$query.isFetching}
+			{#if $query.hasNextPage}
+				<OnViewport
+					delayMs={1000}
+					onVisible={(visible) => {
+						if (visible) {
+							$query.fetchNextPage();
+						}
+					}}
+				/>
+			{:else if showNoMoreRecipes}
+				<h2
+					class="text-base md:text-2xl lg:text-3xl font-bold flex flex-row justify-center items-center text-orange-500/90 h-[10vh] select-none w-full"
+				>
+					No more recipes
+				</h2>
+			{/if}
+		{/if}
 	{:else if isSearching}
 		<h2
 			class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none w-full"
