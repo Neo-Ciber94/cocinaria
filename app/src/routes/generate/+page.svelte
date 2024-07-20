@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import { Button } from 'bits-ui';
-	import IngredientSelect from './IngredientSelect.svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
@@ -161,13 +160,6 @@
 									easing: quintOut
 								}}
 							>
-								<!-- <IngredientSelect
-									class="w-full"
-									disabled={isGenerating}
-									ingredients={recipeItems.remainingIngredients}
-									selectedIngredient={item.ingredient}
-									onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
-								/> -->
 								<SelectIngredient
 									class="w-full"
 									disabled={isGenerating}
