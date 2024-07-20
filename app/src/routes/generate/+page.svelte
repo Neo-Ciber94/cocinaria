@@ -1,6 +1,5 @@
 <script lang="ts">
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
-	import { Button } from 'bits-ui';
 	import { quintOut } from 'svelte/easing';
 	import { fly, scale } from 'svelte/transition';
 	import AmountIndicator from './AmountIndicator.svelte';
@@ -22,6 +21,7 @@
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 	import SelectRecipeType from './SelectRecipeType.svelte';
 	import SelectIngredient from './SelectIngredient.svelte';
+	import { Button } from '$components/ui/button';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -168,15 +168,16 @@
 									onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
 								/>
 
-								<Button.Root
+								<Button
 									disabled={isGenerating}
 									class={cn(
-										`bg-red-500 text-white p-2 rounded-md`,
+										`bg-red-500 text-white rounded-md`,
 										isGenerating ? '' : 'hover:bg-red-600',
 										'disabled:opacity-70 disabled:cursor-not-allowed'
 									)}
-									onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
-								>
+									onclick={() => recipeItems.remove(item.id)}
+									>Remove
+								</Button>
 							</div>
 						{/if}
 					{:else}
@@ -186,11 +187,11 @@
 			{/if}
 
 			<div class="w-full flex sm:flex-row flex-col justify-between gap-2 mt-2">
-				<Button.Root
+				<Button
 					disabled={!canGenerate || isGenerating}
 					onclick={generateRecipe}
 					class={cn(
-						`relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700`,
+						`relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700`,
 						!canGenerate || isGenerating ? '' : 'hover:bg-neutral-800',
 						'disabled:opacity-70 disabled:cursor-not-allowed'
 					)}
@@ -202,13 +203,13 @@
 						<SparkIcon class="size-6" />
 						<span> Generate</span>
 					{/if}
-				</Button.Root>
+				</Button>
 
-				<Button.Root
+				<Button
 					disabled={!canPickIngredients}
 					onclick={recipeItems.add}
 					class={cn(
-						'relative rounded-lg px-4 py-2 bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-1',
+						'relative rounded-lg bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-1',
 						!canPickIngredients ? '' : ' hover:bg-orange-600',
 						'disabled:opacity-70 disabled:cursor-not-allowed',
 						{
@@ -232,7 +233,7 @@
 					{/if}
 
 					<span> Add Ingredient </span>
-				</Button.Root>
+				</Button>
 			</div>
 		</div>
 	</div>

@@ -4,7 +4,7 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import { cn } from '$lib/utils';
-	import { Button, type Selected } from 'bits-ui';
+	import { type Selected } from 'bits-ui';
 	import IngredientSearchSelect from './IngredientSearchSelect.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -14,6 +14,7 @@
 	import { fetchServer } from '$lib/client/fetchServer';
 	import type { GetRecipesResult } from '../api/recipes/types';
 	import OnViewport from './OnViewport.svelte';
+	import { Button } from '$components/ui/button';
 
 	function getInitialIngredients() {
 		const values = $page.url.searchParams
@@ -134,17 +135,17 @@
 			/>
 		</div>
 		<div class="flex flex-row w-full basis-1/3 gap-1">
-			<Button.Root
-				class={'relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-orange-500 hover:bg-orange-600'}
+			<Button
+				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-orange-500 hover:bg-orange-600'}
 			>
 				Search
-			</Button.Root>
-			<Button.Root
+			</Button>
+			<Button
 				type="reset"
-				class={'relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-800 hover:bg-neutral-900 cursor-pointer'}
+				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-800 hover:bg-neutral-900 cursor-pointer'}
 			>
 				Clear
-			</Button.Root>
+			</Button>
 		</div>
 	</form>
 
