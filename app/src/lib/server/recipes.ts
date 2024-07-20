@@ -3,7 +3,7 @@ import { recipes } from '$lib/db/schema';
 import { and, eq, SQL } from 'drizzle-orm';
 
 type GetRecipesArgs = {
-	search?: string;
+	search?: string | null;
 	ingredients?: string[];
 };
 
@@ -18,16 +18,15 @@ export async function getRecipes(args?: GetRecipesArgs) {
 			createdAt: true,
 			ingredients: true
 		},
-		where(fields, { like, sql }) {
+		where(fields, { ilike, sql }) {
 			const chunks: SQL[] = [];
 
 			if (search) {
-				chunks.push(like(fields.name, search));
+				chunks.push(ilike(fields.name, `%${search}%`));
 			}
 
 			if (ingredients && ingredients.length > 0) {
-				const arr = JSON.stringify(ingredients);
-				chunks.push(sql`${fields.ingredients} @> ${arr}`);
+				chunks.push(sql`${fields.ingredients}::jsonb @> ${ingredients}`);
 			}
 
 			if (chunks.length === 0) {

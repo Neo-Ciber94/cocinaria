@@ -4,6 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import { type Ingredient } from '$lib/common/ingredients';
 	import { cn } from '$lib';
+	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
 
 	let inputValue = $state('');
 	let touchedInput = $state(false);
@@ -70,10 +71,7 @@
 				{selectedIngredient.image}
 			</div>
 		{:else}
-			<Icon
-				icon="ph:orange-slice"
-				class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
-			/>
+			<OrangeSliceIcon class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500" />
 		{/if}
 
 		<Combobox.Input

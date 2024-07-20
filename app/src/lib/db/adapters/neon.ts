@@ -20,4 +20,4 @@ if (!process.env.VERCEL_ENV) {
 }
 
 export const client = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(client, { schema });
+export const db = drizzle(client, { schema, logger: true });
