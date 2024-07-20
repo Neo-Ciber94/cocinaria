@@ -2,6 +2,7 @@
 	import SearchIcon from '$components/icons/searchIcon.svelte';
 	import RecipeItem from '$components/RecipeItem.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import { cn } from '$lib/index';
 	import { Button, type Selected } from 'bits-ui';
 	import IngredientSearchSelect from './IngredientSearchSelect.svelte';
@@ -9,7 +10,6 @@
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/common/utils';
 	import toast from 'svelte-french-toast';
-	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { fetchServer } from '$lib/client/fetchServer';
 	import type { GetRecipesResult } from '../api/recipes/types';
