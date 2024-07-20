@@ -6,8 +6,8 @@
                 "^build"
             ],
             "outputs": [
-                "**/.svelte-kit",
-                "**/dist"
+                ".svelte-kit/**",
+                "dist/**"
             ],
             "env": [
                 "DATABASE_URL"
