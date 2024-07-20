@@ -19,8 +19,11 @@
 	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getResponseError } from '$lib/client/getResponseError';
+	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
+	import { useDebounce } from '$lib/hooks/useDebounced.svelte';
+	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 
-	const recipeItems = useRecipeItems();
+	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
 		return recipeItems.selectedItems.map((e) => e.ingredient).filter(Boolean) as Ingredient[];
 	});
@@ -35,9 +38,15 @@
 	);
 
 	let isGenerating = $state(false);
+	const mounted = useIsMounted();
 	const canGenerate = $derived.by(() => {
 		return selectedCount >= MIN_RECIPE_INGREDIENTS && recipeTypeStorage.value != null;
 	});
+
+	const ingredientsLoading = useDebounce(() => recipeItems.pending, 1000);
+	const canPickIngredients = $derived.by(
+		() => (!isGenerating && !ingredientsLoading) || recipeTypeStorage.value != null
+	);
 
 	const ingredientImages = $derived.by(() => {
 		return recipeItems.selectedItems
@@ -115,59 +124,68 @@
 				/>
 			</div>
 
-			<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
-			{#if selectedCount > 0}
-				<div
-					class="w-full"
-					transition:scale|local={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
-				>
-					<AmountIndicator
-						min={MIN_RECIPE_INGREDIENTS}
-						max={MAX_RECIPE_INGREDIENTS}
-						count={selectedCount}
-					/>
+			{#if ingredientsLoading.value}
+				<div class="w-full h-full p-4 flex flex-row items-center justify-center">
+					<LoadingDotsIcon class="size-10 text-orange-300" />
 				</div>
-			{/if}
-
-			{#if isGenerating}
-				<div
-					class="w-[200px] my-5"
-					transition:scale|local={{ duration: 300, opacity: 0.5, start: 0.3, easing: quintOut }}
-				>
-					<RecipeLoading images={ingredientImages} />
-				</div>
-			{:else}
-				{#each recipeItems.selectedItems as item (item.id)}
+			{:else if recipeTypeStorage.value}
+				<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
+				{#if mounted.value && selectedCount > 0}
 					<div
-						class="flex flex-row items-center gap-2 w-full"
-						transition:fly|local={{
-							duration: 300,
-							x: -100,
-							opacity: 0.1,
-							easing: quintOut
-						}}
+						class="w-full"
+						transition:scale={{ duration: 300, opacity: 0.2, start: 0.8, easing: quintOut }}
 					>
-						<IngredientSelect
-							class="w-full"
-							disabled={isGenerating}
-							ingredients={recipeItems.remainingIngredients}
-							selectedIngredient={item.ingredient}
-							onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
+						<AmountIndicator
+							min={MIN_RECIPE_INGREDIENTS}
+							max={MAX_RECIPE_INGREDIENTS}
+							count={selectedCount}
 						/>
+					</div>
+				{/if}
 
-						<Button.Root
-							disabled={isGenerating}
-							class={cn(
-								`bg-red-500 text-white p-2 rounded-md`,
-								isGenerating ? '' : 'hover:bg-red-600',
-								'disabled:opacity-70 disabled:cursor-not-allowed'
-							)}
-							onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
-						>
+				{#if isGenerating}
+					<div
+						class="w-[200px] my-5"
+						transition:scale={{ duration: 300, opacity: 0.5, start: 0.3, easing: quintOut }}
+					>
+						<RecipeLoading images={ingredientImages} />
 					</div>
 				{:else}
-					<h3 class="text-neutral-400/90">No ingredients selected</h3>
-				{/each}
+					{#each recipeItems.selectedItems as item, index (item.id)}
+						{#if mounted.value}
+							<div
+								class="flex flex-row items-center gap-2 w-full"
+								transition:fly={{
+									duration: 300,
+									delay: index * 50,
+									x: -100,
+									opacity: 0.1,
+									easing: quintOut
+								}}
+							>
+								<IngredientSelect
+									class="w-full"
+									disabled={isGenerating}
+									ingredients={recipeItems.remainingIngredients}
+									selectedIngredient={item.ingredient}
+									onchange={(ingredient) => recipeItems.update(item.id, ingredient)}
+								/>
+
+								<Button.Root
+									disabled={isGenerating}
+									class={cn(
+										`bg-red-500 text-white p-2 rounded-md`,
+										isGenerating ? '' : 'hover:bg-red-600',
+										'disabled:opacity-70 disabled:cursor-not-allowed'
+									)}
+									onclick={() => recipeItems.remove(item.id)}>Remove</Button.Root
+								>
+							</div>
+						{/if}
+					{:else}
+						<h3 class="text-neutral-400/90">No ingredients selected</h3>
+					{/each}
+				{/if}
 			{/if}
 
 			<div class="w-full flex sm:flex-row flex-col justify-between gap-2 mt-2">
@@ -190,11 +208,11 @@
 				</Button.Root>
 
 				<Button.Root
-					disabled={isGenerating}
+					disabled={!canPickIngredients}
 					onclick={recipeItems.add}
 					class={cn(
 						'relative rounded-lg px-4 py-2 bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-1',
-						isGenerating ? '' : 'hover:bg-orange-600',
+						!canPickIngredients ? '' : ' hover:bg-orange-600',
 						'disabled:opacity-70 disabled:cursor-not-allowed',
 						{
 							'animate-pulse': recipeItems.pending

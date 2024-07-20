@@ -3,6 +3,10 @@ export function useIsMounted() {
 
 	$effect(() => {
 		mounted = true;
+
+		return () => {
+			mounted = false;
+		};
 	});
 
 	return {
