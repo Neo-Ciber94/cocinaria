@@ -20,6 +20,11 @@ jobs:
       - name: 🚧 Install
         run: bun install
 
+      - name: 🏗️ Build
+        run: |
+          cp ./app/.env.example ./app/.env
+          bun run build
+
       - name: 🧹 Lint
         run: bun run lint
 
@@ -28,8 +33,3 @@ jobs:
 
       - name: 🧪 Run tests
         run: bun run test
-
-      - name: 🏗️ Build
-        run: |
-          cp ./app/.env.example ./app/.env
-          bun run build
