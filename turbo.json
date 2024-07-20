@@ -10,13 +10,7 @@
                 "dist/**"
             ],
             "env": [
-                "DATABASE_URL",
-                "GOOGLE_CLIENT_ID",
-                "GOOGLE_CLIENT_SECRET",
-                "GITHUB_CLIENT_ID",
-                "GITHUB_CLIENT_SECRET",
-                "DISCORD_CLIENT_ID",
-                "DISCORD_CLIENT_SECRET"
+                "DATABASE_URL"
             ]
         },
         "dev": {
