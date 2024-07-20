@@ -8,7 +8,7 @@
   "packageManager": "bun@1.1.17",
   "scripts": {
     "dev": "turbo dev --filter=./app",
-    "build": "turbo build --env-mode=loose",
+    "build": "turbo build",
     "test": "turbo test",
     "check": "turbo check",
     "lint": "turbo lint",
