@@ -31,10 +31,10 @@
 			'inline-flex h-10 w-[296px] items-center rounded-md border border-neutral-200 bg-white px-[11px] text-sm transition-colors placeholder:text-black/50  focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white',
 			rest.class
 		)}
-		aria-label="Select the ingredient"
+		aria-label="Ingredients"
 	>
 		<OrangeSlice class="mr-[9px] size-6 text-neutral-300" />
-		<Select.Value class="text-sm data-[placeholder]:text-neutral-400" placeholder="Select the ingredients" />
+		<Select.Value class="text-sm data-[placeholder]:text-neutral-400" placeholder="Ingredients" />
 		<Icon icon="heroicons:chevron-up-down-16-solid" class="ml-auto size-6 text-neutral-300" />
 	</Select.Trigger>
 	<Select.Content

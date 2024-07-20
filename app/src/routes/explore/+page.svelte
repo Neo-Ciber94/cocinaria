@@ -28,7 +28,7 @@
 	let ingredients = $state<Selected<string>[] | undefined>(getInitialIngredients());
 	const isSearching = $derived(search || (ingredients ?? []).length > 0);
 
-	const searchParams = $derived.by(() => {
+	const recipesSearchParms = $derived.by(() => {
 		const ret = new URLSearchParams();
 
 		if (search && search.trim().length > 0) {
@@ -43,10 +43,13 @@
 		return ret;
 	});
 
+	const getSearch = () => search;
+	const getIngredients = () => ingredients;
+
 	const query = createInfiniteQuery({
-		queryKey: ['recipes'],
+		queryKey: ['recipes', getSearch(), getIngredients()],
 		queryFn: async ({ pageParam, signal }) => {
-			const sp = new URLSearchParams(searchParams);
+			const sp = new URLSearchParams(recipesSearchParms);
 
 			if (pageParam) {
 				sp.set('cursor', pageParam);
@@ -63,13 +66,12 @@
 		}
 	});
 
+	const queryError = $query.error;
 	const showNoMoreRecipes = $derived.by(() => {
 		const MIN_RESULTS = 10;
 		const records = ($query.data?.pages || []).flatMap((x) => x.recipes);
 		return records.length > MIN_RESULTS;
 	});
-
-	const queryError = $query.error;
 
 	$effect(() => {
 		if (queryError) {
@@ -85,7 +87,11 @@
 	}
 
 	async function doSearch() {
-		await goto(`?${searchParams}`, { replaceState: true, keepFocus: true, invalidateAll: true });
+		await goto(`?${recipesSearchParms}`, {
+			replaceState: true,
+			keepFocus: true,
+			invalidateAll: true
+		});
 		await $query.refetch();
 	}
 
