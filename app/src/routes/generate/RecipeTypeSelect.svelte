@@ -8,11 +8,12 @@
 
 	type Props = {
 		selected?: RecipeType;
+		touched?: boolean;
 		class?: string;
 		disabled?: boolean;
 	};
 
-	let { selected = $bindable(), disabled, ...rest }: Props = $props();
+	let { selected = $bindable(), touched = $bindable(), disabled, ...rest }: Props = $props();
 	const mounted = useIsMounted();
 
 	const recipeTypes = [
@@ -32,6 +33,7 @@
 	onSelectedChange={(item) => {
 		const recipeItem = recipeTypes.find((e) => e.value === item?.value);
 		selected = recipeItem?.value;
+		touched = true;
 	}}
 >
 	<Select.Trigger

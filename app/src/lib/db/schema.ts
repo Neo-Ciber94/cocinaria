@@ -2,8 +2,9 @@ import { RECIPE_TYPES } from '$lib/common/recipe';
 import { relations } from 'drizzle-orm';
 import {
 	boolean,
+	index,
 	integer,
-	json,
+	jsonb,
 	pgEnum,
 	pgTable,
 	primaryKey,
@@ -56,24 +57,34 @@ type RecipeType = {
 	steps: string[];
 };
 
-export const recipes = pgTable('recipes', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	userId: uuid('user_id')
-		.notNull()
-		.references(() => users.id),
-	name: text('name').notNull(),
-	prompt: text('prompt').notNull(), // Prompt used for generate this recipe
-	ingredients: json('ingredients').$type<string[]>().notNull(),
-	recipe: json('recipe').$type<RecipeType>().notNull(),
-	recipeType: recipeTypeEnum('recipe_type').notNull(),
-	imageUrl: text('image_url'),
-	createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
-});
+export const recipes = pgTable(
+	'recipes',
+	{
+		id: uuid('id').primaryKey().defaultRandom(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id),
+		name: text('name').notNull(),
+		description: text('description'),
+		prompt: text('prompt').notNull(), // Prompt used for generate this recipe
+		ingredients: jsonb('ingredients').$type<string[]>().notNull(),
+		recipe: jsonb('recipe').$type<RecipeType>().notNull(),
+		recipeType: recipeTypeEnum('recipe_type').notNull(),
+		imageUrl: text('image_url'),
+		createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull()
+	},
+	(table) => {
+		return {
+			name_idx: index('name_idx').on(table.name),
+			ingredients_idx: index('ingredients_idx').using('gin', table.ingredients),
+			recipe_type_idx: index('recipe_type_idx').on(table.recipeType)
+		};
+	}
+);
 
 export const userRelations = relations(users, ({ one }) => ({
 	account: one(accounts, {
 		fields: [users.id],
 		references: [accounts.userId]
 	})
-	// recipes: many(recipes)
 }));

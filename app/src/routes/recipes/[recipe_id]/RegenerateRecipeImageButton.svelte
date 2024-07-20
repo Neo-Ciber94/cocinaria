@@ -6,12 +6,13 @@
 	import { cn } from '$lib/index';
 	import { Button } from 'bits-ui';
 	import toast from 'svelte-french-toast';
+	import { execute, TaskError } from 'svelte-stream/task';
+	import type { GeneratedImage } from '../../api/ai/recipe/image/+server';
 
 	const recipeId = $derived($page.params.recipe_id);
 	let props: { class?: string; disabled?: boolean } = $props();
 	let loading = $state(false);
 
-	// FIXME: this is a mess
 	async function regenerateRecipeImage() {
 		if (!confirm('Generate a new recipe image')) {
 			return;
@@ -20,49 +21,21 @@
 		loading = true;
 
 		try {
-			// const res = await fetch(`/api/ai/recipe/image?recipe_id=${recipeId}`);
+			const result = await execute<GeneratedImage>(`/api/ai/recipe/image?recipe_id=${recipeId}`);
 
-			// if (!res.ok) {
-			// 	const message = await getResponseError(res);
-			// 	toast.error(message);
-			// 	return;
-			// }
+			if (!result.url) {
+				toast.error('Failed to update the recipe with the new image');
+			}
 
-			// await invalidateAll();
-			const source = new EventSource(`/api/ai/recipe/image?recipe_id=${recipeId}`);
-
-			source.addEventListener('fail', (e) => {
-				source.close();
-
-				const err = JSON.parse(e.data);
-				toast.error(err);
-				loading = false;
-			});
-
-			source.addEventListener('data', async (e) => {
-				source.close();
-
-				const url = JSON.parse(e.data)?.url;
-
-				if (!url) {
-					toast.error('Failed to regenerate recipe image');
-				}
-
-				loading = false;
-			});
-
-			source.onerror = async (e) => {
-				if (e.eventPhase !== EventSource.CLOSED) {
-					toast.error('Internal Error');
-				}
-
-				source.close();
-				await invalidateAll();
-				loading = false;
-			};
+			await invalidateAll();
 		} catch (err) {
-			console.error(err);
-			toast.error('Internal Error');
+			if (err instanceof TaskError) {
+				toast.error(err.message);
+			}
+
+			toast.error('Failed to generate image');
+		} finally {
+			loading = false;
 		}
 	}
 </script>

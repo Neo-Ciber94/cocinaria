@@ -6,6 +6,6 @@
     - [x] Google
     - [x] Github
     - [x] Discord
-- [ ] Home page with latest created recipes
-- [ ] Generate recipe page for user to generate recipes
-- [ ] My recipes page to show the user recipes
+- [x] Home page with latest created recipes
+- [x] Generate recipe page for user to generate recipes
+- [x] My recipes page to show the user recipes

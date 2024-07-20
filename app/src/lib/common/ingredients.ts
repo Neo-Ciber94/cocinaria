@@ -1,15 +1,94 @@
 import { z } from 'zod';
+import type { KeysTuple } from './typeutils';
+
+export const INGREDIENTS_GROUPS = {
+	vegetables: [
+		{ value: 'tomato', image: '🍅' },
+		{ value: 'lettuce', image: '🥬' },
+		{ value: 'cucumber', image: '🥒' },
+		{ value: 'carrot', image: '🥕' },
+		{ value: 'onion', image: '🧅' },
+		{ value: 'pepper', image: '🌶️' },
+		{ value: 'mushroom', image: '🍄' },
+		{ value: 'olive', image: '🫒' },
+		{ value: 'potato', image: '🥔' },
+		{ value: 'garlic', image: '🧄' },
+		{ value: 'corn', image: '🌽' },
+		{ value: 'bellPepper', image: '🫑' },
+		{ value: 'eggplant', image: '🍆' },
+		{ value: 'broccoli', image: '🥦' },
+		{ value: 'ginger', image: '🫚' },
+		{ value: 'pumpkin', image: '🎃' }
+	],
+	fruits: [
+		{ value: 'avocado', image: '🥑' },
+		{ value: 'lemon', image: '🍋' },
+		{ value: 'apple', image: '🍎' },
+		{ value: 'pear', image: '🍐' },
+		{ value: 'orange', image: '🍊' },
+		{ value: 'banana', image: '🍌' },
+		{ value: 'watermelon', image: '🍉' },
+		{ value: 'grapes', image: '🍇' },
+		{ value: 'strawberry', image: '🍓' },
+		{ value: 'blueberry', image: '🫐' },
+		{ value: 'kiwi', image: '🥝' },
+		{ value: 'coconut', image: '🥥' },
+		{ value: 'peach', image: '🍑' },
+		{ value: 'cherry', image: '🍒' },
+		{ value: 'pineapple', image: '🍍' },
+		{ value: 'mango', image: '🥭' }
+	],
+	dairy: [
+		{ value: 'cheese', image: '🧀' },
+		{ value: 'milk', image: '🥛' },
+		{ value: 'butter', image: '🧈' }
+	],
+	meat: [
+		{ value: 'bacon', image: '🥓' },
+		{ value: 'beef', image: '🥩' },
+		{ value: 'chicken', image: '🍗' }
+	],
+	fish: [
+		{ value: 'fish', image: '🐟' },
+		{ value: 'shrimp', image: '🍤' },
+		{ value: 'squid', image: '🦑' },
+		{ value: 'oyster', image: '🦪' }
+	],
+	nuts: [
+		{ value: 'peanut', image: '🥜' },
+		{ value: 'chestnut', image: '🌰' },
+		{ value: 'coffee beans', image: '🫘' }
+	],
+	grains: [
+		{ value: 'rice', image: '🍚' },
+		{ value: 'wheat', image: '🌾' }
+	],
+	other: [
+		{ value: 'egg', image: '🥚' },
+		{ value: 'bread', image: '🍞' },
+		{ value: 'chocolate', image: '🍫' },
+		{ value: 'ice', image: '🧊' },
+		{ value: 'water', image: '💧' },
+		{ value: 'salt', image: '🧂' },
+		{ value: 'sugar', image: '🌸' },
+		{ value: 'honey', image: '🍯' }
+	]
+} as const;
+
+type CategoryTypes = KeysTuple<typeof INGREDIENTS_GROUPS>;
 
 export const ingredientCategorySchema = z.enum([
-	'meat',
-	'vegetable',
 	'fish',
-	'fruit',
+	'vegetables',
+	'fruits',
 	'dairy',
-	'grain',
-	'nut',
+	'meat',
+	'nuts',
+	'grains',
 	'other'
-]);
+] as CategoryTypes);
+
+export type Category = z.infer<typeof ingredientCategorySchema>;
 
 export const ingredienSchema = z.object({
 	value: z.string(),
@@ -19,60 +98,6 @@ export const ingredienSchema = z.object({
 
 export type Ingredient = z.infer<typeof ingredienSchema>;
 
-export const INGREDIENTS: Ingredient[] = [
-	{ value: 'tomato', image: '🍅', category: 'vegetable' },
-	{ value: 'lettuce', image: '🥬', category: 'vegetable' },
-	{ value: 'cheese', image: '🧀', category: 'dairy' },
-	{ value: 'bacon', image: '🥓', category: 'meat' },
-	{ value: 'egg', image: '🥚', category: 'other' },
-	{ value: 'avocado', image: '🥑', category: 'fruit' },
-	{ value: 'cucumber', image: '🥒', category: 'vegetable' },
-	{ value: 'carrot', image: '🥕', category: 'vegetable' },
-	{ value: 'onion', image: '🧅', category: 'vegetable' },
-	{ value: 'pepper', image: '🌶️', category: 'vegetable' },
-	{ value: 'mushroom', image: '🍄', category: 'vegetable' },
-	{ value: 'olive', image: '🫒', category: 'vegetable' },
-	{ value: 'potato', image: '🥔', category: 'vegetable' },
-	{ value: 'garlic', image: '🧄', category: 'vegetable' },
-	{ value: 'corn', image: '🌽', category: 'vegetable' },
-	{ value: 'bellPepper', image: '🫑', category: 'vegetable' },
-	{ value: 'lemon', image: '🍋', category: 'fruit' },
-	{ value: 'meat', image: '🥩', category: 'meat' },
-	{ value: 'chicken', image: '🍗', category: 'meat' },
-	{ value: 'fish', image: '🐟', category: 'fish' },
-	{ value: 'apple', image: '🍎', category: 'fruit' },
-	{ value: 'pear', image: '🍐', category: 'fruit' },
-	{ value: 'orange', image: '🍊', category: 'fruit' },
-	{ value: 'banana', image: '🍌', category: 'fruit' },
-	{ value: 'watermelon', image: '🍉', category: 'fruit' },
-	{ value: 'grapes', image: '🍇', category: 'fruit' },
-	{ value: 'strawberry', image: '🍓', category: 'fruit' },
-	{ value: 'blueberry', image: '🫐', category: 'fruit' },
-	{ value: 'kiwi', image: '🥝', category: 'fruit' },
-	{ value: 'coconut', image: '🥥', category: 'fruit' },
-	{ value: 'peach', image: '🍑', category: 'fruit' },
-	{ value: 'cherry', image: '🍒', category: 'fruit' },
-	{ value: 'pineapple', image: '🍍', category: 'fruit' },
-	{ value: 'mango', image: '🥭', category: 'fruit' },
-	{ value: 'eggplant', image: '🍆', category: 'vegetable' },
-	{ value: 'broccoli', image: '🥦', category: 'vegetable' },
-	{ value: 'peanut', image: '🥜', category: 'nut' },
-	{ value: 'chestnut', image: '🌰', category: 'nut' },
-	{ value: 'coffee beans', image: '🫘', category: 'nut' },
-	{ value: 'ginger', image: '🫚', category: 'vegetable' },
-	{ value: 'rice', image: '🍚', category: 'grain' },
-	{ value: 'pumpkin', image: '🎃', category: 'vegetable' },
-	{ value: 'milk', image: '🥛', category: 'dairy' },
-	{ value: 'butter', image: '🧈', category: 'dairy' },
-	{ value: 'shrimp', image: '🍤', category: 'fish' },
-	{ value: 'squid', image: '🦑', category: 'fish' },
-	{ value: 'oyster', image: '🦪', category: 'fish' },
-	{ value: 'wheat', image: '🌾', category: 'grain' },
-	{ value: 'bread', image: '🍞', category: 'other' },
-	{ value: 'chocolate', image: '🍫', category: 'other' },
-	{ value: 'ice', image: '🧊', category: 'other' },
-	{ value: 'water', image: '💧', category: 'other' },
-	{ value: 'salt', image: '🧂', category: 'other' },
-	{ value: 'sugar', image: '🌸', category: 'other' },
-	{ value: 'honey', image: '🍯', category: 'other' }
-];
+export const INGREDIENTS = Object.entries(INGREDIENTS_GROUPS)
+	.map(([c, list]) => list.map((ingredient) => ({ category: c as Category, ...ingredient })))
+	.flat();

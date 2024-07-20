@@ -10,12 +10,24 @@
 	import { setSeoBaseTitle } from '$components/seo/context';
 	import ApiKeyDialog from '$components/ApiKeyDialog.svelte';
 	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
+	import { browser } from '$app/environment';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
 	export let data: LayoutData;
 	const icon = data.icon;
 
 	const aiProvider = useAIProvider();
 	aiProvider.value = data.aiProvider;
+
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: 1,
+				staleTime: 1000 * 60 * 5, // 5min
+				enabled: browser
+			}
+		}
+	});
 
 	setAuth(data.auth);
 	setFoodIcon(data.icon);
@@ -35,9 +47,11 @@
 </svelte:head>
 
 <Header />
-<main class="min-h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
-	<slot />
-</main>
+<QueryClientProvider client={queryClient}>
+	<main class="min-h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
+		<slot />
+	</main>
+</QueryClientProvider>
 
 <footer
 	class="mt-auto h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"

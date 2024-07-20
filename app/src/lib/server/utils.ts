@@ -1,6 +1,6 @@
 import { COOKIE_AI_PROVIDER_KEY } from '$lib/common/constants';
 import { error, type Cookies, type RequestEvent } from '@sveltejs/kit';
-import { aiProviderConfig } from '../../routes/api/ai-provider/schema';
+import { aiProviderConfig } from '../../routes/api/ai/provider/schema';
 
 export function checkAuthenticated(event: RequestEvent) {
 	if (event.locals.auth == null) {

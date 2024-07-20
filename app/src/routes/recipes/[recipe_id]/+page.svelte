@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getNotFoundImageUrl } from '$lib/common/images';
 	import { useAuth } from '$lib/hooks/useAuth';
 	import type { PageData } from './$types';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
+	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
 
 	let { data }: { data: PageData } = $props();
 
@@ -51,7 +51,7 @@
 					</div>
 					<div class="flex flex-col gap-1">
 						<img
-							src={recipe.imageUrl ?? getNotFoundImageUrl(600)}
+							src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
 							width="600"
 							height="600"
 							alt={recipe.name}

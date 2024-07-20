@@ -8,13 +8,14 @@ const itemSchema = z.object({
 	ingredient: ingredienSchema.optional()
 });
 
-export function useRecipeItems() {
-	const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
+const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
+
+export function useRecipeItems(initial?: z.infer<typeof ingredientArraySchema>) {
 	const recipeStorage = useLocalStorage(
 		'cocinaria:generate-recipe-ingredients',
 		ingredientArraySchema,
 		{
-			initialValue: [],
+			initialValue: initial,
 			storage: () => sessionStorage
 		}
 	);
@@ -53,6 +54,12 @@ export function useRecipeItems() {
 
 			return item;
 		});
+
+		// Check if we can push a new ingredient to the list
+		const canPushNewIngredients = selectedItems.every((e) => e.ingredient != null);
+		if (canPushNewIngredients && ingredient != null) {
+			add();
+		}
 	}
 
 	function clear() {

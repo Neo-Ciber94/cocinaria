@@ -16,7 +16,7 @@ import { invariant } from '$lib/index';
 import type { AIProvider } from '$lib/common/types';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import type { AIProviderConfig } from '../../../routes/api/ai-provider/schema';
+import type { AIProviderConfig } from '../../../routes/api/ai/provider/schema';
 import { OpenAIError } from 'openai';
 
 function recipeJsonSchema(recipeId: string) {
@@ -216,16 +216,18 @@ export async function generateRecipeImage({
 	const recipeIngredients = recipe.recipe.ingredients.join('\n');
 	const recipeSteps = recipe.recipe.steps.join('\n');
 
-	const prompt = `An image in a single color background of a ${recipe.recipeType} 
-	containing only the following ingredients and NOT other: ${recipe.ingredients.join(',')}
-	of a dish named '${recipe.name}', in an anime watercolor style, 
-	ONLY generate the dish and NOT other artifacts like text or characters.
+	const prompt = `An image for a recipe of a '${recipe.recipeType}' with the name '${recipe.name}',
+	it should only contain the following ingredients and NOT other: ${recipe.ingredients.join(',')}'.
 	
 	- The recipe include these ingredients: 
-	${recipeIngredients}
+	 ${recipeIngredients}
 	
-	- And is prepared with these steps:
-	${recipeSteps}`;
+	 - And is prepared with these steps:
+	 ${recipeSteps}
+
+	 DO NOT list the steps or ingredients of the recipe, only an image of the final result,
+	 it should be a COLORFUL image, in an anime watercolor style with in a single color background containing ONLY the resulting recipe and NOT other artifacts like text or characters.
+	`;
 
 	const prevImageUrl = recipe.imageUrl;
 
