@@ -7,8 +7,8 @@
 		"baseColor": "neutral"
 	},
 	"aliases": {
-		"components": "$lib/components",
-		"utils": "$lib/utils"
+		"components": "$components",
+		"utils": "$lib"
 	},
 	"typescript": true
 }
