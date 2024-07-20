@@ -6,8 +6,8 @@
 	import { cn } from '$lib/index';
 	import { Button } from 'bits-ui';
 	import toast from 'svelte-french-toast';
-	import { GenerateImageEvent } from '../../api/ai/recipe/image/events';
-	import { consume } from 'sse';
+	import { execute, TaskError } from 'svelte-stream/task';
+	import type { GeneratedImage } from '../../api/ai/recipe/image/+server';
 
 	const recipeId = $derived($page.params.recipe_id);
 	let props: { class?: string; disabled?: boolean } = $props();
@@ -20,65 +20,23 @@
 
 		loading = true;
 
-		consume(`/api/ai/recipe/image?recipe_id=${recipeId}`, {
-			onClose() {
-				loading = false;
-			},
-			onError() {
-				toast.error('Internal Error');
-			},
-			async onData(eventName, data) {
-				switch (eventName) {
-					case GenerateImageEvent.Failure:
-					case GenerateImageEvent.InternalError: {
-						toast.error(data as string);
-						break;
-					}
-					case GenerateImageEvent.Success: {
-						console.log({ data });
-						const defaultError = 'Failed to generate recipe image';
+		try {
+			const result = await execute<GeneratedImage>(`/api/ai/recipe/image?recipe_id=${recipeId}`);
 
-						try {
-							const result = data as { url?: string };
-
-							if (!result.url) {
-								toast.error(defaultError);
-							}
-
-							await invalidateAll();
-						} catch (err) {
-							toast.error(defaultError);
-						}
-						break;
-					}
-				}
+			if (!result.url) {
+				toast.error('Failed to update the recipe with the new image');
 			}
-		});
 
-		// eventSource.select(GenerateImageEvent.Failure).subscribe((msg) => {
-		// 	toast.error(msg);
-		// });
+			await invalidateAll();
+		} catch (err) {
+			if (err instanceof TaskError) {
+				toast.error(err.message);
+			}
 
-		// eventSource.select(GenerateImageEvent.InternalError).subscribe((msg) => {
-		// 	toast.error(msg);
-		// });
-
-		// eventSource.select(GenerateImageEvent.Success).subscribe((data) => {
-		// 	console.log({ data });
-		// 	const defaultError = 'Failed to generate recipe image';
-
-		// 	try {
-		// 		const url = JSON.parse(data)?.url;
-
-		// 		if (!url) {
-		// 			toast.error(defaultError);
-		// 		}
-
-		// 		await invalidateAll();
-		// 	} catch (err) {
-		// 		toast.error(defaultError);
-		// 	}
-		// });
+			toast.error('Failed to generate image');
+		} finally {
+			loading = false;
+		}
 	}
 </script>
 
