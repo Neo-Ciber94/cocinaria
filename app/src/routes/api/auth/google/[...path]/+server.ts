@@ -1,4 +1,4 @@
-import { createGoogleAuth } from '$lib/auth/providers';
+import { googleAuth } from '$lib/auth/providers';
 import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
 import { accounts } from '$lib/db/schema';
@@ -10,8 +10,6 @@ import { createUserAccount } from '$lib/server/users';
 
 const COOKIE_GOOGLE_OAUTH_STATE = 'google-oauth-state';
 const COOKIE_GOOGLE_CODE_VERIFIER = 'google-oauth-verifier';
-
-const googleAuth = createGoogleAuth();
 
 export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {

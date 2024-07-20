@@ -1,4 +1,4 @@
-import { createGithubAuth } from '$lib/auth/providers';
+import { githubAuth } from '$lib/auth/providers';
 import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
 import { accounts } from '$lib/db/schema';
@@ -9,8 +9,6 @@ import { AuthError, redirectToAuthError } from '../../utils';
 import { createUserAccount } from '$lib/server/users';
 
 const COOKIE_GITHUB_OAUTH_STATE = 'github-oauth-state';
-
-const githubAuth = createGithubAuth();
 
 export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {

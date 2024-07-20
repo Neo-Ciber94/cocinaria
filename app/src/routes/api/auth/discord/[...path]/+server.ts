@@ -1,4 +1,4 @@
-import { createDiscordAuth } from '$lib/auth/providers';
+import { discordAuth } from '$lib/auth/providers';
 import { lucia } from '$lib/auth/lucia';
 import { db } from '$lib/db';
 import { accounts } from '$lib/db/schema';
@@ -9,8 +9,6 @@ import { AuthError, redirectToAuthError } from '../../utils';
 import { createUserAccount } from '$lib/server/users';
 
 const COOKIE_DISCORD_OAUTH_STATE = 'discord-oauth-state';
-
-const discordAuth = createDiscordAuth();
 
 export const GET: RequestHandler = (event: RequestEvent) => {
 	switch (event.url.pathname) {
