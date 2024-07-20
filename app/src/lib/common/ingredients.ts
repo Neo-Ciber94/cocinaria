@@ -45,7 +45,7 @@ export const INGREDIENTS_GROUPS = {
 	],
 	meat: [
 		{ value: 'bacon', image: '🥓' },
-		{ value: 'meat', image: '🥩' },
+		{ value: 'beef', image: '🥩' },
 		{ value: 'chicken', image: '🍗' }
 	],
 	fish: [
@@ -78,11 +78,11 @@ export const INGREDIENTS_GROUPS = {
 type CategoryTypes = KeysTuple<typeof INGREDIENTS_GROUPS>;
 
 export const ingredientCategorySchema = z.enum([
-	'meat',
 	'fish',
 	'vegetables',
 	'fruits',
 	'dairy',
+	'meat',
 	'nuts',
 	'grains',
 	'other'
