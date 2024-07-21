@@ -29,7 +29,7 @@ function recipeJsonSchema(recipeId: string) {
 			.transform(() => recipeId),
 		name: z.string({ description: 'Name of the recipe' }).trim(),
 		description: z.string({ description: 'A brief description of the recipe' }).trim(),
-		ingredients: z.array(z.string(), { description: 'Ingredients and the amount' }),
+		ingredients: z.array(z.string(), { description: 'Ingredients and the amounts' }),
 		steps: z.array(z.string(), { description: 'Steps to prepare the recipe' })
 	});
 }
