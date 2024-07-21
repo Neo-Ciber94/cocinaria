@@ -19,8 +19,9 @@
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
+	import type { Component } from 'svelte';
 
-	type MenuItem = { href: string; label: string; icon: any };
+	type MenuItem = { href: string; label: string; icon: Component };
 
 	const MENU_ITEMS: MenuItem[] = [
 		{

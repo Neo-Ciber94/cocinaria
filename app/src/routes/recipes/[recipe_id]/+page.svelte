@@ -130,9 +130,3 @@
 		</div>
 	</div>
 </div>
-
-<!-- <style>
-	img {
-		view-transition-name: recipe;
-	}
-</style> -->
