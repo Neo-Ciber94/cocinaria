@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useAuth } from '$lib/hooks/useAuth';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import type { PageData } from './$types';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 	import { INGREDIENTS } from '$lib/common/ingredients';
@@ -27,16 +27,16 @@
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | ${recipe.name}`} />
 
-<div class="w-full min-h-screen mx-auto container max-w-3xl md:max-w-5xl pt-4 sm:pt-12 md:pt-20">
+<div class="container mx-auto min-h-screen w-full max-w-3xl pt-4 sm:pt-12 md:max-w-5xl md:pt-20">
 	{#if isCurrentUserRecipe}
-		<div class="w-full flex flex-row justify-end">
+		<div class="flex w-full flex-row justify-end">
 			<DeleteRecipeButton disabled={isDeleted} onDeleted={() => (isDeleted = true)} />
 		</div>
 	{/if}
 
-	<div class="flex flex-col p-4 shadow-md border border-gray-200 rounded-lg bg-white">
+	<div class="flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-md">
 		<section class="w-full pt-5 md:pt-12 lg:pt-16">
-			<div class="container space-y-10 xl:space-y-16 px-4 md:px-6 mx-auto">
+			<div class="container mx-auto space-y-10 px-4 md:px-6 xl:space-y-16">
 				<div class="grid gap-4 md:grid-cols-2 md:gap-16">
 					<div class="flex flex-col">
 						<h1
@@ -44,7 +44,7 @@
 						>
 							{recipe.name}
 						</h1>
-						<p class="flex flex-row gap-0.5 w-full justify-start">
+						<p class="flex w-full flex-row justify-start gap-0.5">
 							{#each getIngredientImages(recipe.ingredients) as ingredientImage}
 								<span class="text-xl sm:text-2xl">{ingredientImage}</span>
 							{/each}
@@ -64,7 +64,7 @@
 							style={`view-transition-name: recipe-${recipe.id}`}
 						/>
 						{#if isCurrentUserRecipe}
-							<div class="flex flex-row gap-2 w-full">
+							<div class="flex w-full flex-row gap-2">
 								<RegenerateRecipeImageButton disabled={isDeleted} class="w-full" />
 							</div>
 						{/if}
@@ -72,7 +72,7 @@
 				</div>
 			</div>
 		</section>
-		<hr class="border-b my-8" />
+		<hr class="my-8 border-b" />
 		<section class="w-full py-2 md:py-4 lg:py-6">
 			<div class="container grid gap-12 px-4 md:px-6 lg:grid-cols-[1fr_2fr]">
 				<div class="space-y-6">
@@ -121,7 +121,7 @@
 			</div>
 		</section>
 
-		<div class="w-full justify-end flex flex-row mt-8">
+		<div class="mt-8 flex w-full flex-row justify-end">
 			<GeneratedBy
 				generatedAt={recipe.createdAt}
 				ownerUsername={recipe.user.username}

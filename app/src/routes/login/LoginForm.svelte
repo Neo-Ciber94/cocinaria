@@ -9,18 +9,18 @@
 
 <div
 	class={cn(
-		'p-4 shadow-md rounded-lg border border-gray-300 max-w-md flex flex-col gap-2',
+		'flex max-w-md flex-col gap-2 rounded-lg border border-gray-300 p-4 shadow-md',
 		props.class
 	)}
 >
 	<div class="mb-2">
-		<h3 class="font-bold text-xl">Login</h3>
+		<h3 class="text-xl font-bold">Login</h3>
 		<span class="text-sm text-gray-500">To continue to CocinerIA</span>
 	</div>
 
 	<a
 		href="/api/auth/google/login"
-		class="flex flex-row gap-2 items-center shadow-sm px-3 py-2 hover:bg-orange-100 border border-gray-200 rounded-md"
+		class="flex flex-row items-center gap-2 rounded-md border border-gray-200 px-3 py-2 shadow-sm hover:bg-orange-100"
 	>
 		<GoogleIcon size={'1.5rem'} />
 		<span> Continue with Google </span>
@@ -28,7 +28,7 @@
 
 	<a
 		href="/api/auth/github/login"
-		class="flex flex-row gap-2 items-center shadow-sm px-3 py-2 hover:bg-orange-100 border border-gray-200 rounded-md"
+		class="flex flex-row items-center gap-2 rounded-md border border-gray-200 px-3 py-2 shadow-sm hover:bg-orange-100"
 	>
 		<GithubIcon size={'1.5rem'} />
 		<span> Continue with Github </span>
@@ -36,7 +36,7 @@
 
 	<a
 		href="/api/auth/discord/login"
-		class="flex flex-row gap-2 items-center shadow-sm px-3 py-2 hover:bg-orange-100 border border-gray-200 rounded-md"
+		class="flex flex-row items-center gap-2 rounded-md border border-gray-200 px-3 py-2 shadow-sm hover:bg-orange-100"
 	>
 		<DiscordIcon size={'1.5rem'} />
 		<span> Continue with Discord </span>

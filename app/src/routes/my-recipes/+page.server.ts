@@ -1,11 +1,9 @@
-import { invariant } from '$lib';
 import { getUserRecipes } from '$lib/server/recipes';
+import { checkAuthenticated } from '$lib/server/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	const auth = event.locals.auth;
-	invariant(auth, 'Auth is required');
-
-	const recipes = await getUserRecipes(auth.user.id);
+	const { user } = checkAuthenticated(event);
+	const recipes = await getUserRecipes(user.id);
 	return { recipes };
 };

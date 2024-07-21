@@ -25,7 +25,7 @@
 
 <button
 	class={cn(
-		'relative flex flex-row gap-2 items-center whitespace-nowrap text-xs bg-gray-100 hover:bg-gray-200 transition-colors rounded-md px-2 sm:px-1 py-1',
+		'relative flex flex-row items-center gap-2 whitespace-nowrap rounded-md bg-gray-100 px-2 py-1 text-xs transition-colors hover:bg-gray-200 sm:px-1',
 		rest.class
 	)}
 	onclick={handleCopy}
@@ -42,12 +42,12 @@
 			<path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
 		</g>
 	</svg>
-	<span class="whitespace-nowrap text-ellipsis overflow-hidden">{text}</span>
+	<span class="overflow-hidden text-ellipsis whitespace-nowrap">{text}</span>
 
 	{#if wasCopied}
 		<div
 			transition:fly={{ duration: 100, x: 0, y: -30, opacity: 0.5, easing: bounceInOut }}
-			class="absolute border border-gray-300 w-fit -bottom-7 left-1/2 -translate-x-1/2 bg-white/90 px-2 py-1 rounded-lg"
+			class="absolute -bottom-7 left-1/2 w-fit -translate-x-1/2 rounded-lg border border-gray-300 bg-white/90 px-2 py-1"
 		>
 			📄 User ID copied!
 		</div>

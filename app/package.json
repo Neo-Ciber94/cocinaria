@@ -42,6 +42,7 @@
 		"postgres": "3.4.4",
 		"svelte-french-toast": "1.2.0",
 		"svelte-radix": "1.1.0",
+		"svelte-sonner": "0.3.27",
 		"svelte-stream": "workspace:*",
 		"tailwind-merge": "2.4.0",
 		"tailwind-variants": "0.2.1",

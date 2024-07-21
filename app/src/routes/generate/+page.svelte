@@ -13,7 +13,6 @@
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
 	import { goto } from '$app/navigation';
-	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getResponseError } from '$lib/client/getResponseError';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
@@ -22,6 +21,8 @@
 	import SelectRecipeType from './SelectRecipeType.svelte';
 	import SelectIngredient from './SelectIngredient.svelte';
 	import { Button } from '$components/ui/button';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
+	import { reportRecipeGenerationStates } from './utils.svelte';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -38,6 +39,7 @@
 	);
 
 	let isGenerating = $state(false);
+	const auth = useAuth()!; // The user should be authenticated to be in this page
 	const mounted = useIsMounted();
 	const canGenerate = $derived.by(() => {
 		return selectedCount >= MIN_RECIPE_INGREDIENTS && recipeTypeStorage.value != null;
@@ -55,12 +57,19 @@
 	});
 
 	async function generateRecipe() {
+		if (isGenerating) {
+			return;
+		}
+
 		if (!confirm(`Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`)) {
 			return;
 		}
 
 		try {
 			isGenerating = true;
+
+			// We update immediately the UI
+			auth.consumeCredit();
 
 			const ingredients = selectedIngredients.map((e) => e.value);
 			const recipeType = recipeTypeStorage.value;
@@ -76,16 +85,15 @@
 				return;
 			}
 
-			// We just consume the stream until it's done
-			const recipeContents = await res.text();
-			const recipeJson = JSON.parse(recipeContents) as GeneratedRecipeType;
+			// We just consume the stream until it's done and show state changes
+			const reader = res.body.getReader();
+			const recipeJson = await reportRecipeGenerationStates(reader);
 
 			if (recipeJson) {
 				recipeItems.clear();
 				recipeTypeStorage.remove();
 
-				console.log(recipeJson);
-				goto(`/recipes/${recipeJson.recipeId}`);
+				await goto(`/recipes/${recipeJson.recipeId}`);
 			}
 		} catch (err) {
 			console.error(err);
@@ -100,19 +108,19 @@
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | Generate`} />
 
-<div class="p-4 container mx-auto w-full h-full max-w-xl lg:max-w-3xl pt-10 sm:pt-20">
-	<div class="px-4 pt-8 pb-6 flex flex-col gap-2 shadow-md rounded-xl border border-gray-200">
-		<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
+<div class="container mx-auto h-full w-full max-w-xl p-4 pt-10 sm:pt-20 lg:max-w-3xl">
+	<div class="flex flex-col gap-2 rounded-xl border border-gray-200 px-4 pb-6 pt-8 shadow-md">
+		<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 			<SparkIcon class="size-8 sm:size-12" animated />
 			<span>Generate Recipe</span>
 		</h1>
 
-		<p class="p-4 rounded-lg bg-orange-100 shadow-sm text-center">
+		<p class="rounded-lg bg-orange-100 p-4 text-center shadow-sm">
 			Select from <strong>2</strong> up to <strong>10</strong> to generate a new recipe using our AI
 		</p>
 
-		<div class="w-full mx-auto mt-10 flex flex-col items-center gap-2">
-			<h2 class="font-bold font-mono text-xl self-start">Recipe</h2>
+		<div class="mx-auto mt-10 flex w-full flex-col items-center gap-2">
+			<h2 class="self-start font-mono text-xl font-bold">Recipe</h2>
 			<div class="w-full" in:scale={{ duration: 300, opacity: 0.5, start: 0.9, easing: quintOut }}>
 				<SelectRecipeType
 					class="w-full"
@@ -122,11 +130,11 @@
 			</div>
 
 			{#if ingredientsLoading.value}
-				<div class="w-full h-full p-4 flex flex-row items-center justify-center">
+				<div class="flex h-full w-full flex-row items-center justify-center p-4">
 					<LoadingDotsIcon class="size-10 text-orange-300" />
 				</div>
 			{:else if recipeTypeStorage.value}
-				<h2 class="font-bold font-mono text-xl self-start mt-5">Ingredients</h2>
+				<h2 class="mt-5 self-start font-mono text-xl font-bold">Ingredients</h2>
 				{#if mounted.value && selectedCount > 0}
 					<div
 						class="w-full"
@@ -142,7 +150,7 @@
 
 				{#if isGenerating}
 					<div
-						class="w-[200px] my-5"
+						class="my-5 w-[200px]"
 						transition:scale={{ duration: 300, opacity: 0.5, start: 0.3, easing: quintOut }}
 					>
 						<RecipeLoading images={ingredientImages} />
@@ -151,7 +159,7 @@
 					{#each recipeItems.selectedItems as item, index (item.id)}
 						{#if mounted.value}
 							<div
-								class="flex flex-row items-center gap-2 w-full"
+								class="flex w-full flex-row items-center gap-2"
 								transition:fly={{
 									duration: 300,
 									delay: index * 50,
@@ -171,9 +179,9 @@
 								<Button
 									disabled={isGenerating}
 									class={cn(
-										`bg-red-500 text-white rounded-md`,
+										`rounded-md bg-red-500 text-white`,
 										isGenerating ? '' : 'hover:bg-red-600',
-										'disabled:opacity-70 disabled:cursor-not-allowed'
+										'disabled:cursor-not-allowed disabled:opacity-70'
 									)}
 									onclick={() => recipeItems.remove(item.id)}
 									>Remove
@@ -186,18 +194,18 @@
 				{/if}
 			{/if}
 
-			<div class="w-full flex sm:flex-row flex-col justify-between gap-2 mt-2">
+			<div class="mt-2 flex w-full flex-col justify-between gap-2 sm:flex-row">
 				<Button
 					disabled={!canGenerate || isGenerating}
 					onclick={generateRecipe}
 					class={cn(
-						`relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-700`,
+						`relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-neutral-700 text-white`,
 						!canGenerate || isGenerating ? '' : 'hover:bg-neutral-800',
-						'disabled:opacity-70 disabled:cursor-not-allowed'
+						'disabled:cursor-not-allowed disabled:opacity-70'
 					)}
 				>
 					{#if isGenerating}
-						<LoadingIcon class="text-white size-6" />
+						<LoadingIcon class="size-6 text-white" />
 						<span> Generating</span>
 					{:else}
 						<SparkIcon class="size-6" />
@@ -209,18 +217,18 @@
 					disabled={!canPickIngredients}
 					onclick={recipeItems.add}
 					class={cn(
-						'relative rounded-lg bg-orange-500 justify-center text-white w-full flex flex-row items-center gap-1',
+						'relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-orange-500 text-white',
 						!canPickIngredients ? '' : ' hover:bg-orange-600',
-						'disabled:opacity-70 disabled:cursor-not-allowed',
+						'disabled:cursor-not-allowed disabled:opacity-70',
 						{
 							'animate-pulse': recipeItems.pending
 						}
 					)}
 				>
 					{#if recipeItems.pending}
-						<LoadingIcon class="text-white size-6" />
+						<LoadingIcon class="size-6 text-white" />
 					{:else}
-						<svg xmlns="http://www.w3.org/2000/svg" class="text-white size-6" viewBox="0 0 24 24">
+						<svg xmlns="http://www.w3.org/2000/svg" class="size-6 text-white" viewBox="0 0 24 24">
 							<path
 								fill="none"
 								stroke="currentColor"

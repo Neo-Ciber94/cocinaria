@@ -8,7 +8,6 @@
 	import SelectIngredientSearch from './SelectIngredientSearch.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { debounce } from '$lib/common/utils';
 	import toast from 'svelte-french-toast';
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { fetchServer } from '$lib/client/fetchServer';
@@ -16,6 +15,7 @@
 	import OnViewport from './OnViewport.svelte';
 	import { Button } from '$components/ui/button';
 	import Input from '$components/ui/input/input.svelte';
+	import { debounce } from '$lib/utils/debounce';
 
 	function getInitialIngredients() {
 		const values = $page.url.searchParams
@@ -104,14 +104,14 @@
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | Explore`} />
 
-<div class="p-4 container mx-auto w-full h-full max-w-4xl lg:max-w-6xl pt-10 sm:pt-20">
-	<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
+<div class="container mx-auto h-full w-full max-w-4xl p-4 pt-10 sm:pt-20 lg:max-w-6xl">
+	<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 		<SearchIcon class="size-8 sm:size-12" />
 		<span>Explore</span>
 	</h1>
 
 	<form
-		class="w-full flex sm:flex-row flex-col gap-1 mt-2"
+		class="mt-2 flex w-full flex-col gap-1 sm:flex-row"
 		autocomplete="off"
 		onreset={handleReset}
 		onsubmit={(ev) => {
@@ -119,17 +119,17 @@
 			debouncedSearch();
 		}}
 	>
-		<div class="flex sm:flex-row flex-col w-full gap-1">
+		<div class="flex w-full flex-col gap-1 sm:flex-row">
 			<div class="relative w-full">
 				<Input
 					bind:value={search}
 					oninput={debouncedSearch}
 					name="search"
 					type="search"
-					class="w-full pl-8 rounded-md"
+					class="w-full rounded-md pl-8"
 					placeholder="Search..."
 				/>
-				<SearchIcon class="absolute size-5 text-neutral-200 left-2 top-0 translate-y-1/2" />
+				<SearchIcon class="absolute left-2 top-0 size-5 translate-y-1/2 text-neutral-200" />
 			</div>
 			<SelectIngredientSearch
 				class="w-full"
@@ -137,15 +137,15 @@
 				onClose={debouncedSearch}
 			/>
 		</div>
-		<div class="flex flex-row w-full basis-1/3 gap-1 xs:mt-0 mt-5">
+		<div class="mt-5 flex w-full basis-1/3 flex-row gap-1 xs:mt-0">
 			<Button
-				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-orange-500 hover:bg-orange-600'}
+				class={'relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-orange-500 text-white hover:bg-orange-600'}
 			>
 				Search
 			</Button>
 			<Button
 				type="reset"
-				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-800 hover:bg-neutral-900 cursor-pointer'}
+				class={'relative flex w-full cursor-pointer flex-row items-center justify-center gap-1 rounded-lg bg-neutral-800 text-white hover:bg-neutral-900'}
 			>
 				Clear
 			</Button>
@@ -154,14 +154,14 @@
 
 	{#if $query.isLoading || $query.data == null}
 		<h2
-			class="flex flex-row justify-center items-center text-orange-400 h-[50vh] select-none w-full"
+			class="flex h-[50vh] w-full select-none flex-row items-center justify-center text-orange-400"
 		>
 			<LoadingDotsIcon class="size-10 sm:size-20" />
 		</h2>
 	{:else if $query.data.pages && totalCount > 0}
 		{@const pages = $query.data.pages}
 		<div
-			class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
+			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
 		>
 			{#each pages as page}
 				{@const recipes = page.recipes}
@@ -178,7 +178,7 @@
 
 		{#if $query.isFetchingNextPage}
 			<h2
-				class="flex flex-row justify-center items-center text-orange-400 h-[10vh] select-none w-full"
+				class="flex h-[10vh] w-full select-none flex-row items-center justify-center text-orange-400"
 			>
 				<LoadingDotsIcon class="size-10 sm:size-16" />
 			</h2>
@@ -196,7 +196,7 @@
 				/>
 			{:else if showNoMoreRecipes}
 				<h2
-					class="text-base md:text-2xl lg:text-3xl font-bold flex flex-row justify-center items-center text-orange-500/90 h-[10vh] select-none w-full"
+					class="flex h-[10vh] w-full select-none flex-row items-center justify-center text-base font-bold text-orange-500/90 md:text-2xl lg:text-3xl"
 				>
 					No more recipes
 				</h2>
@@ -204,13 +204,13 @@
 		{/if}
 	{:else if isSearching}
 		<h2
-			class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none w-full"
+			class="flex h-[50vh] w-full select-none flex-row items-center justify-center text-xl font-bold text-neutral-400/70 md:text-4xl lg:text-5xl"
 		>
 			No recipes found
 		</h2>
 	{:else}
 		<h2
-			class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none w-full"
+			class="flex h-[50vh] w-full select-none flex-row items-center justify-center text-xl font-bold text-neutral-400/70 md:text-4xl lg:text-5xl"
 		>
 			No recipes
 		</h2>

@@ -18,7 +18,7 @@
 	const delayMs = animationDurationMs / items.length / rotations / 2;
 </script>
 
-<div class="relative w-full aspect-square">
+<div class="relative aspect-square w-full">
 	{#each items as emoji, idx}
 		<span
 			class="recipe-ingredient"

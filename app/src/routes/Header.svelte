@@ -5,7 +5,7 @@
 	import CoinIcon from '$components/icons/coinIcon.svelte';
 	import DiamondIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
-	import { useAuth } from '$lib/hooks/useAuth';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { derived } from 'svelte/store';
 	import UserAvatar from './UserAvatar.svelte';
@@ -20,6 +20,7 @@
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import type { Component } from 'svelte';
+	import { cn } from '$lib/utils';
 
 	type MenuItem = { href: string; label: string; icon: Component };
 
@@ -55,6 +56,12 @@
 	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
 	const apiKeyDialogOpen = useApiKeyDialog();
 
+	function isActive(pathname: string) {
+		const currentPath = $page.url.pathname.split('/').filter(Boolean)[0];
+		const otherPath = pathname.replace(/\//, '');
+		return currentPath === otherPath;
+	}
+
 	$effect(() => {
 		if (!isSmallScreenQuery.matches) {
 			isMenuOpen = false;
@@ -62,33 +69,63 @@
 	});
 </script>
 
-<header class="flex flex-row px-4 items-center justify-between w-full h-[var(--header-height)]">
-	<a class="text-2xl font-bold flex flex-row justify-center font-mono text-orange-500" href="/">
+<header class="flex h-[var(--header-height)] w-full flex-row items-center justify-between px-4">
+	<a
+		class="xss:text-base flex flex-row justify-center font-mono text-2xl font-bold text-orange-500"
+		href="/"
+	>
 		<span>Cocinar</span>
 		<span class="text-emerald-500">IA</span>
 		<span>{icon}</span>
 	</a>
 
-	<div class="md:flex flex-row h-full items-center gap-4 hidden">
+	<div class="hidden h-full flex-row items-center gap-4 md:flex">
 		{#each MENU_ITEMS as menuItem}
+			{@const active = isActive(menuItem.href)}
+
 			<a
 				href={menuItem.href}
-				class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
-				data-active={false}
+				data-active={active}
+				class={cn(
+					'group flex min-w-[90px] flex-row items-center gap-1 rounded-md p-2 text-center font-medium text-neutral-600 hover:bg-orange-500 hover:text-white',
+					'data-[active=true]:bg-orange-500 data-[active=true]:text-white'
+				)}
 			>
-				<svelte:component this={menuItem.icon} class="size-5 group-hover:opacity-100 opacity-50" />
+				<svelte:component
+					this={menuItem.icon}
+					class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
+				/>
 				<span> {menuItem.label} </span>
 			</a>
 		{/each}
 	</div>
 
-	<div class="flex flex-row gap-2 items-center">
+	<div class="flex flex-row items-center gap-2">
 		{#if user}
-			<UserAvatar {user} account={auth.account} />
+			{@const account = auth.account}
+
+			{#if account.isPremium}
+				<button
+					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
+				>
+					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
+				</button>
+			{:else}
+				<button
+					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
+				>
+					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
+					>
+				</button>
+			{/if}
+
+			<UserAvatar {user} {account} />
 		{:else if !$isLoginPage}
 			<a
 				href="/login"
-				class="font-bold text-white bg-orange-500 hover:bg-orange-600 px-8 py-2 shadow-md rounded-lg md:flex flex-row gap-2 items-center hidden"
+				class="hidden flex-row items-center gap-2 rounded-lg bg-orange-500 px-8 py-2 font-bold text-white shadow-md hover:bg-orange-600 md:flex"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
 					<path
@@ -110,14 +147,14 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="md:hidden focus-visible inline-flex h-10 w-10 items-center justify-center bg-background-alt text-sm font-medium text-foreground shadow-btn hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
+				class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
 			>
 				<MenuIcon
-					class="size-10 text-neutral-500 rounded-full active:bg-gray-100 p-1 flex flex-row justify-center items-center"
+					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-500 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg"
+				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -129,17 +166,22 @@
 				}}
 			>
 				{#each MENU_ITEMS as menuItem}
+					{@const active = isActive(menuItem.href)}
+
 					<DropdownMenu.Item
-						class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200 w-full"
+						class={cn(
+							'flex h-14 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200',
+							active && 'bg-orange-500 text-white'
+						)}
 					>
 						<a
 							href={menuItem.href}
-							class="flex flex-row gap-2 px-3 w-full"
+							class="flex w-full flex-row gap-2 px-3"
 							transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
 						>
 							<svelte:component
 								this={menuItem.icon}
-								class="size-5 group-hover:opacity-100 opacity-50"
+								class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
 							/>
 							<p>{menuItem.label}</p>
 						</a>
@@ -149,10 +191,10 @@
 				{/each}
 
 				<DropdownMenu.Item
-					class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+					class="flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 				>
 					<button
-						class="flex items-center w-full p-2 rounded-lg flex-row gap-2"
+						class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
 						onclick={() => {
 							apiKeyDialogOpen.isOpen = true;
 						}}
@@ -165,19 +207,19 @@
 				{#if account && account.isPremium}
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 					<DropdownMenu.Item
-						class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-purple-300 group hover:text-white cursor-pointer"
+						class="group flex h-14 cursor-pointer select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent hover:text-white data-[highlighted]:bg-purple-300"
 					>
-						<div class="flex items-center w-full p-2 rounded-lg flex-row gap-2">
-							<DiamondIcon class="size-5 group-hover:scale-110 transition-transform" />
+						<div class="flex w-full flex-row items-center gap-2 rounded-lg p-2">
+							<DiamondIcon class="size-5 transition-transform group-hover:scale-110" />
 							<span> Premium </span>
 						</div>
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 					<DropdownMenu.Item
-						class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
+						class="group flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200"
 					>
 						<button
-							class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
+							class="flex w-full cursor-pointer flex-row items-center gap-2 rounded-lg p-2"
 							onclick={() => {
 								if (account.credits <= 0) {
 									alert('Sorry, there is no way to become premium, use an API key instead');
@@ -185,9 +227,9 @@
 							}}
 						>
 							<CoinIcon
-								class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
+								class="size-5 text-gray-500 transition-transform group-hover:scale-110 group-hover:text-amber-500"
 							/>
-							<p class="flex flex-row gap-0.5 items-center">
+							<p class="flex flex-row items-center gap-0.5">
 								<span>Credits:</span>
 								<span>{account.credits}</span>
 							</p>
@@ -198,11 +240,11 @@
 				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 
 				<DropdownMenu.Item
-					class="flex flex-row gap-2 h-12 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200 w-full"
+					class="flex h-12 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
 				>
 					<a
 						href="https://github.com/Neo-Ciber94/cocinaria"
-						class="flex flex-row justify-center items-center gap-2 px-3 w-full"
+						class="flex w-full flex-row items-center justify-center gap-2 px-3"
 						target="_blank"
 					>
 						<GithubAnimatedIcon class="size-4" />

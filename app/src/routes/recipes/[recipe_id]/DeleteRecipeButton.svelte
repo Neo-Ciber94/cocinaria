@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
 	import { Button } from '$components/ui/button';
@@ -24,22 +24,19 @@
 		return async ({ result }) => {
 			switch (result.type) {
 				case 'success': {
-					if(!(result.data as ActionData)?.deleted) {
+					const data = result.data as ActionData;
+					if(!data || data.deleted === false) {
                         toast.error("Unable to delete this recipe");
                         return;
                     }
-                    
-                    console.log(result);
                     
                     if (props.onDeleted) {
                         props.onDeleted();
                     }
 
 					// FIXME: We shouldn't be invalidating all the cache
-					await invalidateAll();
-
 					toast.success('Recipe deleted successfully');
-					setTimeout(() => goto('/my-recipes'), 500);
+					await goto('/my-recipes', { invalidateAll: true})
 					break;
 				}
 				case 'error':
@@ -57,8 +54,8 @@
 		type="submit"
 		disabled={loading || props.disabled}
 		class={cn(
-			'px-10 bg-red-500 text-white flex flex-row gap-2 items-center justify-center mb-2',
-			loading ? 'disabled:opacity-70 cursor-wait' : ' hover:bg-red-600'
+			'mb-2 flex flex-row items-center justify-center gap-2 bg-red-500 px-10 text-white',
+			loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-red-600'
 		)}
 	>
 		{#if loading}

@@ -2,9 +2,10 @@
 	import '../app.css';
 	import '$lib/polyfills';
 	import type { LayoutData } from './$types';
-	import { Toaster } from 'svelte-french-toast';
+	import { Toaster as FrenchToaster } from 'svelte-french-toast';
+	import { Toaster } from 'svelte-sonner';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
-	import { setAuth } from '$lib/hooks/useAuth';
+	import { setAuth } from '$lib/hooks/useAuth.svelte';
 	import Header from './Header.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
@@ -14,8 +15,14 @@
 	import { browser } from '$app/environment';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { onNavigate } from '$app/navigation';
+	import type { Snippet } from 'svelte';
 
-	export let data: LayoutData;
+	type Props = {
+		data: LayoutData;
+		children: Snippet;
+	};
+
+	let { data, children }: Props = $props();
 	const icon = data.icon;
 
 	const aiProvider = useAIProvider();
@@ -43,6 +50,10 @@
 		});
 	});
 
+	$effect(() => {
+		setAuth(data.auth);
+	});
+
 	setAuth(data.auth);
 	setFoodIcon(data.icon);
 	setSeoBaseTitle(`CocinarIA ${icon}`);
@@ -63,21 +74,22 @@
 <Header />
 <QueryClientProvider client={queryClient}>
 	<main class="min-h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
-		<slot />
+		<!-- prettier-ignore -->
+		{@render children()}
 	</main>
 </QueryClientProvider>
 
 <footer
-	class="mt-auto h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"
+	class="mt-auto flex h-[var(--footer-height)] flex-row items-center justify-between border-t border-gray-300/50 px-2 text-black sm:px-4"
 >
-	<p class="flex flex-row gap-1 items-center">
+	<p class="flex flex-row items-center gap-1">
 		<span class="text-lg"> &copy; </span>
 		<span>Copyleft</span>
 	</p>
 
 	<a
 		href="https://github.com/Neo-Ciber94/cocinaria"
-		class="flex flex-row justify-center items-center gap-2 px-3"
+		class="flex flex-row items-center justify-center gap-2 px-3"
 		target="_blank"
 	>
 		<GithubAnimatedIcon class="size-4" />
@@ -86,12 +98,13 @@
 </footer>
 
 <div
-	class="fixed min-w-[100px] aspect-square w-[80%] max-w-[300px] ring-[50px] md:ring-[100px] ring-orange-100 rounded-full -left-20 -bottom-20 -z-10"
+	class="fixed -bottom-20 -left-20 -z-10 aspect-square w-[80%] min-w-[100px] max-w-[300px] rounded-full ring-[50px] ring-orange-100 md:ring-[100px]"
 ></div>
 
 <!-- <div
 	class="fixed select-none pointer-events-none -z-10 top-0 left-0 pattern-cross pattern-orange-500 pattern-bg-white pattern-size-6 pattern-opacity-20 w-full h-full"
 ></div> -->
 
-<Toaster toastOptions={{ duration: 6000 }} />
+<FrenchToaster toastOptions={{ duration: 6000 }} />
+<Toaster toastOptions={{ duration: 6000 }} richColors />
 <ApiKeyDialog />

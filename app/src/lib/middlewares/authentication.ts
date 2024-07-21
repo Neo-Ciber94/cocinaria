@@ -5,9 +5,25 @@ import { db } from '$lib/db';
 
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 
-const PUBLIC_ROUTES = ['/', '/login'];
+const PUBLIC_ROUTES = ['/', '/login', /^\/recipes\/(.+)/];
 
 export function authentication(): Handle {
+	function isPublic(pathname: string) {
+		if (pathname.length > 1 && pathname.endsWith('/')) {
+			pathname = pathname.slice(0, -1);
+		}
+
+		for (const p of PUBLIC_ROUTES) {
+			if (p instanceof RegExp && p.test(pathname)) {
+				return true;
+			} else if (p === pathname) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	return async ({ event, resolve }) => {
 		const pathname = event.url.pathname;
 		const auth = await createAuthSession(event);
@@ -29,7 +45,7 @@ export function authentication(): Handle {
 		}
 
 		// If the user is not authenticated we send it to the /login
-		if (auth == null && !PUBLIC_ROUTES.includes(pathname)) {
+		if (auth == null && !isPublic(pathname)) {
 			return new Response(null, {
 				status: 303,
 				headers: {

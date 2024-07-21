@@ -4,6 +4,7 @@
 	import type { Recipe as RecipeEntity } from '$lib/db/types';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 	import { cn } from '$lib/utils';
+	import { capitalize } from '$lib/utils/strings';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 
@@ -15,25 +16,36 @@
 
 	type Recipe = Pick<RecipeEntity, 'id' | 'name' | 'ingredients' | 'imageUrl'>;
 
-	type Props = { recipe: Recipe; class?: string; index?: number; imgProps?: ImgProps };
+	type Props = {
+		recipe: Recipe;
+		class?: string;
+		transition?: boolean;
+		index?: number;
+		imgProps?: ImgProps;
+	};
 
-	let { recipe, imgProps, index = 0, ...rest }: Props = $props();
+	let { recipe, imgProps, transition = true, index = 0, ...rest }: Props = $props();
 	const mounted = useIsMounted();
 
 	function getIngredientImages(recipeIngredients: string[]) {
 		const images = INGREDIENTS.filter((ingredient) =>
 			recipeIngredients.includes(ingredient.value)
-		).map((ingredient) => ingredient.image);
+		).map((ingredient) => {
+			return {
+				name: ingredient.value,
+				image: ingredient.image
+			};
+		});
 
 		return images;
 	}
 </script>
 
-{#if mounted.value}
+{#if mounted.value || !transition}
 	<a
 		href={`/recipes/${recipe.id}`}
 		class={cn(
-			'flex flex-col gap-1 p-2 rounded-lg shadow-md border border-gray-200 w-full bg-white',
+			'flex w-full flex-col gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-md',
 			rest.class
 		)}
 		in:scale={{
@@ -57,13 +69,15 @@
 			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
 		/>
 
-		<h3 class="text-center font-bold text-base sm:text-lg mt-1">{recipe.name}</h3>
-		<small class="text-neutral-300 text-center w-full font-medium font-sans tracking-wide">
+		<h3 class="mt-1 text-center text-sm font-bold xxs:text-base xs:text-lg">
+			{recipe.name}
+		</h3>
+		<small class="w-full text-center font-sans font-medium tracking-wide text-neutral-300">
 			Ingredients
 		</small>
-		<div class="flex flex-row gap-1 items-center w-full justify-center text-xl px-2 flex-wrap">
-			{#each getIngredientImages(recipe.ingredients) as ingredientImage}
-				<span>{ingredientImage}</span>
+		<div class="flex w-full flex-row flex-wrap items-center justify-center gap-1 px-2 text-xl">
+			{#each getIngredientImages(recipe.ingredients) as ingredientImg}
+				<span title={capitalize(ingredientImg.name)}>{ingredientImg.image}</span>
 			{/each}
 		</div>
 	</a>

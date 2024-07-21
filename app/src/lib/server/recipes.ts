@@ -36,8 +36,6 @@ export async function getRecipes(args?: GetRecipesArgs) {
 		}
 	}
 
-	// TODO: Make an index between recipes.createdAt, recipes.id
-
 	const { search, ingredients, cursor } = args || {};
 
 	const recipes = await db.query.recipes.findMany({
@@ -92,6 +90,30 @@ export async function getRecipes(args?: GetRecipesArgs) {
 	};
 }
 
+export async function getLatestRecipes() {
+	const MAX = 10;
+
+	const result = await db.query.recipes.findMany({
+		columns: {
+			id: true,
+			userId: true,
+			name: true,
+			imageUrl: true,
+			createdAt: true,
+			ingredients: true
+		},
+		limit: MAX,
+		where(fields, { isNotNull }) {
+			return isNotNull(fields.imageUrl);
+		},
+		orderBy(fields, { desc }) {
+			return desc(fields.createdAt);
+		}
+	});
+
+	return result;
+}
+
 export async function getRecipeById(recipeId: string) {
 	const recipe = await db.query.recipes.findFirst({
 		columns: {
@@ -140,5 +162,5 @@ export async function deleteRecipe(recipeId: string, userId: string) {
 		.delete(recipes)
 		.where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)));
 
-	return result.rows.length > 0;
+	return Boolean(result.rowCount);
 }
