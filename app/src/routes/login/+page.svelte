@@ -22,6 +22,10 @@
 			}
 		})();
 
+		if (!error) {
+			return;
+		}
+
 		const searchParams = new URLSearchParams($page.url.searchParams);
 		searchParams.delete('AuthError');
 		goto(`?${searchParams.toString()}`, { replaceState: true });
