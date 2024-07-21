@@ -92,7 +92,7 @@ export async function generateRecipe({
 					console.error(error);
 				}
 
-				if (warnings) {
+				if (warnings && warnings.length > 0) {
 					console.warn(warnings);
 				}
 
