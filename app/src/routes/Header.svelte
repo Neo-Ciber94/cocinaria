@@ -20,6 +20,7 @@
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import type { Component } from 'svelte';
+	import { cn } from '$lib/utils';
 
 	type MenuItem = { href: string; label: string; icon: Component };
 
@@ -55,6 +56,12 @@
 	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
 	const apiKeyDialogOpen = useApiKeyDialog();
 
+	function isActive(pathname: string) {
+		const currentPath = $page.url.pathname.split('/').filter(Boolean)[0];
+		const otherPath = pathname.replace(/\//, '');
+		return currentPath === otherPath;
+	}
+
 	$effect(() => {
 		if (!isSmallScreenQuery.matches) {
 			isMenuOpen = false;
@@ -71,12 +78,20 @@
 
 	<div class="hidden h-full flex-row items-center gap-4 md:flex">
 		{#each MENU_ITEMS as menuItem}
+			{@const active = isActive(menuItem.href)}
+
 			<a
 				href={menuItem.href}
-				class="group flex min-w-[90px] flex-row items-center gap-1 rounded-md p-2 text-center font-medium text-neutral-600 hover:bg-orange-500 hover:text-white"
-				data-active={false}
+				data-active={active}
+				class={cn(
+					'group flex min-w-[90px] flex-row items-center gap-1 rounded-md p-2 text-center font-medium text-neutral-600 hover:bg-orange-500 hover:text-white',
+					'data-[active=true]:bg-orange-500 data-[active=true]:text-white'
+				)}
 			>
-				<svelte:component this={menuItem.icon} class="size-5 opacity-50 group-hover:opacity-100" />
+				<svelte:component
+					this={menuItem.icon}
+					class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
+				/>
 				<span> {menuItem.label} </span>
 			</a>
 		{/each}
@@ -110,14 +125,14 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+				class="focus-visible bg-background-alt shadow-btn active:scale-98 text-foreground hover:bg-muted focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex h-10 w-10 items-center justify-center text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2 md:hidden"
 			>
 				<MenuIcon
 					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-500 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="mx-auto w-full max-w-[95vw] rounded-xl border border-muted bg-background shadow-lg"
+				class="border-muted bg-background mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -129,8 +144,13 @@
 				}}
 			>
 				{#each MENU_ITEMS as menuItem}
+					{@const active = isActive(menuItem.href)}
+
 					<DropdownMenu.Item
-						class="flex h-14 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+						class={cn(
+							'flex h-14 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200',
+							active && 'bg-orange-500 text-white'
+						)}
 					>
 						<a
 							href={menuItem.href}
@@ -139,7 +159,7 @@
 						>
 							<svelte:component
 								this={menuItem.icon}
-								class="size-5 opacity-50 group-hover:opacity-100"
+								class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
 							/>
 							<p>{menuItem.label}</p>
 						</a>
