@@ -6,7 +6,7 @@
 	import * as Popover from '$components/ui/popover/index.js';
 	import { Button } from '$components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import type { Ingredient } from '$lib/common/ingredients';
+	import type { Category, Ingredient } from '$lib/common/ingredients';
 	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
 
 	type Props = {
@@ -47,6 +47,8 @@
 			document.getElementById(triggerId)?.focus();
 		});
 	}
+
+	const ingredientGroups = Object.groupBy(ingredients, (e) => e.category);
 </script>
 
 <Popover.Root bind:open let:ids>
@@ -75,28 +77,35 @@
 	<Popover.Content class="w-[90%] sm:w-[400px] max-h-[500px] overflow-y-auto p-0">
 		<Command.Root>
 			<Command.Input placeholder="Select an ingredient" class="h-9" {disabled} />
-			<Command.Empty>No ingredient</Command.Empty>
-			<Command.Group>
-				{#each filteredIngredients as ingredient}
-					<Command.Item
-						class="flex flex-row gap-2"
-						value={ingredient.value}
-						onSelect={(currentValue) => {
-							const ingredient = findIngredient(currentValue);
-							value = currentValue;
-							onchange(ingredient);
-							closeAndFocusTrigger(ids.trigger);
-						}}
-					>
-						<Check class={cn('mr-2 h-4 w-4', value !== ingredient.value && 'text-transparent')} />
-						{ingredient.image}
+			<Command.Empty>No ingredients</Command.Empty>
+			{#each Object.keys(ingredientGroups) as group}
+				{@const ingredients = ingredientGroups[group as Category] || []}
+				{#if ingredients}
+					<Command.Group heading={group}>
+						{#each ingredients as ingredient}
+							<Command.Item
+								class="flex flex-row gap-2"
+								value={ingredient.value}
+								onSelect={(currentValue) => {
+									const ingredient = findIngredient(currentValue);
+									value = currentValue;
+									onchange(ingredient);
+									closeAndFocusTrigger(ids.trigger);
+								}}
+							>
+								<Check
+									class={cn('mr-2 h-4 w-4', value !== ingredient.value && 'text-transparent')}
+								/>
+								{ingredient.image}
 
-						<span class="capitalize">
-							{ingredient.value}
-						</span>
-					</Command.Item>
-				{/each}
-			</Command.Group>
+								<span class="capitalize">
+									{ingredient.value}
+								</span>
+							</Command.Item>
+						{/each}
+					</Command.Group>
+				{/if}
+			{/each}
 		</Command.Root>
 	</Popover.Content>
 </Popover.Root>
