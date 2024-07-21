@@ -34,7 +34,7 @@
 	class="container mx-auto flex h-[calc(100vh-var(--header-height)*2)] w-full flex-col items-center justify-center"
 >
 	<div
-		class="flex min-w-[95vw] cursor-pointer flex-row items-center gap-6 rounded-lg border p-6 shadow-md sm:min-w-[400px] md:p-8"
+		class="flex max-w-[98vw] cursor-pointer flex-row items-center gap-6 rounded-lg border p-6 shadow-md sm:min-w-[400px] md:p-8 bg-background"
 	>
 		<div class="flex flex-col items-center gap-1">
 			<div class="relative">
@@ -74,7 +74,7 @@
 
 		<div class="grid gap-2">
 			<div class="mt-1">
-				<CopyLabel copy={data.user.id} text={data.user.id} />
+				<CopyLabel copy={data.user.id} text={data.user.id} class="max-w-[220px] xs:max-w-full" />
 			</div>
 
 			<div class="flex flex-row items-center gap-1 text-xl font-semibold">
