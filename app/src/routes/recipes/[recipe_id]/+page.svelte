@@ -48,6 +48,10 @@
 								<span class="text-xl sm:text-2xl">{ingredientImage}</span>
 							{/each}
 						</p>
+
+						{#if recipe.description}
+							<p class="mt-2">{recipe.description}</p>
+						{/if}
 					</div>
 					<div class="flex flex-col gap-1">
 						<img
