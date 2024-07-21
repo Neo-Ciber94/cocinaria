@@ -5,18 +5,23 @@ const MILLIS_PER_DAY = MILLIS_PER_HOUR * 25;
 
 const MIN_DAYS = 3;
 
-export function relativeTime(date: Date, locale = 'en') {
-	const now = new Date();
-	const elapsedMs = now.getTime() - date.getTime();
+type RelativeTime = {
+	readonly value: string;
+};
 
-	if (elapsedMs > MILLIS_PER_DAY * MIN_DAYS) {
+export function relativeTime(date: Date, locale = 'en'): RelativeTime {
+	function computeElapsed() {
+		return Date.now() - date.getTime();
+	}
+
+	if (computeElapsed() > MILLIS_PER_DAY * MIN_DAYS) {
 		const formatter = new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
 			month: 'long',
 			day: '2-digit'
 		});
 
-		return formatter.format(date);
+		return { value: formatter.format(date) };
 	}
 
 	const rtf = new Intl.RelativeTimeFormat(locale, {
@@ -24,40 +29,45 @@ export function relativeTime(date: Date, locale = 'en') {
 		style: 'long'
 	});
 
-	if (elapsedMs >= MILLIS_PER_DAY) {
-		// relative days
-		const elapsedDays = Math.ceil((date.getTime() - Date.now()) / MILLIS_PER_DAY);
-		return rtf.format(elapsedDays, 'days');
-	} else if (elapsedMs >= MILLIS_PER_HOUR) {
-		// relative hours
-		const elapsedHours = Math.ceil((date.getTime() - Date.now()) / MILLIS_PER_HOUR);
-		return rtf.format(elapsedHours, 'hours');
-	} else if (elapsedMs >= MILLIS_PER_MINUTE) {
-		// relative minutes
-		const elapsedMinutes = Math.ceil((date.getTime() - Date.now()) / MILLIS_PER_MINUTE);
-		return rtf.format(elapsedMinutes, 'minutes');
-	} else {
-		// relative seconds
-		return relativeSeconds(date, locale);
+	function getRelativeTimeString(elapsedMs: number) {
+		if (elapsedMs >= MILLIS_PER_DAY) {
+			// relative days
+			const elapsedDays = Math.floor(elapsedMs / MILLIS_PER_DAY);
+			return rtf.format(-elapsedDays, 'days');
+		} else if (elapsedMs >= MILLIS_PER_HOUR) {
+			// relative hours
+			const elapsedHours = Math.floor(elapsedMs / MILLIS_PER_HOUR);
+			return rtf.format(-elapsedHours, 'hours');
+		} else if (elapsedMs >= MILLIS_PER_MINUTE) {
+			// relative minutes
+			const elapsedMinutes = Math.floor(elapsedMs / MILLIS_PER_MINUTE);
+			return rtf.format(-elapsedMinutes, 'minutes');
+		} else {
+			// relative seconds
+			function getSecondsElapsed() {
+				const elapsedSeconds = Math.floor(elapsedMs / MILLIS_PER_SECOND);
+				return -elapsedSeconds;
+			}
+
+			function formatRelative() {
+				const elapsed = getSecondsElapsed();
+				return elapsed === 0 ? 'now' : rtf.format(getSecondsElapsed(), 'seconds');
+			}
+
+			return formatRelative();
+		}
 	}
-}
 
-function relativeSeconds(date: Date, locale = 'en') {
-	const rtf = new Intl.RelativeTimeFormat(locale, {
-		numeric: 'always',
-		style: 'long'
-	});
+	let value: string = $state(getRelativeTimeString(computeElapsed()));
 
-	function getSecondsElapsed(ref: Date) {
-		const elapsed = date.getTime() - ref.getTime();
-		return Math.ceil(elapsed / MILLIS_PER_SECOND);
-	}
+	$effect.pre(() => {
+		if (computeElapsed() > MILLIS_PER_MINUTE) {
+			return;
+		}
 
-	let contents = $state(rtf.format(getSecondsElapsed(new Date()), 'seconds'));
-
-	$effect(() => {
 		const internal = setInterval(() => {
-			contents = rtf.format(getSecondsElapsed(new Date()), 'seconds');
+			const elapsedMs = computeElapsed();
+			value = getRelativeTimeString(elapsedMs);
 		}, MILLIS_PER_SECOND);
 
 		return () => {
@@ -65,5 +75,9 @@ function relativeSeconds(date: Date, locale = 'en') {
 		};
 	});
 
-	return contents;
+	return {
+		get value() {
+			return value;
+		}
+	};
 }

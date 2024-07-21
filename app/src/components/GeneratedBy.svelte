@@ -11,14 +11,7 @@
 	};
 
 	let { ownerUsername, ownerPicture, generatedAt }: Props = $props();
-
-	// const formatter = new Intl.DateTimeFormat(undefined, {
-	// 	year: 'numeric',
-	// 	month: 'long',
-	// 	day: '2-digit'
-	// });
-
-    const time = relativeTime(generatedAt);
+	const time = relativeTime(generatedAt);
 </script>
 
 <Tooltip.Root>
@@ -36,6 +29,6 @@
 		</div>
 	</Tooltip.Trigger>
 	<Tooltip.Content>
-		<p>Generated: {time}</p>
+		<p>Generated <span class="text-amber-300"> {time.value}</span></p>
 	</Tooltip.Content>
 </Tooltip.Root>
