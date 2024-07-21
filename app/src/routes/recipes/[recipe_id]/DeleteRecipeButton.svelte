@@ -54,6 +54,7 @@
 	}}
 >
 	<Button
+		type="submit"
 		disabled={loading || props.disabled}
 		class={cn(
 			'px-10 bg-red-500 text-white flex flex-row gap-2 items-center justify-center mb-2',
