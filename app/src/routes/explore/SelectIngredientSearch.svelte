@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { Select, type Selected } from 'bits-ui';
-	import { flyAndScale } from '$lib/utils/transitions';
-	import { INGREDIENTS } from '$lib/common/ingredients';
-	import Icon from '@iconify/svelte';
+	import { type Selected } from 'bits-ui';
+	import * as Select from '$components/ui/select/index.js';
+	import { INGREDIENTS, type Category } from '$lib/common/ingredients';
 	import { cn } from '$lib/utils';
 	import OrangeSlice from '$components/icons/orangeSliceIcon.svelte';
 
@@ -13,10 +12,43 @@
 	};
 
 	let { selected = $bindable(), onClose, ...rest }: Props = $props();
-	const ingredients = INGREDIENTS.map((x) => ({ value: x.value, label: x.value, image: x.image }));
+	const initialIngredients = INGREDIENTS.map((x) => ({ label: x.value, ...x }));
+	const ingredientGroups = Object.groupBy(initialIngredients, (e) => e.category);
 </script>
 
 <Select.Root
+	bind:selected
+	items={initialIngredients}
+	multiple
+	onOpenChange={(isOpen) => {
+		if (!isOpen) {
+			onClose?.();
+		}
+	}}
+>
+	<Select.Trigger class={cn('w-[180px]', rest.class)}>
+		<OrangeSlice class="mr-[9px] size-6 text-neutral-300" />
+		<Select.Value placeholder="Ingredients" />
+	</Select.Trigger>
+	<Select.Content class="max-h-[500px] overflow-y-auto">
+		{#each Object.keys(ingredientGroups) as group}
+			{@const ingredients = ingredientGroups[group as Category] || []}
+
+			<Select.Group>
+				<Select.Label class="capitalize">{group}</Select.Label>
+				{#each ingredients as ingredient}
+					<Select.Item value={ingredient.value} label={ingredient.label}>
+						<span>{ingredient.image}</span>
+						<span>{ingredient.label}</span>
+					</Select.Item>
+				{/each}
+			</Select.Group>
+		{/each}
+	</Select.Content>
+	<Select.Input name="ingredients" />
+</Select.Root>
+
+<!-- <Select.Root
 	bind:selected
 	items={ingredients}
 	multiple
@@ -57,4 +89,4 @@
 		{/each}
 	</Select.Content>
 	<Select.Input name="ingredients" />
-</Select.Root>
+</Select.Root> -->

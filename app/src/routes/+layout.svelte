@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import "$lib/polyfills";
 	import type { LayoutData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
