@@ -8,6 +8,7 @@
 	import DiamongIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
+	import { getStringInitials } from '$lib/utils/getStringInitials';
 
 	let { user, account }: { user: User; account: Account } = $props();
 	const apiKeyDialogOpen = useApiKeyDialog();
@@ -25,7 +26,7 @@
 				<Avatar.Fallback
 					class="w-full h-full aspect-square flex flex-row justify-center items-center bg-orange-500 text-white font-bold"
 				>
-					{user.username.slice(0, 2).toUpperCase()}
+					{getStringInitials(user.username, 2).toUpperCase()}
 				</Avatar.Fallback>
 			</div>
 		</Avatar.Root>
