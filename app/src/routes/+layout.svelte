@@ -59,7 +59,7 @@
 	setSeoBaseTitle(`CocinarIA ${icon}`);
 </script>
 
-<SvelteSeo />
+<SvelteSeo themeColor="#FB923C"/>
 
 <svelte:head>
 	<title>{`CocinarIA ${icon}`}</title>
