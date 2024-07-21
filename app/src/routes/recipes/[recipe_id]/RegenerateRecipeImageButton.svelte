@@ -48,11 +48,13 @@
 		loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-gray-900'
 	)}
 >
-	{#if loading}
-		<LoadingDotsIcon class="size-6" />
-		<span> Generating Image</span>
-	{:else}
-		<GenerateImageIcon class="size-6" />
-		<span> Regenerate Image</span>
-	{/if}
+	<svelte:fragment>
+		{#if loading}
+			<LoadingDotsIcon class="size-6" />
+			<span> Generating Image</span>
+		{:else}
+			<GenerateImageIcon class="size-6" />
+			<span> Regenerate Image</span>
+		{/if}
+	</svelte:fragment>
 </Button>
