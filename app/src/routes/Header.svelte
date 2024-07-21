@@ -102,7 +102,9 @@
 
 	<div class="flex flex-row items-center gap-2">
 		{#if user}
-			{#if auth.account.isPremium}
+			{@const account = auth.account};
+
+			{#if account.isPremium}
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
 				>
@@ -114,13 +116,12 @@
 					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
 				>
 					<CoinIcon class="xxs:size-5 size-3 text-amber-500" />
-					<span class="xxs:text-sm text-[12px] font-semibold text-amber-800"
-						>{auth.account.credits}</span
+					<span class="xxs:text-sm text-[12px] font-semibold text-amber-800">{account.credits}</span
 					>
 				</button>
 			{/if}
 
-			<UserAvatar {user} account={auth.account} />
+			<UserAvatar {user} {account} />
 		{:else if !$isLoginPage}
 			<a
 				href="/login"
