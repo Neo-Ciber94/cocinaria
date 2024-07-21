@@ -61,6 +61,7 @@
 							height="600"
 							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
+							style={`view-transition-name: recipe-${recipe.id}`}
 						/>
 						{#if isCurrentUserRecipe}
 							<div class="flex flex-row gap-2 w-full">
@@ -129,3 +130,9 @@
 		</div>
 	</div>
 </div>
+
+<!-- <style>
+	img {
+		view-transition-name: recipe;
+	}
+</style> -->
