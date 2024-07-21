@@ -21,6 +21,7 @@
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import type { Component } from 'svelte';
 	import { cn } from '$lib/utils';
+	import LoginIcon from '$components/icons/loginIcon.svelte';
 
 	type MenuItem = { href: string; label: string; icon: Component };
 
@@ -108,15 +109,15 @@
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
 				>
-					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
+					<DiamondIcon class="xxs:size-5 size-3 text-purple-500" />
+					<span class="xxs:text-sm text-[12px] font-semibold text-purple-800">Premium</span>
 				</button>
 			{:else}
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
 				>
-					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
+					<CoinIcon class="xxs:size-5 size-3 text-amber-500" />
+					<span class="xxs:text-sm text-[12px] font-semibold text-amber-800">{account.credits}</span
 					>
 				</button>
 			{/if}
@@ -147,14 +148,14 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+				class="focus-visible bg-background-alt shadow-btn active:scale-98 text-foreground hover:bg-muted focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex h-10 w-10 items-center justify-center text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2 md:hidden"
 			>
 				<MenuIcon
 					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-500 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg"
+				class="border-muted bg-background mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -190,19 +191,36 @@
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 				{/each}
 
-				<DropdownMenu.Item
-					class="flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
-				>
-					<button
-						class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
-						onclick={() => {
-							apiKeyDialogOpen.isOpen = true;
-						}}
+				{#if account}
+					<DropdownMenu.Item
+						class="flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 					>
-						<KeyIcon class="size-5 text-gray-500" />
-						<span>API Key</span>
-					</button>
-				</DropdownMenu.Item>
+						<button
+							class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
+							onclick={() => {
+								apiKeyDialogOpen.isOpen = true;
+							}}
+						>
+							<KeyIcon class="size-5 text-gray-500" />
+							<span>API Key</span>
+						</button>
+					</DropdownMenu.Item>
+				{:else}
+					<DropdownMenu.Item
+						class={cn(
+							'flex h-14 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200'
+						)}
+					>
+						<a
+							href={'/login'}
+							class="flex w-full flex-row gap-2 px-3"
+							transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+						>
+							<LoginIcon class={cn('size-5 opacity-50 group-hover:opacity-100')} />
+							<p>Login</p>
+						</a>
+					</DropdownMenu.Item>
+				{/if}
 
 				{#if account && account.isPremium}
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
