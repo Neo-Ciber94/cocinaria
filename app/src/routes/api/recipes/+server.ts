@@ -1,8 +1,11 @@
 import { getRecipes } from '$lib/server/recipes';
+import { checkAuthenticated } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { stringify } from 'devalue';
 
 export const GET: RequestHandler = async (event) => {
+	checkAuthenticated(event);
+
 	const search = event.url.searchParams.get('search');
 	const ingredients = event.url.searchParams.getAll('ingredients').filter(Boolean);
 	const cursor = event.url.searchParams.get('cursor');
