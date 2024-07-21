@@ -77,7 +77,8 @@ export const recipes = pgTable(
 		return {
 			name_idx: index('name_idx').on(table.name),
 			ingredients_idx: index('ingredients_idx').using('gin', table.ingredients),
-			recipe_type_idx: index('recipe_type_idx').on(table.recipeType)
+			recipe_type_idx: index('recipe_type_idx').on(table.recipeType),
+			created_at_id_idx: index('created_at_id_idx').on(table.createdAt, table.id)
 		};
 	}
 );
