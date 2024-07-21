@@ -5,7 +5,7 @@
 	import CoinIcon from '$components/icons/coinIcon.svelte';
 	import DiamondIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
-	import { useAuth } from '$lib/hooks/useAuth';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { derived } from 'svelte/store';
 	import UserAvatar from './UserAvatar.svelte';

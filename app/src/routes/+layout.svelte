@@ -4,7 +4,7 @@
 	import type { LayoutData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
-	import { setAuth } from '$lib/hooks/useAuth';
+	import { setAuth } from '$lib/hooks/useAuth.svelte';
 	import Header from './Header.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';

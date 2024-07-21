@@ -3,7 +3,7 @@
 	import SushiIcon from '$components/icons/sushiIcon.svelte';
 	import RecipeItem from '$components/RecipeItem.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
-	import { useAuth } from '$lib/hooks/useAuth';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import type { PageData } from './$types';
 
 	type Props = {

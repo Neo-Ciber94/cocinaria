@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useAuth } from '$lib/hooks/useAuth';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import type { PageData } from './$types';
 	import RegenerateRecipeImageButton from './RegenerateRecipeImageButton.svelte';
 	import { INGREDIENTS } from '$lib/common/ingredients';
