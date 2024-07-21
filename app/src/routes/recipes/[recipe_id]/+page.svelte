@@ -6,6 +6,7 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
+	import GeneratedBy from '$components/GeneratedBy.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -118,5 +119,13 @@
 				</div>
 			</div>
 		</section>
+
+		<div class="w-full justify-end flex flex-row mt-8">
+			<GeneratedBy
+				generatedAt={recipe.createdAt}
+				ownerUsername={recipe.user.username}
+				ownerPicture={recipe.user.picture}
+			/>
+		</div>
 	</div>
 </div>
