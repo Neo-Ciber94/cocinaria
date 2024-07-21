@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
@@ -43,4 +44,21 @@ Map.groupBy ??= function groupBy(iterable, callbackfn) {
 		list ? list.push(value) : map.set(key, [value]);
 	}
 	return map;
+};
+
+/**
+ * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
+ * @returns
+ * An object with the properties promise, resolve, and reject.
+ */
+Promise.withResolvers ??= function withResolvers() {
+	let resolve = (value) => {};
+	let reject = (err) => {};
+
+	const promise = new Promise((resolveFunction, rejectFunction) => {
+		resolve = resolveFunction;
+		reject = rejectFunction;
+	});
+
+	return { promise, resolve, reject };
 };
