@@ -47,7 +47,7 @@
 		<h2 class="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-5xl">Latest Recipes</h2>
 
 		<div
-			class="grid grid-cols-1 items-center gap-2 min-[200px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+			class="grid grid-cols-1 items-center gap-2 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
 		>
 			{#each data.recipes as recipe (recipe.id)}
 				<RecipeItem

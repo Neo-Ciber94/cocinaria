@@ -161,7 +161,7 @@
 	{:else if $query.data.pages && totalCount > 0}
 		{@const pages = $query.data.pages}
 		<div
-			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 min-[200px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
 		>
 			{#each pages as page}
 				{@const recipes = page.recipes}
