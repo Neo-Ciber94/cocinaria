@@ -14,8 +14,14 @@
 	import { browser } from '$app/environment';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { onNavigate } from '$app/navigation';
+	import type { Snippet } from 'svelte';
 
-	export let data: LayoutData;
+	type Props = {
+		data: LayoutData;
+		children: Snippet;
+	};
+
+	let { data, children }: Props = $props();
 	const icon = data.icon;
 
 	const aiProvider = useAIProvider();
@@ -43,6 +49,11 @@
 		});
 	});
 
+	$effect(() => {
+		setAuth(data.auth);
+		console.log({ acount: data.auth?.account });
+	});
+
 	setAuth(data.auth);
 	setFoodIcon(data.icon);
 	setSeoBaseTitle(`CocinarIA ${icon}`);
@@ -63,7 +74,8 @@
 <Header />
 <QueryClientProvider client={queryClient}>
 	<main class="min-h-[calc(100vh-var(--header-height)-var(--footer-height))] w-full">
-		<slot />
+		<!-- prettier-ignore -->
+		{@render children()}
 	</main>
 </QueryClientProvider>
 
