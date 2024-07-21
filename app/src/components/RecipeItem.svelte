@@ -29,7 +29,12 @@
 	function getIngredientImages(recipeIngredients: string[]) {
 		const images = INGREDIENTS.filter((ingredient) =>
 			recipeIngredients.includes(ingredient.value)
-		).map((ingredient) => ingredient.image);
+		).map((ingredient) => {
+			return {
+				name: ingredient.value,
+				image: ingredient.image
+			};
+		});
 
 		return images;
 	}
@@ -63,15 +68,15 @@
 			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
 		/>
 
-		<h3 class="xs:text-lg mt-1 text-center text-sm font-bold xxs:text-base">
+		<h3 class="xs:text-lg xxs:text-base mt-1 text-center text-sm font-bold">
 			{recipe.name}
 		</h3>
 		<small class="w-full text-center font-sans font-medium tracking-wide text-neutral-300">
 			Ingredients
 		</small>
 		<div class="flex w-full flex-row flex-wrap items-center justify-center gap-1 px-2 text-xl">
-			{#each getIngredientImages(recipe.ingredients) as ingredientImage}
-				<span>{ingredientImage}</span>
+			{#each getIngredientImages(recipe.ingredients) as ingredientImg}
+				<span title={ingredientImg.name}>{ingredientImg.image}</span>
 			{/each}
 		</div>
 	</a>

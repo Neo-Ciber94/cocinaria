@@ -8,7 +8,6 @@
 	import SelectIngredientSearch from './SelectIngredientSearch.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { debounce } from '$lib/common/utils';
 	import toast from 'svelte-french-toast';
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { fetchServer } from '$lib/client/fetchServer';
@@ -16,6 +15,7 @@
 	import OnViewport from './OnViewport.svelte';
 	import { Button } from '$components/ui/button';
 	import Input from '$components/ui/input/input.svelte';
+	import { debounce } from '$lib/utils/debounce';
 
 	function getInitialIngredients() {
 		const values = $page.url.searchParams
@@ -137,7 +137,7 @@
 				onClose={debouncedSearch}
 			/>
 		</div>
-		<div class="mt-5 flex w-full basis-1/3 flex-row gap-1 xs:mt-0">
+		<div class="xs:mt-0 mt-5 flex w-full basis-1/3 flex-row gap-1">
 			<Button
 				class={'relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-orange-500 text-white hover:bg-orange-600'}
 			>
@@ -161,7 +161,7 @@
 	{:else if $query.data.pages && totalCount > 0}
 		{@const pages = $query.data.pages}
 		<div
-			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+			class="xxs:grid-cols-2 grid grid-cols-1 flex-wrap justify-center gap-4 py-5 sm:grid-cols-3 md:grid-cols-4"
 		>
 			{#each pages as page}
 				{@const recipes = page.recipes}
