@@ -5,7 +5,7 @@
 	import type { User } from 'lucia';
 	import type { Account } from '$lib/db/types';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
-	import DiamongIcon from '$components/icons/diamongIcon.svelte';
+	import DiamongIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CopyLabel from '$components/CopyLabel.svelte';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
-	import DiamongIcon from '$components/icons/diamongIcon.svelte';
+	import DiamongIcon from '$components/icons/diamondIcon.svelte';
 	import DiscordIcon from '$components/icons/discordIcon.svelte';
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';

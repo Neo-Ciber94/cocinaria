@@ -2,6 +2,9 @@
 	import { page } from '$app/stores';
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
 	import SearchIcon from '$components/icons/searchIcon.svelte';
+	import CoinIcon from '$components/icons/coinIcon.svelte';
+	import DiamondIcon from '$components/icons/diamondIcon.svelte';
+	import KeyIcon from '$components/icons/keyIcon.svelte';
 	import { useAuth } from '$lib/hooks/useAuth';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { derived } from 'svelte/store';
@@ -15,6 +18,27 @@
 	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
+	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
+
+	type MenuItem = { href: string; label: string; icon: any };
+
+	const MENU_ITEMS: MenuItem[] = [
+		{
+			href: '/explore',
+			label: 'Explore',
+			icon: SearchIcon
+		},
+		{
+			href: '/my-recipes',
+			label: 'My Recipes',
+			icon: CookingIcon
+		},
+		{
+			href: '/generate',
+			label: 'Generate',
+			icon: SparkIcon
+		}
+	];
 
 	const isLoginPage = derived(
 		page,
@@ -25,8 +49,10 @@
 	const auth = useAuth();
 
 	const user = auth?.user;
-	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
+	const account = auth?.account;
 	let isMenuOpen = $state(false);
+	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
+	const apiKeyDialogOpen = useApiKeyDialog();
 
 	$effect(() => {
 		if (!isSmallScreenQuery.matches) {
@@ -43,30 +69,16 @@
 	</a>
 
 	<div class="md:flex flex-row h-full items-center gap-4 hidden">
-		<a
-			href="/explore"
-			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
-			data-active={false}
-		>
-			<SearchIcon class="size-5 group-hover:opacity-100 opacity-50" />
-			<span> Explore </span>
-		</a>
-		<a
-			href="/my-recipes"
-			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
-			data-active={false}
-		>
-			<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
-			<span> My Recipes </span>
-		</a>
-		<a
-			href="/generate"
-			class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
-			data-active={false}
-		>
-			<SparkIcon class="size-5 group-hover:opacity-100 opacity-50" />
-			<span> Generate </span>
-		</a>
+		{#each MENU_ITEMS as menuItem}
+			<a
+				href={menuItem.href}
+				class="font-medium text-neutral-600 group min-w-[90px] text-center p-2 rounded-md hover:bg-orange-500 hover:text-white flex flex-row items-center gap-1"
+				data-active={false}
+			>
+				<svelte:component this={menuItem.icon} class="size-5 group-hover:opacity-100 opacity-50" />
+				<span> {menuItem.label} </span>
+			</a>
+		{/each}
 	</div>
 
 	<div class="flex flex-row gap-2 items-center">
@@ -104,7 +116,7 @@
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg bg-white"
+				class="w-full max-w-[95vw] mx-auto rounded-xl border border-muted bg-background shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -115,48 +127,77 @@
 					easing: linear
 				}}
 			>
-				<DropdownMenu.Item
-					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
-				>
-					<a
-						href="/"
-						class="flex flex-row gap-2 px-3"
-						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+				{#each MENU_ITEMS as menuItem}
+					<DropdownMenu.Item
+						class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200 w-full"
 					>
-						<SearchIcon class="size-5 group-hover:opacity-100 opacity-50" />
-						<p>Explore</p>
-					</a>
-				</DropdownMenu.Item>
-				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+						<a
+							href={menuItem.href}
+							class="flex flex-row gap-2 px-3 w-full"
+							transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+						>
+							<svelte:component
+								this={menuItem.icon}
+								class="size-5 group-hover:opacity-100 opacity-50"
+							/>
+							<p>{menuItem.label}</p>
+						</a>
+					</DropdownMenu.Item>
+
+					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+				{/each}
+
 				<DropdownMenu.Item
-					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+					class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 				>
-					<a
-						href="/"
-						class="flex flex-row gap-2 px-3"
-						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+					<button
+						class="flex items-center w-full p-2 rounded-lg flex-row gap-2"
+						onclick={() => {
+							apiKeyDialogOpen.isOpen = true;
+						}}
 					>
-						<CookingIcon class="size-5 group-hover:opacity-100 opacity-50" />
-						<p>My Recipes</p>
-					</a>
-				</DropdownMenu.Item>
-				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
-				<DropdownMenu.Item
-					class="flex flex-row gap-2 h-14 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
-				>
-					<a
-						href="/generate"
-						class="flex flex-row gap-2 px-3"
-						transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
-					>
-						<SparkIcon class="size-5 group-hover:opacity-100 opacity-50" />
-						<p>Generate</p>
-					</a>
+						<KeyIcon class="size-5 text-gray-500" />
+						<span>API Key</span>
+					</button>
 				</DropdownMenu.Item>
 
+				{#if account && account.isPremium}
+					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+					<DropdownMenu.Item
+						class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-purple-300 group hover:text-white cursor-pointer"
+					>
+						<div class="flex items-center w-full p-2 rounded-lg flex-row gap-2">
+							<DiamondIcon class="size-5 group-hover:scale-110 transition-transform" />
+							<span> Premium </span>
+						</div>
+					</DropdownMenu.Item>
+					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+					<DropdownMenu.Item
+						class="flex h-14 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
+					>
+						<button
+							class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
+							onclick={() => {
+								if (account.credits <= 0) {
+									alert('Sorry, there is no way to become premium, use an API key instead');
+								}
+							}}
+						>
+							<CoinIcon
+								class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
+							/>
+							<p class="flex flex-row gap-0.5 items-center">
+								<span>Credits:</span>
+								<span>{account.credits}</span>
+							</p>
+						</button>
+					</DropdownMenu.Item>
+				{/if}
+
 				<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
+
 				<DropdownMenu.Item
-					class="flex flex-row gap-2 h-12 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200"
+					class="flex flex-row gap-2 h-12 select-none items-center text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200 w-full"
 				>
 					<a
 						href="https://github.com/Neo-Ciber94/cocinaria"
