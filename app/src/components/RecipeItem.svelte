@@ -15,9 +15,15 @@
 
 	type Recipe = Pick<RecipeEntity, 'id' | 'name' | 'ingredients' | 'imageUrl'>;
 
-	type Props = { recipe: Recipe; class?: string; index?: number; imgProps?: ImgProps };
+	type Props = {
+		recipe: Recipe;
+		class?: string;
+		transition?: boolean;
+		index?: number;
+		imgProps?: ImgProps;
+	};
 
-	let { recipe, imgProps, index = 0, ...rest }: Props = $props();
+	let { recipe, imgProps, transition = true, index = 0, ...rest }: Props = $props();
 	const mounted = useIsMounted();
 
 	function getIngredientImages(recipeIngredients: string[]) {
@@ -29,7 +35,7 @@
 	}
 </script>
 
-{#if mounted.value}
+{#if mounted.value || !transition}
 	<a
 		href={`/recipes/${recipe.id}`}
 		class={cn(

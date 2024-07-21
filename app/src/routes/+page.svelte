@@ -1,9 +1,16 @@
 <script lang="ts">
 	import CookingIcon from '$components/icons/cookingIcon.svelte';
 	import SushiIcon from '$components/icons/sushiIcon.svelte';
+	import RecipeItem from '$components/RecipeItem.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { useAuth } from '$lib/hooks/useAuth';
+	import type { PageData } from './$types';
 
+	type Props = {
+		data: PageData;
+	};
+
+	let { data }: Props = $props();
 	const auth = useAuth();
 </script>
 
@@ -34,3 +41,22 @@
 		</a>
 	</div>
 </section>
+
+{#if data.recipes.length > 0}
+	<section class="w-full flex flex-col gap-2 bg-orange-500 px-4 py-10">
+		<h2 class="text-white text-2xl md:text-3xl lg:text-5xl font-bold mb-4">Latest Recipes</h2>
+
+		<div
+			class="gap-2 items-center grid grid-cols-1 min-[200px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+		>
+			{#each data.recipes as recipe (recipe.id)}
+				<RecipeItem
+					{recipe}
+					transition={false}
+					imgProps={{ width: 400, height: 400 }}
+					class="w-full h-full items-center"
+				/>
+			{/each}
+		</div>
+	</section>
+{/if}
