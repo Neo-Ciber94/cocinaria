@@ -12,7 +12,7 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getResponseError } from '$lib/client/getResponseError';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
