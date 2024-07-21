@@ -8,7 +8,7 @@
 	import DiamongIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
-	import { getStringInitials } from '$lib/utils/getStringInitials';
+	import { getStringInitials } from '$lib/utils/strings';
 
 	let { user, account }: { user: User; account: Account } = $props();
 	const apiKeyDialogOpen = useApiKeyDialog();

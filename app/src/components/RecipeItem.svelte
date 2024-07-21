@@ -4,6 +4,7 @@
 	import type { Recipe as RecipeEntity } from '$lib/db/types';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
 	import { cn } from '$lib/utils';
+	import { capitalize } from '$lib/utils/strings';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 
@@ -76,7 +77,7 @@
 		</small>
 		<div class="flex w-full flex-row flex-wrap items-center justify-center gap-1 px-2 text-xl">
 			{#each getIngredientImages(recipe.ingredients) as ingredientImg}
-				<span title={ingredientImg.name}>{ingredientImg.image}</span>
+				<span title={capitalize(ingredientImg.name)}>{ingredientImg.image}</span>
 			{/each}
 		</div>
 	</a>

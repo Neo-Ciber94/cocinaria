@@ -6,7 +6,7 @@
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
-	import { getStringInitials } from '$lib/utils/getStringInitials';
+	import { getStringInitials } from '$lib/utils/strings';
 	import { flyAndScale } from '$lib/utils/transitions';
 	import type { PageServerData } from './$types';
 	import { Avatar, Tooltip } from 'bits-ui';

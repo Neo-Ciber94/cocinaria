@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as Tooltip from '$components/ui/tooltip/index.js';
 	import * as Avatar from '$components/ui/avatar/index.js';
-	import { getStringInitials } from '$lib/utils/getStringInitials';
 	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
+	import { getStringInitials } from '$lib/utils/strings';
 
 	type Props = {
 		ownerUsername: string;
