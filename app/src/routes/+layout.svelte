@@ -106,5 +106,5 @@
 ></div> -->
 
 <FrenchToaster toastOptions={{ duration: 6000 }} />
-<Toaster toastOptions={{ duration: 6000 }} />
+<Toaster toastOptions={{ duration: 6000 }} richColors />
 <ApiKeyDialog />
