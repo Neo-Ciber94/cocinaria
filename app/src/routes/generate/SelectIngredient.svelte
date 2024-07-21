@@ -61,7 +61,7 @@
 			class={cn('relative w-[200px] justify-between pl-12', rest.class)}
 		>
 			{#if selected}
-				<div class="absolute start-3 top-1/2 text-lg size-6 -translate-y-1/2">
+				<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
 					{selected.image}
 				</div>
 				<span class="capitalize">{selected.value}</span>
@@ -74,7 +74,7 @@
 			<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 		</Button>
 	</Popover.Trigger>
-	<Popover.Content class="w-[90%] sm:w-[400px] max-h-[500px] overflow-y-auto p-0">
+	<Popover.Content class="max-h-[500px] w-[90%] overflow-y-auto p-0 sm:w-[400px]">
 		<Command.Root>
 			<Command.Input placeholder="Select an ingredient" class="h-9" {disabled} />
 			<Command.Empty>No ingredients</Command.Empty>

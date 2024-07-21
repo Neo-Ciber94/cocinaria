@@ -39,7 +39,7 @@
 	<a
 		href={`/recipes/${recipe.id}`}
 		class={cn(
-			'flex flex-col gap-1 p-2 rounded-lg shadow-md border border-gray-200 w-full bg-white',
+			'flex w-full flex-col gap-1 rounded-lg border border-gray-200 bg-white p-2 shadow-md',
 			rest.class
 		)}
 		in:scale={{
@@ -63,11 +63,11 @@
 			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
 		/>
 
-		<h3 class="text-center font-bold text-base sm:text-lg mt-1">{recipe.name}</h3>
-		<small class="text-neutral-300 text-center w-full font-medium font-sans tracking-wide">
+		<h3 class="mt-1 text-center text-base font-bold sm:text-lg">{recipe.name}</h3>
+		<small class="w-full text-center font-sans font-medium tracking-wide text-neutral-300">
 			Ingredients
 		</small>
-		<div class="flex flex-row gap-1 items-center w-full justify-center text-xl px-2 flex-wrap">
+		<div class="flex w-full flex-row flex-wrap items-center justify-center gap-1 px-2 text-xl">
 			{#each getIngredientImages(recipe.ingredients) as ingredientImage}
 				<span>{ingredientImage}</span>
 			{/each}

@@ -44,8 +44,8 @@
 	onclick={regenerateRecipeImage}
 	disabled={loading || props.disabled}
 	class={cn(
-		'bg-gray-800 w-full text-white flex flex-row gap-2 items-center justify-center',
-		loading ? 'disabled:opacity-70 cursor-wait' : ' hover:bg-gray-900'
+		'flex w-full flex-row items-center justify-center gap-2 bg-gray-800 text-white',
+		loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-gray-900'
 	)}
 >
 	{#if loading}

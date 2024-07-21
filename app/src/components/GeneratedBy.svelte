@@ -16,14 +16,14 @@
 
 <Tooltip.Root>
 	<Tooltip.Trigger>
-		<div class="flex flex-row gap-2 items-center cursor-pointer">
-			<Avatar.Root class="w-7 h-7">
+		<div class="flex cursor-pointer flex-row items-center gap-2">
+			<Avatar.Root class="h-7 w-7">
 				<Avatar.Image src={ownerPicture} alt={ownerUsername} />
-				<Avatar.Fallback class="bg-orange-500 text-white font-bold text-sm">
+				<Avatar.Fallback class="bg-orange-500 text-sm font-bold text-white">
 					{getStringInitials(ownerUsername, 2).toUpperCase()}
 				</Avatar.Fallback>
 			</Avatar.Root>
-			<p class="text-neutral-500 font-medium text-[13px]">
+			<p class="text-[13px] font-medium text-neutral-500">
 				{ownerUsername}
 			</p>
 		</div>

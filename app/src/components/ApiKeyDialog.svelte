@@ -83,8 +83,8 @@
 
 		<form class="flex flex-col items-start gap-1" autocomplete="off">
 			<Label for="apiKey" class="text-sm font-medium">API Key</Label>
-			<div class="flex flex-row gap-1 items-center w-full">
-				<div class="w-full flex flex-row items-center gap-2 relative">
+			<div class="flex w-full flex-row items-center gap-1">
+				<div class="relative flex w-full flex-row items-center gap-2">
 					<Input
 						id="apiKey"
 						class={cn('w-full px-4 text-sm', 'disabled:cursor-not-allowed disabled:bg-neutral-200')}
@@ -98,7 +98,7 @@
 					/>
 
 					<KeyIcon
-						class="absolute right-2 top-1/2 bottom-0 -translate-y-1/2 size-[20px] text-black/30"
+						class="absolute bottom-0 right-2 top-1/2 size-[20px] -translate-y-1/2 text-black/30"
 					/>
 				</div>
 				<SelectAiProvider bind:selected={aiProviderItem} disabled={hasAIProvider} />
@@ -106,7 +106,7 @@
 
 			{#if selectedProvider && selectedProvider !== 'openai'}
 				<Alert.Root variant="warning" class="mt-2">
-					<Icon icon="typcn:warning" class="text-yellow-500 size-6" />
+					<Icon icon="typcn:warning" class="size-6 text-yellow-500" />
 					<Alert.Title>Warning</Alert.Title>
 					<Alert.Description
 						>We do not support <strong>image generation</strong> for this provider</Alert.Description
@@ -116,7 +116,7 @@
 
 			<Dialog.Footer class="mt-2">
 				<Button
-					class="min-w-[100px] flex flex-row gap-1 items-center"
+					class="flex min-w-[100px] flex-row items-center gap-1"
 					type="button"
 					disabled={!canSubmit || loading}
 					onclick={handleSave}
@@ -127,7 +127,7 @@
 					Save
 				</Button>
 				<Button
-					class="min-w-[100px] flex flex-row gap-1 items-center"
+					class="flex min-w-[100px] flex-row items-center gap-1"
 					type="button"
 					disabled={loading}
 					variant="destructive"

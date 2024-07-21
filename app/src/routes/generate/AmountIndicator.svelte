@@ -24,11 +24,11 @@
 	}
 </script>
 
-<div class="w-full flex flex-row gap-1">
+<div class="flex w-full flex-row gap-1">
 	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 	{#each Array(max) as _, idx}
 		<div
-			class={cn('h-8 border border-gray-200 -skew-x-[15deg] rounded-md', getClass(idx))}
+			class={cn('h-8 -skew-x-[15deg] rounded-md border border-gray-200', getClass(idx))}
 			style={`width: ${width * 100}%`}
 		></div>
 	{/each}

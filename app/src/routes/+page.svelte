@@ -17,16 +17,16 @@
 <SvelteSeo />
 
 <section
-	class="w-full min-h-[var(--main-height)] flex flex-col justify-center items-center mx-auto md:max-w-3xl overflow-hidden"
+	class="mx-auto flex min-h-[var(--main-height)] w-full flex-col items-center justify-center overflow-hidden md:max-w-3xl"
 >
-	<div class="flex flex-col gap-2 justify-center p-4">
-		<section class="flex flex-row gap-4 items-center">
+	<div class="flex flex-col justify-center gap-2 p-4">
+		<section class="flex flex-row items-center gap-4">
 			<SushiIcon
-				class="w-[150px] md:w-[200px] lg:w-[30%] max-w-[500px] aspect-square bg-orange-100 p-4 sm:p-8 rounded-full"
+				class="aspect-square w-[150px] max-w-[500px] rounded-full bg-orange-100 p-4 sm:p-8 md:w-[200px] lg:w-[30%]"
 			/>
 			<div class="flex flex-col gap-1">
-				<h2 class="text-orange-500 text-3xl sm:text-4xl md:text-5xl font-extrabold">CocinarIA</h2>
-				<h3 class="text-base sm:text-xl md:text-3xl font-bold text-neutral-600">
+				<h2 class="text-3xl font-extrabold text-orange-500 sm:text-4xl md:text-5xl">CocinarIA</h2>
+				<h3 class="text-base font-bold text-neutral-600 sm:text-xl md:text-3xl">
 					Turn Ingredients into Delicious Dishes!
 				</h3>
 			</div>
@@ -34,27 +34,27 @@
 
 		<a
 			href={auth ? '/generate' : '/login'}
-			class="mx-auto w-full max-w-[80vw] sm:max-w-[400px] font-bold text-white bg-orange-500 hover:bg-orange-600 py-2 px-8 shadow-md rounded-2xl flex flex-row gap-2 items-center justify-center"
+			class="mx-auto flex w-full max-w-[80vw] flex-row items-center justify-center gap-2 rounded-2xl bg-orange-500 px-8 py-2 font-bold text-white shadow-md hover:bg-orange-600 sm:max-w-[400px]"
 		>
-			<CookingIcon class="text-white size-5" />
+			<CookingIcon class="size-5 text-white" />
 			<span> Start Cooking </span>
 		</a>
 	</div>
 </section>
 
 {#if data.recipes.length > 0}
-	<section class="w-full flex flex-col gap-2 bg-orange-500 px-4 py-10">
-		<h2 class="text-white text-2xl md:text-3xl lg:text-5xl font-bold mb-4">Latest Recipes</h2>
+	<section class="flex w-full flex-col gap-2 bg-orange-500 px-4 py-10">
+		<h2 class="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-5xl">Latest Recipes</h2>
 
 		<div
-			class="gap-2 items-center grid grid-cols-1 min-[200px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+			class="grid grid-cols-1 items-center gap-2 min-[200px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
 		>
 			{#each data.recipes as recipe (recipe.id)}
 				<RecipeItem
 					{recipe}
 					transition={false}
 					imgProps={{ width: 400, height: 400 }}
-					class="w-full h-full items-center"
+					class="h-full w-full items-center"
 				/>
 			{/each}
 		</div>

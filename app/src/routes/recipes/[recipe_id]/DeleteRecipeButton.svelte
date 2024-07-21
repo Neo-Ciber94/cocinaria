@@ -57,8 +57,8 @@
 		type="submit"
 		disabled={loading || props.disabled}
 		class={cn(
-			'px-10 bg-red-500 text-white flex flex-row gap-2 items-center justify-center mb-2',
-			loading ? 'disabled:opacity-70 cursor-wait' : ' hover:bg-red-600'
+			'mb-2 flex flex-row items-center justify-center gap-2 bg-red-500 px-10 text-white',
+			loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-red-600'
 		)}
 	>
 		{#if loading}

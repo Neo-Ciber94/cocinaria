@@ -16,15 +16,15 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="focus-visible hover:opacity-90 inline-flex h-10 w-10 items-center justify-center rounded-full border bg-background-alt text-sm font-medium text-foreground shadow-btn hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-98"
+		class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium text-foreground hover:bg-gray-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 	>
 		<Avatar.Root
-			class="rounded-full bg-gray-200 text-[17px] font-medium uppercase text-gray-200 border border-gray-400 w-full h-full"
+			class="h-full w-full rounded-full border border-gray-400 bg-gray-200 text-[17px] font-medium uppercase text-gray-200"
 		>
 			<div class="flex h-full w-full items-center justify-center overflow-hidden rounded-full">
 				<Avatar.Image src={user.picture} alt={user.username} />
 				<Avatar.Fallback
-					class="w-full h-full aspect-square flex flex-row justify-center items-center bg-orange-500 text-white font-bold"
+					class="flex aspect-square h-full w-full flex-row items-center justify-center bg-orange-500 font-bold text-white"
 				>
 					{getStringInitials(user.username, 2).toUpperCase()}
 				</Avatar.Fallback>
@@ -32,14 +32,14 @@
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content
-		class="w-full max-w-[229px] space-y-1 rounded-xl border border-gray-200 px-1 py-1.5 shadow-sm bg-white"
+		class="w-full max-w-[229px] space-y-1 rounded-xl border border-gray-200 bg-white px-1 py-1.5 shadow-sm"
 		sideOffset={8}
 		transition={flyAndScale}
 	>
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+			class="flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
-			<a class="flex items-center w-full p-2 rounded-lg flex-row gap-2" href="/user/@me">
+			<a class="flex w-full flex-row items-center gap-2 rounded-lg p-2" href="/user/@me">
 				<Icon icon="solar:user-circle-linear" class="size-5 text-gray-500" />
 				<span>{user.username}</span>
 			</a>
@@ -47,10 +47,10 @@
 
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+			class="flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
 			<button
-				class="flex items-center w-full p-2 rounded-lg flex-row gap-2"
+				class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
 				onclick={() => {
 					apiKeyDialogOpen.isOpen = true;
 				}}
@@ -63,10 +63,10 @@
 		{#if account.isPremium}
 			<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 			<DropdownMenu.Item
-				class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-purple-300 group hover:text-white cursor-pointer"
+				class="group flex h-10 cursor-pointer select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent hover:text-white data-[highlighted]:bg-purple-300"
 			>
-				<div class="flex items-center w-full p-2 rounded-lg flex-row gap-2">
-					<DiamongIcon class="size-5 group-hover:scale-110 transition-transform" />
+				<div class="flex w-full flex-row items-center gap-2 rounded-lg p-2">
+					<DiamongIcon class="size-5 transition-transform group-hover:scale-110" />
 					<span> Premium </span>
 				</div>
 			</DropdownMenu.Item>
@@ -74,10 +74,10 @@
 
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200 group"
+			class="group flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-amber-200"
 		>
 			<button
-				class="flex items-center w-full p-2 rounded-lg flex-row gap-2 cursor-pointer"
+				class="flex w-full cursor-pointer flex-row items-center gap-2 rounded-lg p-2"
 				onclick={() => {
 					if (account.credits <= 0) {
 						alert('Sorry, there is no way to become premium, use an API key instead');
@@ -85,9 +85,9 @@
 				}}
 			>
 				<CoinIcon
-					class="size-5 text-gray-500 group-hover:text-amber-500 group-hover:scale-110 transition-transform"
+					class="size-5 text-gray-500 transition-transform group-hover:scale-110 group-hover:text-amber-500"
 				/>
-				<p class="flex flex-row gap-0.5 items-center">
+				<p class="flex flex-row items-center gap-0.5">
 					<span>Credits:</span>
 					<span>{account.credits}</span>
 				</p>
@@ -96,9 +96,9 @@
 
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
-			class="flex h-10 select-none items-center rounded-md py-1 px-2 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
+			class="flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
-			<a class="flex items-center w-full p-2 rounded-lg flex-row gap-2" href="/api/auth/logout">
+			<a class="flex w-full flex-row items-center gap-2 rounded-lg p-2" href="/api/auth/logout">
 				<Icon icon="solar:logout-2-outline" class="size-5 text-gray-500" />
 				<span>Logout</span>
 			</a>

@@ -17,15 +17,15 @@
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | My Recipes`} />
 
-<div class="p-4 container mx-auto w-full h-full max-w-4xl lg:max-w-6xl pt-10 sm:pt-20">
-	<h1 class="flex flex-row gap-2 mx-auto text-2xl sm:text-4xl items-center text-orange-400">
+<div class="container mx-auto h-full w-full max-w-4xl p-4 pt-10 sm:pt-20 lg:max-w-6xl">
+	<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 		<CookingIcon class="size-8 sm:size-12" />
 		<span>My Recipes</span>
 	</h1>
 
 	{#if hasRecipes}
 		<div
-			class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
+			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
 		>
 			{#each recipes as recipe, index}
 				<RecipeItem {recipe} {index} imgProps={{ width: 400, height: 400 }} />
@@ -33,7 +33,7 @@
 		</div>
 	{:else}
 		<h2
-			class="text-xl md:text-4xl lg:text-5xl font-bold flex flex-row justify-center items-center text-neutral-400/70 h-[50vh] select-none w-full"
+			class="flex h-[50vh] w-full select-none flex-row items-center justify-center text-xl font-bold text-neutral-400/70 md:text-4xl lg:text-5xl"
 		>
 			No recipes
 		</h2>

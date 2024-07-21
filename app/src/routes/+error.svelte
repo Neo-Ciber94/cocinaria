@@ -7,14 +7,14 @@
 </script>
 
 <section
-	class="flex flex-col items-center justify-center p-10 w-full container mx-auto h-[var(--main-height)]"
+	class="container mx-auto flex h-[var(--main-height)] w-full flex-col items-center justify-center p-10"
 >
-	<div class="flex flex-col gap-4 items-center">
+	<div class="flex flex-col items-center gap-4">
 		{#if $page.status === 404}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 32 32"
-				class="text-orange-300 size-32 sm:size-60"
+				class="size-32 text-orange-300 sm:size-60"
 			>
 				<g fill="currentColor">
 					<path
@@ -29,7 +29,7 @@
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 24 24"
-				class="text-orange-300 size-32 sm:size-60"
+				class="size-32 text-orange-300 sm:size-60"
 			>
 				<path
 					fill="currentColor"
@@ -38,7 +38,7 @@
 			</svg>
 		{/if}
 
-		<h1 class="font-bold font-mono text-3xl sm:text-[50px] text-center text-orange-300">
+		<h1 class="text-center font-mono text-3xl font-bold text-orange-300 sm:text-[50px]">
 			{errorMessage}
 		</h1>
 	</div>

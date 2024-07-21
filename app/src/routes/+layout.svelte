@@ -68,16 +68,16 @@
 </QueryClientProvider>
 
 <footer
-	class="mt-auto h-[var(--footer-height)] flex flex-row justify-between items-center text-black border-t border-gray-300/50 px-2 sm:px-4"
+	class="mt-auto flex h-[var(--footer-height)] flex-row items-center justify-between border-t border-gray-300/50 px-2 text-black sm:px-4"
 >
-	<p class="flex flex-row gap-1 items-center">
+	<p class="flex flex-row items-center gap-1">
 		<span class="text-lg"> &copy; </span>
 		<span>Copyleft</span>
 	</p>
 
 	<a
 		href="https://github.com/Neo-Ciber94/cocinaria"
-		class="flex flex-row justify-center items-center gap-2 px-3"
+		class="flex flex-row items-center justify-center gap-2 px-3"
 		target="_blank"
 	>
 		<GithubAnimatedIcon class="size-4" />
@@ -86,7 +86,7 @@
 </footer>
 
 <div
-	class="fixed min-w-[100px] aspect-square w-[80%] max-w-[300px] ring-[50px] md:ring-[100px] ring-orange-100 rounded-full -left-20 -bottom-20 -z-10"
+	class="fixed -bottom-20 -left-20 -z-10 aspect-square w-[80%] min-w-[100px] max-w-[300px] rounded-full ring-[50px] ring-orange-100 md:ring-[100px]"
 ></div>
 
 <!-- <div
