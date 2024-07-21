@@ -102,7 +102,7 @@
 
 	<div class="flex flex-row items-center gap-2">
 		{#if user}
-			{@const account = auth.account};
+			{@const account = auth.account}
 
 			{#if account.isPremium}
 				<button
