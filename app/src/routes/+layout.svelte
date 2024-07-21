@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import "$lib/polyfills";
+	import '$lib/polyfills';
 	import type { LayoutData } from './$types';
 	import { Toaster } from 'svelte-french-toast';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
@@ -13,6 +13,7 @@
 	import { useAIProvider } from '$lib/hooks/useAIProvider.svelte';
 	import { browser } from '$app/environment';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { onNavigate } from '$app/navigation';
 
 	export let data: LayoutData;
 	const icon = data.icon;
@@ -28,6 +29,18 @@
 				enabled: browser
 			}
 		}
+	});
+
+	// FIXME: GSAP Flip transition is not compatible, better use that until we get better browser support?
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
 	});
 
 	setAuth(data.auth);

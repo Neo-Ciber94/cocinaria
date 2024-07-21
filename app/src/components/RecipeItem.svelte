@@ -43,8 +43,13 @@
 			easing: backOut,
 			delay: index * 70
 		}}
+		onclick={e => {
+			const img = e.currentTarget.querySelector("img")!;
+			img.style.viewTransitionName = `recipe-${recipe.id}`
+		}}
 	>
 		<img
+			data-img
 			width={imgProps?.width}
 			height={imgProps?.height}
 			class={imgProps?.class}
