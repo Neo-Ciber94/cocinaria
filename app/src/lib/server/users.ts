@@ -50,29 +50,34 @@ export async function isUserAllowedToUseAI(userId: string) {
 
 export async function consumeCreditFromUserAccount(userId: string, database: typeof db) {
 	const creditsToConsume = 1;
-	const userAccount = await database.query.accounts.findFirst({
-		where(fields, { eq }) {
-			return eq(fields.userId, userId);
+
+	await database.transaction(async (tx) => {
+		const userAccount = await tx.query.accounts.findFirst({
+			where(fields, { eq }) {
+				return eq(fields.userId, userId);
+			}
+		});
+
+		if (!userAccount) {
+			return;
+		}
+
+		// We only reduce the credits to non-premium users
+		if (!userAccount.isPremium) {
+			const currentCredits = userAccount.credits;
+			invariant(
+				currentCredits > 0,
+				'It shouldnt be impossible for an account with 0 credits to reach this code path'
+			);
+
+			const newCredits = currentCredits <= 0 ? 0 : currentCredits - creditsToConsume;
+
+			await tx
+				.update(accounts)
+				.set({ credits: newCredits })
+				.where(
+					and(eq(accounts.authAccountId, userAccount.authAccountId), eq(accounts.userId, userId))
+				);
 		}
 	});
-
-	invariant(userAccount, 'Account is not linked to an user');
-
-	// We only reduce the credits to non-premium users
-	if (!userAccount.isPremium) {
-		const currentCredits = userAccount.credits;
-		invariant(
-			currentCredits > 0,
-			'It shouldnt be possible for an account with 0 credits to reach this code path'
-		);
-
-		const newCredits = currentCredits <= 0 ? 0 : currentCredits - creditsToConsume;
-
-		await database
-			.update(accounts)
-			.set({ credits: newCredits })
-			.where(
-				and(eq(accounts.authAccountId, userAccount.authAccountId), eq(accounts.userId, userId))
-			);
-	}
 }
