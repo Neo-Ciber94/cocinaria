@@ -9,7 +9,7 @@ const PUBLIC_ROUTES = ['/', '/login', /^\/recipes\/(.+)/];
 
 export function authentication(): Handle {
 	function isPublic(pathname: string) {
-		if (pathname.endsWith('/')) {
+		if (pathname.length > 1 && pathname.endsWith('/')) {
 			pathname = pathname.slice(0, -1);
 		}
 
