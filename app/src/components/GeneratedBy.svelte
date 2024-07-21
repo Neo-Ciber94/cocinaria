@@ -2,6 +2,7 @@
 	import * as Tooltip from '$components/ui/tooltip/index.js';
 	import * as Avatar from '$components/ui/avatar/index.js';
 	import { getStringInitials } from '$lib/utils/getStringInitials';
+	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
 
 	type Props = {
 		ownerUsername: string;
@@ -11,11 +12,13 @@
 
 	let { ownerUsername, ownerPicture, generatedAt }: Props = $props();
 
-	const formatter = new Intl.DateTimeFormat(undefined, {
-		year: 'numeric',
-		month: 'long',
-		day: '2-digit'
-	});
+	// const formatter = new Intl.DateTimeFormat(undefined, {
+	// 	year: 'numeric',
+	// 	month: 'long',
+	// 	day: '2-digit'
+	// });
+
+    const time = relativeTime(generatedAt);
 </script>
 
 <Tooltip.Root>
@@ -33,6 +36,6 @@
 		</div>
 	</Tooltip.Trigger>
 	<Tooltip.Content>
-		<p>Generated: {formatter.format(generatedAt)}</p>
+		<p>Generated: {time}</p>
 	</Tooltip.Content>
 </Tooltip.Root>
