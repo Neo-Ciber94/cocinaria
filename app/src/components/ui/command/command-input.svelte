@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	import { Command as CommandPrimitive } from 'cmdk-sv';
 	import MagnifyingGlass from 'svelte-radix/MagnifyingGlass.svelte';
 	import { cn } from '$lib/utils.js';

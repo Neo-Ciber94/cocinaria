@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	import { Button as ButtonPrimitive } from 'bits-ui';
 	import { type Events, type Props, buttonVariants } from './index.js';
 	import { cn } from '$lib/utils.js';

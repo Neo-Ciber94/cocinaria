@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import Check from 'svelte-radix/Check.svelte';
 	import { cn } from '$lib/utils.js';

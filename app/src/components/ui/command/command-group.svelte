@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable @typescript-eslint/no-unused-vars */
 	import { Command as CommandPrimitive } from 'cmdk-sv';
 	import { cn } from '$lib/utils.js';
 	type $$Props = CommandPrimitive.GroupProps;
