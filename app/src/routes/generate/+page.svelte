@@ -93,8 +93,7 @@
 				recipeItems.clear();
 				recipeTypeStorage.remove();
 
-				goto(`/recipes/${recipeJson.recipeId}`);
-				invalidateAll();
+				await goto(`/recipes/${recipeJson.recipeId}`);
 			}
 		} catch (err) {
 			console.error(err);

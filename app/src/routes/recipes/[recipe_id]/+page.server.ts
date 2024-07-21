@@ -7,7 +7,6 @@ import { checkAuthenticated } from '$lib/server/utils';
 export const actions = {
 	async deleteRecipe(event) {
 		const { user } = checkAuthenticated(event);
-
 		const deleted = await deleteRecipe(event.params.recipe_id, user.id);
 		return { deleted };
 	}

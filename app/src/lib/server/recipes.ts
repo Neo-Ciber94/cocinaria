@@ -162,5 +162,5 @@ export async function deleteRecipe(recipeId: string, userId: string) {
 		.delete(recipes)
 		.where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)));
 
-	return result.rows.length > 0;
+	return Boolean(result.rowCount);
 }
