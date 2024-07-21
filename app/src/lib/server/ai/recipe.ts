@@ -183,12 +183,14 @@ export async function generateRecipeImage({
 			return aiConfig.apiKey;
 		}
 
-		const isAllowed = await isUserAllowedToUseAI(userId);
+		if (consumeCredits) {
+			const isAllowed = await isUserAllowedToUseAI(userId);
 
-		if (!isAllowed) {
-			throw new ApplicationError(
-				"Your account doesn't have enough credits to generate a recipe image"
-			);
+			if (!isAllowed) {
+				throw new ApplicationError(
+					"Your account doesn't have enough credits to generate a recipe image"
+				);
+			}
 		}
 
 		return env.OPENAI_API_KEY!;
