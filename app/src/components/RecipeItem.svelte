@@ -69,7 +69,7 @@
 			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
 		/>
 
-		<h3 class="xs:text-lg xxs:text-base mt-1 text-center text-sm font-bold">
+		<h3 class="mt-1 text-center text-sm font-bold xxs:text-base xs:text-lg">
 			{recipe.name}
 		</h3>
 		<small class="w-full text-center font-sans font-medium tracking-wide text-neutral-300">

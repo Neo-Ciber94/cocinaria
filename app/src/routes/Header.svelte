@@ -108,15 +108,15 @@
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
 				>
-					<DiamondIcon class="xxs:size-5 size-3 text-purple-500" />
-					<span class="xxs:text-sm text-[12px] font-semibold text-purple-800">Premium</span>
+					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
 				</button>
 			{:else}
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
 				>
-					<CoinIcon class="xxs:size-5 size-3 text-amber-500" />
-					<span class="xxs:text-sm text-[12px] font-semibold text-amber-800">{account.credits}</span
+					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
 					>
 				</button>
 			{/if}
@@ -147,14 +147,14 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="focus-visible bg-background-alt shadow-btn active:scale-98 text-foreground hover:bg-muted focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex h-10 w-10 items-center justify-center text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2 md:hidden"
+				class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
 			>
 				<MenuIcon
 					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-500 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="border-muted bg-background mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border shadow-lg"
+				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{

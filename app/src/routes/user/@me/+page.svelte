@@ -34,7 +34,7 @@
 	class="container mx-auto flex h-[calc(100vh-var(--header-height)*2)] w-full flex-col items-center justify-center"
 >
 	<div
-		class="flex max-w-[98vw] cursor-pointer flex-row items-center gap-6 rounded-lg border p-6 shadow-md sm:min-w-[400px] md:p-8 bg-background"
+		class="flex max-w-[98vw] cursor-pointer flex-row items-center gap-6 rounded-lg border bg-background p-6 shadow-md sm:min-w-[400px] md:p-8"
 	>
 		<div class="flex flex-col items-center gap-1">
 			<div class="relative">
