@@ -3,16 +3,15 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { env } from '$env/dynamic/private';
 import { APICallError, streamObject } from 'ai';
 import { db } from '$lib/db';
-import { accounts, recipes } from '$lib/db/schema';
+import { recipes } from '$lib/db/schema';
 import { recipeTypeSchema } from '$lib/common/recipe';
 import { deleteFile } from '../blob';
 import { and, eq } from 'drizzle-orm';
 import type { Recipe } from '$lib/db/types';
 import { INGREDIENTS } from '$lib/common/ingredients';
 import { generateImage } from './images';
-import { isUserAllowedToUseAI } from '../users';
+import { consumeCreditFromUserAccount, isUserAllowedToUseAI } from '../users';
 import { ApplicationError } from '$lib/common/error';
-import { invariant } from '$lib/index';
 import type { AIProvider } from '$lib/common/types';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
@@ -274,35 +273,6 @@ export async function generateRecipeImage({
 		}
 
 		throw err;
-	}
-}
-
-async function consumeCreditFromUserAccount(userId: string, database: typeof db) {
-	const creditsToConsume = 1;
-	const userAccount = await database.query.accounts.findFirst({
-		where(fields, { eq }) {
-			return eq(fields.userId, userId);
-		}
-	});
-
-	invariant(userAccount, 'Account is not linked to an user');
-
-	// We only reduce the credits to non-premium users
-	if (!userAccount.isPremium) {
-		const currentCredits = userAccount.credits;
-		invariant(
-			currentCredits > 0,
-			'It shouldnt be possible for an account with 0 credits to reach this code path'
-		);
-
-		const newCredits = currentCredits <= 0 ? 0 : currentCredits - creditsToConsume;
-
-		await database
-			.update(accounts)
-			.set({ credits: newCredits })
-			.where(
-				and(eq(accounts.authAccountId, userAccount.authAccountId), eq(accounts.userId, userId))
-			);
 	}
 }
 
