@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { KeysTuple } from './typeutils';
+import { shuffleArrayInPlace } from '$lib/utils/arrays';
 
 export const INGREDIENTS_GROUPS = {
 	vegetables: [
@@ -98,6 +99,17 @@ export const ingredienSchema = z.object({
 
 export type Ingredient = z.infer<typeof ingredienSchema>;
 
-export const INGREDIENTS = Object.entries(INGREDIENTS_GROUPS)
-	.map(([c, list]) => list.map((ingredient) => ({ category: c as Category, ...ingredient })))
-	.flat();
+export function getIngredients(opts?: { shuffle?: boolean }) {
+	const { shuffle = false } = opts || {};
+	const entries = Object.entries(INGREDIENTS_GROUPS);
+
+	if (shuffle) {
+		shuffleArrayInPlace(entries);
+	}
+
+	return entries
+		.map(([c, list]) => list.map((ingredient) => ({ category: c as Category, ...ingredient })))
+		.flat();
+}
+
+export const INGREDIENTS = getIngredients();

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Select } from 'bits-ui';
-	import { flyAndScale } from '$lib/utils/transitions';
-	import Icon from '@iconify/svelte';
+	import * as Select from '$components/ui/select/index.js';
 	import type { RecipeType } from '$lib/common/recipe';
-	import { cn } from '$lib';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
+	import { cn } from '$lib/utils';
+	import { flyAndScale } from '$lib/utils';
+	import Icon from '@iconify/svelte';
 
 	type Props = {
 		selected?: RecipeType;
@@ -28,23 +28,15 @@
 
 <Select.Root
 	items={recipeTypes}
-	selected={selectedRecipe}
 	{disabled}
+	selected={selectedRecipe}
 	onSelectedChange={(item) => {
 		const recipeItem = recipeTypes.find((e) => e.value === item?.value);
 		selected = recipeItem?.value;
 		touched = true;
 	}}
 >
-	<Select.Trigger
-		{disabled}
-		class={cn(
-			'inline-flex h-10 w-[296px] items-center rounded-xl border border-gray-200 bg-white px-[11px] text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2',
-			'disabled:bg-gray-100 disabled:cursor-not-allowed',
-			rest.class
-		)}
-		aria-label="Select a recipe type"
-	>
+	<Select.Trigger class={cn('w-[180px] data-[placeholder]:text-start', rest.class)}>
 		{#if mounted.value && selectedRecipe}
 			<Icon icon={selectedRecipe.icon} class="mr-[9px] size-6" />
 		{:else}
@@ -59,34 +51,23 @@
 				/>
 			</svg>
 		{/if}
-
-		<Select.Value class="text-sm" placeholder="Select a recipe type" />
-
-		<Icon icon="heroicons:chevron-up-down-16-solid" class="ml-auto size-6 text-neutral-300" />
+		<Select.Value placeholder="Select a recipe type" />
 	</Select.Trigger>
-	<Select.Content
-		class="w-full rounded-xl border border-gray-200 bg-white px-1 py-3 shadow-md outline-none space-y-1"
-		transition={flyAndScale}
-		sideOffset={8}
-	>
-		{#each recipeTypes as recipeType}
-			{@const isSelected = selectedRecipe?.value === recipeType.value}
+	<Select.Content transition={flyAndScale} sideOffset={8}>
+		<Select.Group>
+			<Select.Label>Recipes</Select.Label>
+			{#each recipeTypes as recipeType}
+				{@const isSelected = selectedRecipe?.value === recipeType.value}
 
-			<Select.Item
-				class={cn(
-					'flex gap-2 h-10 w-full select-none items-center rounded-md py-3 pl-5 pr-1.5 text-sm outline-none transition-all duration-75 data-[highlighted]:bg-neutral-100',
-					isSelected && 'bg-neutral-100'
-				)}
-				value={recipeType.value}
-				label={recipeType.label}
-			>
-				<Icon icon={recipeType.icon} class={cn('size-6 opacity-50', isSelected && 'opacity-90')} />
-				{recipeType.label}
-				<Select.ItemIndicator class="ml-auto" asChild={false}>
-					<Icon icon="material-symbols:check" />
-				</Select.ItemIndicator>
-			</Select.Item>
-		{/each}
+				<Select.Item value={recipeType.value} label={recipeType.label} class="flex flex-row gap-2">
+					<Icon
+						icon={recipeType.icon}
+						class={cn('size-6 opacity-50', isSelected && 'opacity-90')}
+					/>
+					{recipeType.label}
+				</Select.Item>
+			{/each}
+		</Select.Group>
 	</Select.Content>
 	<Select.Input name="recipeType" />
 </Select.Root>

@@ -4,7 +4,7 @@
 	import { AuthError } from '../api/auth/utils';
 	import { goto } from '$app/navigation';
 	import LoginForm from './LoginForm.svelte';
-	import { cn } from '$lib';
+	import { cn } from '$lib/utils';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { spring } from 'svelte/motion';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';

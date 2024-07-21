@@ -5,6 +5,7 @@ export function getBaseUrl() {
 		return env.ORIGIN;
 	}
 
+	// FIXME?: Use VERCEL_PROJECT_PRODUCTION_URL instead?
 	// https://vercel.com/docs/projects/environment-variables/system-environment-variables#system-environment-variables
 	if (env.VERCEL_URL) {
 		return `https://${env.VERCEL_URL}`;

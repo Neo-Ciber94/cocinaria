@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib';
+	import { cn } from '$lib/utils';
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
 	import DiscordIcon from '$components/icons/discordIcon.svelte';

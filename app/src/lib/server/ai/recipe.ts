@@ -28,7 +28,8 @@ function recipeJsonSchema(recipeId: string) {
 			.default(recipeId)
 			.transform(() => recipeId),
 		name: z.string({ description: 'Name of the recipe' }).trim(),
-		ingredients: z.array(z.string(), { description: 'Ingredients and the amount' }),
+		description: z.string({ description: 'A brief description of the recipe' }).trim(),
+		ingredients: z.array(z.string(), { description: 'Ingredients and the amounts' }),
 		steps: z.array(z.string(), { description: 'Steps to prepare the recipe' })
 	});
 }
@@ -97,7 +98,7 @@ export async function generateRecipe({
 
 				if (!object) {
 					// The object did not matched the schema, return error somehow?
-					console.error('Generated object dit not matches the schema');
+					console.error('Generated object did not match the schema');
 					return;
 				}
 
@@ -111,6 +112,7 @@ export async function generateRecipe({
 								recipeType,
 								name: object.name,
 								ingredients: ingredientsList,
+								description: object.description,
 								id: recipeId,
 								recipe: {
 									ingredients: object.ingredients,

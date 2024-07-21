@@ -1,11 +1,12 @@
 <script lang="ts">
 	import CopyLabel from '$components/CopyLabel.svelte';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
-	import DiamongIcon from '$components/icons/diamongIcon.svelte';
+	import DiamongIcon from '$components/icons/diamondIcon.svelte';
 	import DiscordIcon from '$components/icons/discordIcon.svelte';
 	import GithubIcon from '$components/icons/githubIcon.svelte';
 	import GoogleIcon from '$components/icons/googleIcon.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
+	import { getStringInitials } from '$lib/utils/getStringInitials';
 	import { flyAndScale } from '$lib/utils/transitions';
 	import type { PageServerData } from './$types';
 	import { Avatar, Tooltip } from 'bits-ui';
@@ -48,7 +49,7 @@
 							<Avatar.Fallback
 								class="w-full h-full aspect-square flex flex-row justify-center items-center bg-orange-500 text-white font-bold"
 							>
-								{data.user.username.slice(0, 2).toUpperCase()}
+								{getStringInitials(data.user.username, 2).toUpperCase()}
 							</Avatar.Fallback>
 						</div>
 					</Avatar.Root>

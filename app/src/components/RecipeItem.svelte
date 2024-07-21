@@ -3,7 +3,7 @@
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { Recipe as RecipeEntity } from '$lib/db/types';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
-	import { cn } from '$lib/index';
+	import { cn } from '$lib/utils';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
 
@@ -43,8 +43,13 @@
 			easing: backOut,
 			delay: index * 70
 		}}
+		onclick={e => {
+			const img = e.currentTarget.querySelector("img")!;
+			img.style.viewTransitionName = `recipe-${recipe.id}`
+		}}
 	>
 		<img
+			data-img
 			width={imgProps?.width}
 			height={imgProps?.height}
 			class={imgProps?.class}

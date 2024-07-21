@@ -6,6 +6,7 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
+	import GeneratedBy from '$components/GeneratedBy.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -48,6 +49,10 @@
 								<span class="text-xl sm:text-2xl">{ingredientImage}</span>
 							{/each}
 						</p>
+
+						{#if recipe.description}
+							<p class="mt-2">{recipe.description}</p>
+						{/if}
 					</div>
 					<div class="flex flex-col gap-1">
 						<img
@@ -56,6 +61,7 @@
 							height="600"
 							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
+							style={`view-transition-name: recipe-${recipe.id}`}
 						/>
 						{#if isCurrentUserRecipe}
 							<div class="flex flex-row gap-2 w-full">
@@ -114,5 +120,13 @@
 				</div>
 			</div>
 		</section>
+
+		<div class="w-full justify-end flex flex-row mt-8">
+			<GeneratedBy
+				generatedAt={recipe.createdAt}
+				ownerUsername={recipe.user.username}
+				ownerPicture={recipe.user.picture}
+			/>
+		</div>
 	</div>
 </div>

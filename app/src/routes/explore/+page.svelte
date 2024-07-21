@@ -3,9 +3,9 @@
 	import RecipeItem from '$components/RecipeItem.svelte';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
-	import { cn } from '$lib/index';
-	import { Button, type Selected } from 'bits-ui';
-	import IngredientSearchSelect from './IngredientSearchSelect.svelte';
+	import { cn } from '$lib/utils';
+	import { type Selected } from 'bits-ui';
+	import SelectIngredientSearch from './SelectIngredientSearch.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { debounce } from '$lib/common/utils';
@@ -14,6 +14,8 @@
 	import { fetchServer } from '$lib/client/fetchServer';
 	import type { GetRecipesResult } from '../api/recipes/types';
 	import OnViewport from './OnViewport.svelte';
+	import { Button } from '$components/ui/button';
+	import Input from '$components/ui/input/input.svelte';
 
 	function getInitialIngredients() {
 		const values = $page.url.searchParams
@@ -67,11 +69,13 @@
 	});
 
 	const queryError = $query.error;
-	const showNoMoreRecipes = $derived.by(() => {
-		const MIN_RESULTS = 10;
-		const records = ($query.data?.pages || []).flatMap((x) => x.recipes);
-		return records.length > MIN_RESULTS;
+	const totalCount = $derived.by(() => {
+		const pages = $query.data?.pages || [];
+		return pages.flatMap((x) => x.recipes).length;
 	});
+
+	const MIN_COUNT = 10;
+	const showNoMoreRecipes = $derived(totalCount > MIN_COUNT);
 
 	$effect(() => {
 		if (queryError) {
@@ -107,7 +111,7 @@
 	</h1>
 
 	<form
-		class="w-full flex flex-row gap-1 mt-2"
+		class="w-full flex sm:flex-row flex-col gap-1 mt-2"
 		autocomplete="off"
 		onreset={handleReset}
 		onsubmit={(ev) => {
@@ -115,36 +119,36 @@
 			debouncedSearch();
 		}}
 	>
-		<div class="flex flex-row w-full gap-1">
+		<div class="flex sm:flex-row flex-col w-full gap-1">
 			<div class="relative w-full">
-				<input
+				<Input
 					bind:value={search}
 					oninput={debouncedSearch}
 					name="search"
 					type="search"
-					class="inline-flex h-10 w-full items-center pl-8 rounded-md border border-neutral-200 bg-white px-[11px] text-sm transition-colors placeholder:text-black/50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
+					class="w-full pl-8 rounded-md"
 					placeholder="Search..."
 				/>
 				<SearchIcon class="absolute size-5 text-neutral-200 left-2 top-0 translate-y-1/2" />
 			</div>
-			<IngredientSearchSelect
+			<SelectIngredientSearch
 				class="w-full"
 				bind:selected={ingredients}
 				onClose={debouncedSearch}
 			/>
 		</div>
-		<div class="flex flex-row w-full basis-1/3 gap-1">
-			<Button.Root
-				class={'relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-orange-500 hover:bg-orange-600'}
+		<div class="flex flex-row w-full basis-1/3 gap-1 xs:mt-0 mt-5">
+			<Button
+				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-orange-500 hover:bg-orange-600'}
 			>
 				Search
-			</Button.Root>
-			<Button.Root
+			</Button>
+			<Button
 				type="reset"
-				class={'relative rounded-lg px-4 py-2 justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-800 hover:bg-neutral-900 cursor-pointer'}
+				class={'relative rounded-lg justify-center text-white w-full flex flex-row items-center gap-1 bg-neutral-800 hover:bg-neutral-900 cursor-pointer'}
 			>
 				Clear
-			</Button.Root>
+			</Button>
 		</div>
 	</form>
 
@@ -154,7 +158,7 @@
 		>
 			<LoadingDotsIcon class="size-10 sm:size-20" />
 		</h2>
-	{:else if $query.data}
+	{:else if $query.data.pages && totalCount > 0}
 		{@const pages = $query.data.pages}
 		<div
 			class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 flex-wrap py-5 justify-center"
