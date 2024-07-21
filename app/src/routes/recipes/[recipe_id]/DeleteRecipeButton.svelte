@@ -29,8 +29,6 @@
                         return;
                     }
                     
-                    console.log(result);
-                    
                     if (props.onDeleted) {
                         props.onDeleted();
                     }

@@ -14,7 +14,7 @@ export const GET: RequestHandler = async (event) => {
 		const result = await getRecipes({ search, ingredients, cursor });
 		return devalueJson(result);
 	} catch (err) {
-		console.log(err);
+		console.error(err);
 		error(400, 'Failed to get recipes');
 	}
 };

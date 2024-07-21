@@ -12,8 +12,7 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
-	import { goto } from '$app/navigation';
-	import type { GeneratedRecipeType } from '$lib/server/ai/recipe';
+	import { goto, invalidateAll } from '$app/navigation';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getResponseError } from '$lib/client/getResponseError';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
@@ -22,6 +21,8 @@
 	import SelectRecipeType from './SelectRecipeType.svelte';
 	import SelectIngredient from './SelectIngredient.svelte';
 	import { Button } from '$components/ui/button';
+	import { useAuth } from '$lib/hooks/useAuth.svelte';
+	import { reportRecipeGenerationStates } from './utils.svelte';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -38,6 +39,7 @@
 	);
 
 	let isGenerating = $state(false);
+	const auth = useAuth()!; // The user should be authenticated to be in this page
 	const mounted = useIsMounted();
 	const canGenerate = $derived.by(() => {
 		return selectedCount >= MIN_RECIPE_INGREDIENTS && recipeTypeStorage.value != null;
@@ -55,12 +57,19 @@
 	});
 
 	async function generateRecipe() {
+		if (isGenerating) {
+			return;
+		}
+
 		if (!confirm(`Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`)) {
 			return;
 		}
 
 		try {
 			isGenerating = true;
+
+			// We update immediately the UI
+			auth.consumeCredit();
 
 			const ingredients = selectedIngredients.map((e) => e.value);
 			const recipeType = recipeTypeStorage.value;
@@ -76,16 +85,16 @@
 				return;
 			}
 
-			// We just consume the stream until it's done
-			const recipeContents = await res.text();
-			const recipeJson = JSON.parse(recipeContents) as GeneratedRecipeType;
+			// We just consume the stream until it's done and show state changes
+			const reader = res.body.getReader();
+			const recipeJson = await reportRecipeGenerationStates(reader);
 
 			if (recipeJson) {
 				recipeItems.clear();
 				recipeTypeStorage.remove();
 
-				console.log(recipeJson);
 				goto(`/recipes/${recipeJson.recipeId}`);
+				invalidateAll();
 			}
 		} catch (err) {
 			console.error(err);

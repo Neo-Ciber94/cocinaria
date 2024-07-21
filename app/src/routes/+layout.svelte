@@ -2,7 +2,8 @@
 	import '../app.css';
 	import '$lib/polyfills';
 	import type { LayoutData } from './$types';
-	import { Toaster } from 'svelte-french-toast';
+	import { Toaster as FrenchToaster } from 'svelte-french-toast';
+	import { Toaster } from 'svelte-sonner';
 	import { setFoodIcon } from '$lib/hooks/useFoodIcon';
 	import { setAuth } from '$lib/hooks/useAuth.svelte';
 	import Header from './Header.svelte';
@@ -51,7 +52,6 @@
 
 	$effect(() => {
 		setAuth(data.auth);
-		console.log({ acount: data.auth?.account });
 	});
 
 	setAuth(data.auth);
@@ -105,5 +105,6 @@
 	class="fixed select-none pointer-events-none -z-10 top-0 left-0 pattern-cross pattern-orange-500 pattern-bg-white pattern-size-6 pattern-opacity-20 w-full h-full"
 ></div> -->
 
+<FrenchToaster toastOptions={{ duration: 6000 }} />
 <Toaster toastOptions={{ duration: 6000 }} />
 <ApiKeyDialog />
