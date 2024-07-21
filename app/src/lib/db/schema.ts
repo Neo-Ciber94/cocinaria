@@ -89,3 +89,10 @@ export const userRelations = relations(users, ({ one }) => ({
 		references: [accounts.userId]
 	})
 }));
+
+export const recipeRelations = relations(recipes, ({ one }) => ({
+	user: one(users, {
+		fields: [recipes.userId],
+		references: [users.id]
+	})
+}));
