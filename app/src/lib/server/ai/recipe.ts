@@ -86,6 +86,7 @@ export async function generateRecipe({
 			prompt,
 			abortSignal,
 			mode: 'json',
+			temperature: 1,
 			async onFinish({ object, error, warnings }) {
 				if (error) {
 					console.error(error);
