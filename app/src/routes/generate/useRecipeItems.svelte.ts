@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ingredienSchema, INGREDIENTS, type Ingredient } from '$lib/common/ingredients';
+import { getIngredients, ingredienSchema, type Ingredient } from '$lib/common/ingredients';
 import { useLocalStorage } from '$lib/hooks/useLocalStorage.svelte';
 import { MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 
@@ -11,6 +11,7 @@ const itemSchema = z.object({
 const ingredientArraySchema = z.array(itemSchema).max(MAX_RECIPE_INGREDIENTS);
 
 export function useRecipeItems(initial?: z.infer<typeof ingredientArraySchema>) {
+	const initialIngredients = getIngredients({ shuffle: true });
 	const recipeStorage = useLocalStorage(
 		'cocinaria:generate-recipe-ingredients',
 		ingredientArraySchema,
@@ -28,7 +29,8 @@ export function useRecipeItems(initial?: z.infer<typeof ingredientArraySchema>) 
 		const selectedIngredients = selectedItems
 			.map((s) => s.ingredient)
 			.filter(Boolean) as Ingredient[];
-		return INGREDIENTS.filter((ingredient) => {
+
+		return initialIngredients.filter((ingredient) => {
 			const isAlreadyAdded = selectedIngredients.some((e) => e.value === ingredient.value);
 			return !isAlreadyAdded;
 		});
