@@ -116,7 +116,7 @@
 
 			<Dialog.Footer class="mt-2 w-full gap-1">
 				<Button
-					class="flex w-full sm:min-w-[100px] flex-row items-center gap-1"
+					class="flex w-full flex-row items-center gap-1 sm:min-w-[100px]"
 					type="button"
 					disabled={!canSubmit || loading}
 					onclick={handleSave}
@@ -127,7 +127,7 @@
 					Save
 				</Button>
 				<Button
-					class="flex w-full sm:min-w-[100px] flex-row items-center gap-1"
+					class="flex w-full flex-row items-center gap-1 sm:min-w-[100px]"
 					type="button"
 					disabled={loading}
 					variant="destructive"
