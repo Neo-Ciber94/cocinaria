@@ -1,6 +1,11 @@
 import 'dotenv/config';
 import { db, client } from '$lib/db';
-import { ListObjectsV2Command, S3Client, type _Object } from '@aws-sdk/client-s3';
+import {
+	DeleteObjectCommand,
+	ListObjectsV2Command,
+	S3Client,
+	type _Object
+} from '@aws-sdk/client-s3';
 
 const recipes = await db.query.recipes.findMany();
 
@@ -19,10 +24,7 @@ const images = await s3Client.send(
 	})
 );
 
-console.log('S3 Objects:');
-console.log(images.Contents);
-
-const orphanImages: _Object[] = [];
+const orphanObjects: _Object[] = [];
 const contents = images.Contents || [];
 
 for (const imageObject of contents) {
@@ -31,13 +33,31 @@ for (const imageObject of contents) {
 	}
 
 	const url = `${process.env.ASSETS_URL}/${imageObject.Key}`;
-
 	const exists = recipes.some((x) => x.imageUrl === url);
 
 	if (!exists) {
-		console.log(`Orphan image: ${url}`);
-		orphanImages.push(imageObject);
+		console.log(`Orphan object: ${url}`);
+		orphanObjects.push(imageObject);
 	}
+}
+
+if (orphanObjects.length > 0) {
+	console.log('Deleting orphan objects...');
+	const keys = orphanObjects.map((x) => x.Key);
+
+	for (const key of keys) {
+		console.log('Deleting object with key: ' + key);
+		await s3Client.send(
+			new DeleteObjectCommand({
+				Bucket: process.env.S3_BUCKET_NAME,
+				Key: key
+			})
+		);
+	}
+
+	console.log(`${keys.length} orphan objects deleted`);
+} else {
+	console.log('No orphan objects to delete');
 }
 
 await client.end();

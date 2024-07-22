@@ -17,8 +17,7 @@
 		"db:migrate": "npx tsx ./migrate.ts",
 		"db:seed": "npx tsx ./scripts/seed.ts",
 		"db:ui": "npx drizzle-kit studio",
-		"deleteOrphanImages": "tsx ./scripts/deleteOrphanImages.ts",
-		"copyFilesToCorrectPath": "tsx ./scripts/copyFilesToCorrectPath.ts"
+		"s3:deleteOrphanObjects": "tsx ./scripts/deleteOrphanObjects.ts"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "0.0.30",
