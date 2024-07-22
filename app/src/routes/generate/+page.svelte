@@ -63,7 +63,7 @@
 			return;
 		}
 
-		const success = alertManager.confirm({
+		const success = await alertManager.confirm({
 			title: 'Generate Recipe',
 			description: `Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`
 		});
