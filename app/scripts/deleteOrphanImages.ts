@@ -11,6 +11,7 @@ const s3Client = new S3Client({
 		secretAccessKey: process.env.S3_ACCESS_SECRET_KEY!
 	}
 });
+
 console.log('Getting objects...');
 const images = await s3Client.send(
 	new ListObjectsV2Command({
