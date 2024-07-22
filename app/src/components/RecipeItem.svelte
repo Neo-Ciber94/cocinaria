@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { handleImageError } from '$lib/client/handleImageError';
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
 	import { INGREDIENTS } from '$lib/common/ingredients';
 	import type { Recipe as RecipeEntity } from '$lib/db/types';
@@ -67,6 +68,7 @@
 			class={imgProps?.class}
 			alt={recipe.name}
 			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
+			onerror={handleImageError}
 		/>
 
 		<h3 class="mt-1 text-center text-sm font-bold xxs:text-base xs:text-lg">
