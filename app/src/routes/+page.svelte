@@ -14,7 +14,9 @@
 	const auth = useAuth();
 </script>
 
-<SvelteSeo />
+<SvelteSeo
+	description={`Discover delicious recipes tailored to your taste with this AI-powered recipe generator. Specify the recipe type and ingredients, and get detailed steps, precise ingredient amounts, and images. Whether you're a seasoned chef or a home cook, enjoy a variety of culinary inspirations and create mouth-watering dishes with ease.`}
+/>
 
 <section
 	class="mx-auto flex min-h-[var(--main-height)] w-full flex-col items-center justify-center overflow-hidden md:max-w-3xl"
@@ -47,7 +49,7 @@
 		<h2 class="mb-4 text-2xl font-bold text-white md:text-3xl lg:text-5xl">Latest Recipes</h2>
 
 		<div
-			class="grid grid-cols-1 items-center gap-2 xxs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+			class="xxs:grid-cols-2 grid grid-cols-1 items-center gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
 		>
 			{#each data.recipes as recipe (recipe.id)}
 				<RecipeItem
