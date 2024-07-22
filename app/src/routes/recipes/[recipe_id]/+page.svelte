@@ -7,6 +7,7 @@
 	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
 	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
+	import { handleImageError } from '$lib/client/handleImageError';
 
 	let { data }: { data: PageData } = $props();
 
@@ -63,6 +64,7 @@
 							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
 							style={`view-transition-name: recipe-${recipe.id}`}
+							onerror={handleImageError}
 						/>
 						{#if isCurrentUserRecipe}
 							<div class="flex w-full flex-row gap-2">
