@@ -14,10 +14,12 @@
 	const auth = useAuth();
 </script>
 
-<SvelteSeo />
+<SvelteSeo
+	description={`Discover delicious recipes tailored to your taste with this AI-powered recipe generator. Specify the recipe type and ingredients, and get detailed steps, precise ingredient amounts, and images. Whether you're a seasoned chef or a home cook, enjoy a variety of culinary inspirations and create mouth-watering dishes with ease.`}
+/>
 
 <section
-	class="mx-auto flex min-h-[var(--main-height)] w-full flex-col items-center justify-center overflow-hidden md:max-w-3xl"
+	class="mx-auto flex min-h-[calc(var(--main-height)*0.9)] w-full flex-col items-center justify-center overflow-hidden md:max-w-3xl"
 >
 	<div class="flex flex-col justify-center gap-2 p-4">
 		<section class="flex flex-row items-center gap-4">

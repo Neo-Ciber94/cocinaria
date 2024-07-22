@@ -8,6 +8,7 @@
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
 	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
 	import { handleImageError } from '$lib/client/handleImageError';
+	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 
 	let { data }: { data: PageData } = $props();
 
@@ -22,14 +23,44 @@
 		return images;
 	}
 
+	const icon = useFoodIcon();
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
 </script>
 
-<SvelteSeo title={(baseTitle) => `${baseTitle} | ${recipe.name}`} />
+<SvelteSeo
+	title={(baseTitle) => `${baseTitle} | ${recipe.name}`}
+	description={recipe.description ?? undefined}
+	keywords="{['recipe', 'ai', ...recipe.ingredients].join(', ')},"
+	openGraph={{
+		type: 'website',
+		site_name: `CocinarIA ${icon}`,
+		title: recipe.name,
+		description: recipe.description ?? undefined,
+		url: data.seo.recipeUrl ?? undefined,
+		images: recipe.imageUrl
+			? [
+					{
+						url: recipe.imageUrl,
+						secure_url: recipe.imageUrl,
+						alt: recipe.name
+					}
+				]
+			: []
+	}}
+	twitter={{
+		title: recipe.name,
+		card: 'summary_large_image',
+		description: recipe.description ?? undefined,
+		image: recipe.imageUrl ?? undefined,
+		imageAlt: recipe.name
+	}}
+/>
 
-<div class="container mx-auto min-h-screen w-full max-w-3xl pt-4 sm:pt-12 md:max-w-5xl md:pt-20">
+<div
+	class="mx-auto mb-2 min-h-screen w-full max-w-3xl px-4 pt-4 sm:container sm:px-1 sm:pt-12 md:max-w-5xl md:pt-20"
+>
 	{#if isCurrentUserRecipe}
 		<div class="flex w-full flex-row justify-end">
 			<DeleteRecipeButton disabled={isDeleted} onDeleted={() => (isDeleted = true)} />

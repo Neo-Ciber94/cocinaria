@@ -28,6 +28,7 @@
 
 <AlertDialog.Root
 	open={isOpen}
+	closeOnOutsideClick
 	onOpenChange={(open) => {
 		isOpen = open;
 

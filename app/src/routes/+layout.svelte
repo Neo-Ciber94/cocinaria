@@ -70,7 +70,9 @@
 		href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap"
 		rel="stylesheet"
 	/>
-	<meta name="theme-color" content="#FB923C" />
+
+	<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FB923C" />
+	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#FB923C" />
 </svelte:head>
 
 <Header />
