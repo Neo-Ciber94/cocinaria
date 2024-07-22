@@ -7,6 +7,8 @@ import {
 	type _Object
 } from '@aws-sdk/client-s3';
 
+// I forgot to delete the images when deleting recipes, this script solve it
+
 const recipes = await db.query.recipes.findMany();
 
 const s3Client = new S3Client({
