@@ -8,12 +8,19 @@
 	import { execute, TaskError } from 'svelte-stream/task';
 	import type { GeneratedImage } from '../../api/ai/recipe/image/+server';
 	import { Button } from '$components/ui/button';
+	import { useAlertManager } from '$components/alerts/alertManager.svelte';
 
 	const recipeId = $derived($page.params.recipe_id);
 	let props: { class?: string; disabled?: boolean } = $props();
 	let loading = $state(false);
 
+	const alerts = useAlertManager();
+
 	async function regenerateRecipeImage() {
+		alerts.openAlert({ title: 'Test 1', description: 'This is a description for the alert' });
+	}
+
+	async function _regenerateRecipeImage() {
 		if (!confirm('Generate a new recipe image')) {
 			return;
 		}
