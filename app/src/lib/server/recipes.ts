@@ -1,6 +1,7 @@
 import { db } from '$lib/db';
 import { recipes } from '$lib/db/schema';
 import { and, eq, SQL } from 'drizzle-orm';
+import { deleteFile } from './blob';
 
 type GetRecipesArgs = {
 	search?: string | null;
@@ -158,9 +159,31 @@ export async function getUserRecipes(userId: string) {
 }
 
 export async function deleteRecipe(recipeId: string, userId: string) {
-	const result = await db
-		.delete(recipes)
-		.where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)));
+	const deleted = await db.transaction(async (tx) => {
+		const recipe = await tx.query.recipes.findFirst({
+			where(fields, { and, eq }) {
+				return and(eq(fields.id, recipeId), eq(fields.userId, userId));
+			}
+		});
 
-	return Boolean(result.rowCount);
+		if (!recipe) {
+			return false;
+		}
+
+		await tx.delete(recipes).where(and(eq(recipes.id, recipeId), eq(recipes.userId, userId)));
+
+		if (recipe.imageUrl) {
+			console.log(`Deleting recipe(${recipe.id}) image`);
+
+			try {
+				await deleteFile(recipe.imageUrl);
+			} catch (err) {
+				console.error(err);
+			}
+		}
+
+		return true;
+	});
+
+	return deleted;
 }
