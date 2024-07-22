@@ -16,12 +16,12 @@
 		{#if _type === 'object'}
 			{#if key === 'images'}
 				{#each openGraph.images ?? [] as image}
-					{#if image.url}
-						<meta property="og:image" content={value.url} />
-					{/if}
-
 					{#each Object.entries(image) as [key, value]}
-						<meta property="og:image:{key}" content={value.toString()} />
+						{#if key === 'url'}
+							<meta property="og:image" content={value.toString()} />
+						{:else}
+							<meta property="og:image:{key}" content={value.toString()} />
+						{/if}
 					{/each}
 				{/each}
 			{:else if key === 'videos'}
