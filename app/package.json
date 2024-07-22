@@ -16,7 +16,8 @@
 		"db:generate": "npx drizzle-kit generate",
 		"db:migrate": "npx tsx ./migrate.ts",
 		"db:seed": "npx tsx ./scripts/seed.ts",
-		"db:ui": "npx drizzle-kit studio"
+		"db:ui": "npx drizzle-kit studio",
+		"deleteOrphanImages": "tsx ./scripts/deleteOrphanImages.ts"
 	},
 	"dependencies": {
 		"@ai-sdk/anthropic": "0.0.30",
