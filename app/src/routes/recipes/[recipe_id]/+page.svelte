@@ -32,8 +32,11 @@
 	description={recipe.description ?? undefined}
 	keywords="{['recipe', 'ai', ...recipe.ingredients].join(', ')},"
 	openGraph={{
-		site_name: 'CocinarIA',
 		type: 'website',
+		site_name: 'CocinarIA',
+		title: recipe.name,
+		description: recipe.description ?? undefined,
+		url: data.seo.recipeUrl ?? undefined,
 		images: recipe.imageUrl
 			? [
 					{

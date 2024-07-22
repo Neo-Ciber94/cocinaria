@@ -3,6 +3,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { deleteRecipe, getRecipeById } from '$lib/server/recipes';
 import { dev } from '$app/environment';
 import { checkAuthenticated } from '$lib/server/utils';
+import { getBaseUrl } from '$lib/common/getBaseUrl';
 
 export const actions = {
 	async deleteRecipe(event) {
@@ -32,5 +33,12 @@ export const load: PageServerLoad = async (event) => {
 		}
 	}
 
-	return { recipe };
+	const recipeUrl = `${getBaseUrl()}/recipes/${recipe.id}`;
+
+	return {
+		recipe,
+		seo: {
+			recipeUrl
+		}
+	};
 };
