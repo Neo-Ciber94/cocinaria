@@ -123,14 +123,6 @@ export async function getRecipeById(recipeId: string) {
 		},
 		where(fields, { eq }) {
 			return eq(fields.id, recipeId);
-		},
-		with: {
-			user: {
-				columns: {
-					username: true,
-					picture: true
-				}
-			}
 		}
 	});
 

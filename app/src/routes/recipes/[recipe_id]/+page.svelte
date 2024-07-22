@@ -6,7 +6,7 @@
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import DeleteRecipeButton from './DeleteRecipeButton.svelte';
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
-	import GeneratedBy from '$components/GeneratedBy.svelte';
+	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -23,6 +23,7 @@
 
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
+	const generatedAt = relativeTime(data.recipe.createdAt);
 </script>
 
 <SvelteSeo title={(baseTitle) => `${baseTitle} | ${recipe.name}`} />
@@ -121,12 +122,11 @@
 			</div>
 		</section>
 
-		<div class="mt-8 flex w-full flex-row justify-end">
-			<GeneratedBy
-				generatedAt={recipe.createdAt}
-				ownerUsername={recipe.user.username}
-				ownerPicture={recipe.user.picture}
-			/>
+		<div class="mt-16 flex w-full flex-row justify-end">
+			<time class="text-[13px] text-neutral-500" datetime={recipe.createdAt.toUTCString()}>
+				<span>Generated</span>
+				<span class="font-semibold">{generatedAt.value}</span>
+			</time>
 		</div>
 	</div>
 </div>
