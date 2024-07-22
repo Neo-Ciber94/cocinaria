@@ -58,7 +58,9 @@
 	}}
 />
 
-<div class="container mx-auto min-h-screen w-full max-w-3xl pt-4 sm:pt-12 md:max-w-5xl md:pt-20">
+<div
+	class="mx-auto min-h-screen w-full max-w-3xl px-4 pt-4 sm:container sm:px-1 sm:pt-12 md:max-w-5xl md:pt-20 mb-2"
+>
 	{#if isCurrentUserRecipe}
 		<div class="flex w-full flex-row justify-end">
 			<DeleteRecipeButton disabled={isDeleted} onDeleted={() => (isDeleted = true)} />
@@ -109,7 +111,7 @@
 			<div class="container grid gap-12 px-4 md:px-6 lg:grid-cols-[1fr_2fr]">
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Ingredients</h2>
-					<ul class="grid gap-2 text-muted-foreground">
+					<ul class="text-muted-foreground grid gap-2">
 						{#each recipe.recipe.ingredients as ingredient}
 							<li>
 								<svg
@@ -133,12 +135,12 @@
 				</div>
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Instructions</h2>
-					<ol class="grid gap-4 text-muted-foreground">
+					<ol class="text-muted-foreground grid gap-4">
 						{#each recipe.recipe.steps as step, idx}
 							<li>
 								<div class="flex items-start gap-2">
 									<div
-										class="mt-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground"
+										class="bg-primary text-primary-foreground mt-1 rounded-full px-2 py-1 text-xs font-medium"
 									>
 										{idx + 1}
 									</div>
