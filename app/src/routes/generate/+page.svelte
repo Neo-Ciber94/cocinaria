@@ -23,6 +23,7 @@
 	import { Button } from '$components/ui/button';
 	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import { reportRecipeGenerationStates } from './utils.svelte';
+	import { useAlertManager } from '$components/alerts/useAlertManager.svelte';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -39,6 +40,7 @@
 	);
 
 	let isGenerating = $state(false);
+	const alertManager = useAlertManager();
 	const auth = useAuth()!; // The user should be authenticated to be in this page
 	const mounted = useIsMounted();
 	const canGenerate = $derived.by(() => {
@@ -61,7 +63,12 @@
 			return;
 		}
 
-		if (!confirm(`Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`)) {
+		const result = alertManager.confirm({
+			title: 'Generate Recipe',
+			description: `Generate recipe with the selected ingredients? ${ingredientImages.join(' ')}`
+		});
+
+		if (!result) {
 			return;
 		}
 
@@ -109,7 +116,9 @@
 <SvelteSeo title={(baseTitle) => `${baseTitle} | Generate`} />
 
 <div class="container mx-auto h-full w-full max-w-xl p-4 pt-10 sm:pt-20 lg:max-w-3xl">
-	<div class="flex flex-col gap-2 rounded-xl border border-gray-200 px-4 pb-6 pt-8 shadow-md bg-background">
+	<div
+		class="bg-background flex flex-col gap-2 rounded-xl border border-gray-200 px-4 pb-6 pt-8 shadow-md"
+	>
 		<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 			<SparkIcon class="size-8 sm:size-12" animated />
 			<span>Generate Recipe</span>

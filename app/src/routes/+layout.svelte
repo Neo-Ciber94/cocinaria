@@ -16,7 +16,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { onNavigate } from '$app/navigation';
 	import type { Snippet } from 'svelte';
-	import AlertManager from '$components/alerts/AlertManager3.svelte';
+	import AlertManager from '$components/alerts/AlertManager.svelte';
 
 	type Props = {
 		data: LayoutData;

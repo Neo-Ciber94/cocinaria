@@ -3,6 +3,7 @@ export type AlertProps = {
 	isOpen: boolean;
 	title: string;
 	description?: string;
+	resolve: (result: boolean) => void;
 	actions?: {
 		cancel?: { label: string };
 		confirm?: { label: string };
@@ -16,19 +17,19 @@ export function useAlertManager() {
 		get alerts() {
 			return alerts;
 		},
-		openAlert(props: Omit<AlertProps, 'id' | 'isOpen'>) {
-			console.log(props);
+		confirm(props: Omit<AlertProps, 'id' | 'isOpen' | 'resolve'>) {
+			const { promise, resolve } = Promise.withResolvers<boolean>();
 			const id = crypto.randomUUID();
-			alerts = [
-				...alerts,
-				{
-					...props,
-					id,
-					isOpen: true
-				}
-			];
+			alerts.push({
+				...props,
+				id,
+				resolve,
+				isOpen: true
+			});
+
+			return promise;
 		},
-		removeAlert(id: string) {
+		remove(id: string) {
 			alerts = alerts.filter((x) => x.id !== id);
 		}
 	};

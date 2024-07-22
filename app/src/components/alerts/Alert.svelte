@@ -1,11 +1,11 @@
 <script lang="ts">
 	import * as AlertDialog from '$components/ui/alert-dialog';
 	import { tick } from 'svelte';
-	import { useAlertManager, type AlertProps } from './alertManager.svelte';
+	import { useAlertManager, type AlertProps } from './useAlertManager.svelte';
 
-	let { id, title, description, actions }: AlertProps = $props();
+	let { id, title, description, actions, resolve }: AlertProps = $props();
 
-	const alerts = useAlertManager();
+	const alertManager = useAlertManager();
 
 	let isOpen = $state(false);
 	const cancelLabel = actions?.cancel?.label ?? 'Cancel';
@@ -16,6 +16,14 @@
 			isOpen = true;
 		});
 	});
+
+	function onCancel() {
+		resolve(false);
+	}
+
+	function onConfirm() {
+		resolve(true);
+	}
 </script>
 
 <AlertDialog.Root
@@ -24,9 +32,7 @@
 		isOpen = open;
 
 		if (!open) {
-			setTimeout(() => {
-				alerts.removeAlert(id);
-			}, 1000);
+			setTimeout(() => alertManager.remove(id), 500);
 		}
 	}}
 >
@@ -40,8 +46,8 @@
 			{/if}
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{cancelLabel}</AlertDialog.Cancel>
-			<AlertDialog.Action>{confirmLabel}</AlertDialog.Action>
+			<AlertDialog.Cancel onclick={onCancel}>{cancelLabel}</AlertDialog.Cancel>
+			<AlertDialog.Action onclick={onConfirm}>{confirmLabel}</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
