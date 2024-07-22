@@ -14,10 +14,11 @@ export async function generateImage({ prompt, userId, apiKey }: GenerateImageArg
 	const openAI = new OpenAI({ apiKey });
 
 	console.log('Generating image: ', prompt);
+	const model = 'dall-e-3' as const;
 	const response = await openAI.images.generate({
-		model: 'dall-e-3',
 		response_format: 'url',
 		user: userId,
+		model,
 		prompt
 	});
 
@@ -42,9 +43,9 @@ export async function generateImage({ prompt, userId, apiKey }: GenerateImageArg
 		data: blob,
 		metadata: {
 			userId,
+			model,
 			prompt: promptMetadata,
 			aiGenerated: 'true',
-			model: 'dall-e-3',
 			date: new Date().toISOString()
 		}
 	});

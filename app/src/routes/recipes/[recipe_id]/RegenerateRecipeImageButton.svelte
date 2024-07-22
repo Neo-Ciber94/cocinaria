@@ -8,13 +8,21 @@
 	import { execute, TaskError } from 'svelte-stream/task';
 	import type { GeneratedImage } from '../../api/ai/recipe/image/+server';
 	import { Button } from '$components/ui/button';
+	import { useAlertManager } from '$components/alerts/useAlertManager.svelte';
 
 	const recipeId = $derived($page.params.recipe_id);
 	let props: { class?: string; disabled?: boolean } = $props();
 	let loading = $state(false);
 
+	const alertManager = useAlertManager();
+
 	async function regenerateRecipeImage() {
-		if (!confirm('Generate a new recipe image')) {
+		const success = await alertManager.confirm({
+			title: 'Regenerate Image',
+			description: 'Generate a new recipe image?'
+		});
+
+		if (!success) {
 			return;
 		}
 
@@ -48,11 +56,13 @@
 		loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-gray-900'
 	)}
 >
-	{#if loading}
-		<LoadingDotsIcon class="size-6" />
-		<span> Generating Image</span>
-	{:else}
-		<GenerateImageIcon class="size-6" />
-		<span> Regenerate Image</span>
-	{/if}
+	<svelte:fragment>
+		{#if loading}
+			<LoadingDotsIcon class="size-6" />
+			<span> Generating Image</span>
+		{:else}
+			<GenerateImageIcon class="size-6" />
+			<span> Regenerate Image</span>
+		{/if}
+	</svelte:fragment>
 </Button>

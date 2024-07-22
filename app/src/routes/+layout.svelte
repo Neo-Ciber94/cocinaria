@@ -16,6 +16,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { onNavigate } from '$app/navigation';
 	import type { Snippet } from 'svelte';
+	import AlertManager from '$components/alerts/AlertManager.svelte';
 
 	type Props = {
 		data: LayoutData;
@@ -69,6 +70,7 @@
 		href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap"
 		rel="stylesheet"
 	/>
+	<meta name="theme-color" content="#FB923C" />
 </svelte:head>
 
 <Header />
@@ -108,3 +110,4 @@
 <FrenchToaster toastOptions={{ duration: 6000 }} />
 <Toaster toastOptions={{ duration: 6000 }} richColors />
 <ApiKeyDialog />
+<AlertManager />

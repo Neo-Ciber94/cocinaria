@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { useAlertManager } from '$components/alerts/useAlertManager.svelte';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
 	import TrashCanIcon from '$components/icons/trashCanIcon.svelte';
 	import { Button } from '$components/ui/button';
@@ -9,14 +10,20 @@
 	import toast from 'svelte-french-toast';
 
 	let props: { disabled?: boolean; onDeleted?: () => void } = $props();
+	const alertManager = useAlertManager();
 	let loading = $state(false);
 </script>
 
 <form
 	method="post"
 	action={`?/deleteRecipe`}
-	use:enhance={({ cancel }) => {
-		if (!confirm('Delete this recipe?')) {
+	use:enhance={async ({ cancel }) => {
+		const success = await alertManager.confirm({
+			title: "Delete",
+			description:'Delete this recipe?'
+		})
+
+		if (!success) {
 			return cancel();
 		}
 

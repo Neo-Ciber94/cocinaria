@@ -21,6 +21,7 @@
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import type { Component } from 'svelte';
 	import { cn } from '$lib/utils';
+	import LoginIcon from '$components/icons/loginIcon.svelte';
 
 	type MenuItem = { href: string; label: string; icon: Component };
 
@@ -190,19 +191,36 @@
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 				{/each}
 
-				<DropdownMenu.Item
-					class="flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
-				>
-					<button
-						class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
-						onclick={() => {
-							apiKeyDialogOpen.isOpen = true;
-						}}
+				{#if account}
+					<DropdownMenu.Item
+						class="flex h-14 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 					>
-						<KeyIcon class="size-5 text-gray-500" />
-						<span>API Key</span>
-					</button>
-				</DropdownMenu.Item>
+						<button
+							class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
+							onclick={() => {
+								apiKeyDialogOpen.isOpen = true;
+							}}
+						>
+							<KeyIcon class="size-5 text-gray-500" />
+							<span>API Key</span>
+						</button>
+					</DropdownMenu.Item>
+				{:else}
+					<DropdownMenu.Item
+						class={cn(
+							'flex h-14 w-full select-none flex-row items-center gap-2 text-sm font-medium !ring-0 !ring-transparent active:bg-neutral-200'
+						)}
+					>
+						<a
+							href={'/login'}
+							class="flex w-full flex-row gap-2 px-3"
+							transition:slide={{ delay: 250, duration: 300, easing: quintOut, axis: 'x' }}
+						>
+							<LoginIcon class={cn('size-5 opacity-50 group-hover:opacity-100')} />
+							<p>Login</p>
+						</a>
+					</DropdownMenu.Item>
+				{/if}
 
 				{#if account && account.isPremium}
 					<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />

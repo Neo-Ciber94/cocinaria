@@ -22,6 +22,10 @@
 			}
 		})();
 
+		if (!error) {
+			return;
+		}
+
 		const searchParams = new URLSearchParams($page.url.searchParams);
 		searchParams.delete('AuthError');
 		goto(`?${searchParams.toString()}`, { replaceState: true });
@@ -69,7 +73,14 @@
 <button
 	onclick={handleIconClick}
 	style="--food-icon-right: {$iconRight}px; --food-icon-bottom: {$iconBottom}px"
-	class="fixed bottom-[var(--food-icon-bottom)] right-[var(--food-icon-right)] translate-x-1/3 translate-y-1/3 select-none text-[min(40vh,500px)] leading-none"
+	class="food-icon fixed bottom-[var(--food-icon-bottom)] right-[var(--food-icon-right)] translate-x-1/3 translate-y-1/3 select-none text-[min(40vh,500px)] leading-none"
 >
 	{icon}
 </button>
+
+<style>
+	.food-icon {
+		will-change: transform;
+		-webkit-font-smoothing: antialiased;
+	}
+</style>
