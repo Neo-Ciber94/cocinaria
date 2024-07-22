@@ -8,6 +8,7 @@
 	import { NOT_FOUND_IMAGE } from '$lib/common/constants';
 	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
 	import { handleImageError } from '$lib/client/handleImageError';
+	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 
 	let { data }: { data: PageData } = $props();
 
@@ -22,6 +23,7 @@
 		return images;
 	}
 
+	const icon = useFoodIcon();
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
@@ -33,7 +35,7 @@
 	keywords="{['recipe', 'ai', ...recipe.ingredients].join(', ')},"
 	openGraph={{
 		type: 'website',
-		site_name: 'CocinarIA',
+		site_name: `CocinarIA ${icon}`,
 		title: recipe.name,
 		description: recipe.description ?? undefined,
 		url: data.seo.recipeUrl ?? undefined,
