@@ -17,12 +17,12 @@
 	const alertManager = useAlertManager();
 
 	async function regenerateRecipeImage() {
-		const result = await alertManager.confirm({
+		const success = await alertManager.confirm({
 			title: 'Regenerate Image',
 			description: 'Generate a new recipe image?'
 		});
 
-		if (!result) {
+		if (!success) {
 			return;
 		}
 

@@ -18,12 +18,12 @@
 	method="post"
 	action={`?/deleteRecipe`}
 	use:enhance={async ({ cancel }) => {
-		const result = await alertManager.confirm({
+		const success = await alertManager.confirm({
 			title: "Delete",
 			description:'Delete this recipe?'
 		})
-		
-		if (!result) {
+
+		if (!success) {
 			return cancel();
 		}
 
