@@ -69,4 +69,3 @@ export async function deleteFile(url: string) {
 		return false;
 	}
 }
-
