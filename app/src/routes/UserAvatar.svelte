@@ -16,7 +16,7 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="focus-visible bg-background-alt shadow-btn active:scale-98 text-foreground focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium hover:bg-gray-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2"
+		class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium text-foreground hover:bg-gray-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 	>
 		<Avatar.Root
 			class="h-full w-full rounded-full border border-gray-400 bg-gray-200 text-[17px] font-medium uppercase text-gray-200"
@@ -96,10 +96,13 @@
 
 		<DropdownMenu.Separator class="block h-px bg-neutral-500/10" />
 		<DropdownMenu.Item
-		
 			class="flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
-			<a 	data-sveltekit-preload-data="false" class="flex w-full flex-row items-center gap-2 rounded-lg p-2" href="/api/auth/logout">
+			<a
+				data-sveltekit-preload-data="false"
+				class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
+				href="/api/auth/logout"
+			>
 				<Icon icon="solar:logout-2-outline" class="size-5 text-gray-500" />
 				<span>Logout</span>
 			</a>
