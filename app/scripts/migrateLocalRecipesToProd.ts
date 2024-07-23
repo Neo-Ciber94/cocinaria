@@ -40,55 +40,61 @@ async function main() {
 	const localRecipes = await neonLocal.db.query.recipes.findMany();
 	console.log(`🕒 Migrating ${localRecipes.length} recipes to remote database...`);
 
-	await neonRemote.db.transaction(async (tx) => {
-		const remoteRecipes = await tx.query.recipes.findMany({
-			where(fields, { eq }) {
-				return eq(fields.userId, String(process.env.MIGRATE_TO_USER_ID));
+	try {
+		await neonRemote.db.transaction(async (tx) => {
+			const remoteRecipes = await tx.query.recipes.findMany({
+				where(fields, { eq }) {
+					return eq(fields.userId, String(process.env.MIGRATE_TO_USER_ID));
+				}
+			});
+
+			for (const recipe of localRecipes) {
+				const recipeHash = createRecipeHash(recipe);
+				const alreadyAdded = remoteRecipes.some((x) => createRecipeHash(x) === recipeHash);
+
+				if (alreadyAdded) {
+					console.log(`⚠️  Recipe ${recipe.id} already exists, skipping...`);
+					continue;
+				}
+
+				if (recipe.imageUrl == null) {
+					continue;
+				}
+
+				console.log(`Migrating recipe(${recipe.id}): ${recipe.name}`);
+
+				const { newImageUrl } = await copyRecipeImage(recipe.imageUrl);
+
+				// Insert new recipe
+				await tx.insert(recipes).values({
+					name: recipe.name,
+					description: recipe.description,
+					ingredients: recipe.ingredients,
+					prompt: recipe.prompt,
+					recipe: recipe.recipe,
+					recipeType: recipe.recipeType,
+
+					// New user Id
+					userId: targetUser.id,
+
+					// New image url
+					imageUrl: newImageUrl
+				});
 			}
 		});
-
-		for (const recipe of localRecipes) {
-			const recipeHash = createRecipeHash(recipe);
-			const alreadyAdded = remoteRecipes.some((x) => createRecipeHash(x) === recipeHash);
-
-			if (alreadyAdded) {
-				console.log(`⚠️  Recipe ${recipe.id} already exists, skipping...`);
-				continue;
-			}
-
-			if (recipe.imageUrl == null) {
-				continue;
-			}
-
-			console.log(`Migrating recipe(${recipe.id}): ${recipe.name}`);
-
-			const { newImageUrl } = await copyRecipeImage(recipe.imageUrl);
-
-			// Insert new recipe
-			await tx.insert(recipes).values({
-				name: recipe.name,
-				description: recipe.description,
-				ingredients: recipe.ingredients,
-				prompt: recipe.prompt,
-				recipe: recipe.recipe,
-				recipeType: recipe.recipeType,
-
-				// New user Id
-				userId: targetUser.id,
-
-				// New image url
-				imageUrl: newImageUrl
-			});
-		}
-	});
-
-	await Promise.allSettled([neonRemote.client.end(), neonLocal.client.end()]);
+	} finally {
+		await Promise.allSettled([neonRemote.client.end(), neonLocal.client.end()]);
+	}
 }
 
 async function copyRecipeImage(imageUrl: string) {
-	const key = imageUrl.replaceAll(process.env.ASSETS_URL!, '');
-	const fileId = generateBase64Id();
+	let key = imageUrl.replaceAll(process.env.ASSETS_URL!, '');
 
+	if (key.startsWith('/')) {
+		key = key.slice(1);
+	}
+
+	const fileId = generateBase64Id();
 	const ext = path.extname(imageUrl);
 	const newKey = `images/${fileId}${ext}`;
 	const newImageUrl = `${process.env.ASSETS_URL}/${key}`;
@@ -96,11 +102,11 @@ async function copyRecipeImage(imageUrl: string) {
 	// Copy file
 	console.log(`📂 Copying file '${key}' to ${newKey}, new url: ${newImageUrl}`);
 
-	const bucketName = process.env.S3_BUCKET_NAME;
+	const bucketName = process.env.S3_BUCKET_NAME!;
 	await s3Client.send(
 		new CopyObjectCommand({
 			Bucket: bucketName,
-			CopySource: key,
+			CopySource: `${bucketName}/${key}`,
 			Key: newKey,
 			MetadataDirective: 'COPY',
 			Metadata: {
