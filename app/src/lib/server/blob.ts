@@ -69,3 +69,9 @@ export async function deleteFile(url: string) {
 		return false;
 	}
 }
+
+export function isStorageReady() {
+	return Boolean(
+		env.S3_ACCESS_KEY && env.S3_ACCESS_SECRET_KEY && env.S3_BUCKET_NAME && env.ASSETS_URL
+	);
+}
