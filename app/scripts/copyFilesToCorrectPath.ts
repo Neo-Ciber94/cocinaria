@@ -41,7 +41,11 @@ async function main() {
 			new CopyObjectCommand({
 				Bucket: bucketName,
 				CopySource: `${bucketName}/${object.Key}`,
-				Key: newKey
+				Key: newKey,
+				MetadataDirective: 'COPY',
+				Metadata: {
+					migrate: 'true'
+				}
 			})
 		);
 
