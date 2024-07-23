@@ -98,7 +98,11 @@
 		<DropdownMenu.Item
 			class="flex h-10 select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent data-[highlighted]:bg-gray-200"
 		>
-			<a class="flex w-full flex-row items-center gap-2 rounded-lg p-2" href="/api/auth/logout">
+			<a
+				data-sveltekit-preload-data="false"
+				class="flex w-full flex-row items-center gap-2 rounded-lg p-2"
+				href="/api/auth/logout"
+			>
 				<Icon icon="solar:logout-2-outline" class="size-5 text-gray-500" />
 				<span>Logout</span>
 			</a>

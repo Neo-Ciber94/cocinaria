@@ -24,6 +24,7 @@
 	import { useAuth } from '$lib/hooks/useAuth.svelte';
 	import { reportRecipeGenerationStates } from './utils.svelte';
 	import { useAlertManager } from '$components/alerts/useAlertManager.svelte';
+	import { delay } from '$lib/index';
 
 	const recipeItems = useRecipeItems([{ id: crypto.randomUUID(), ingredient: undefined }]);
 	const selectedIngredients = $derived.by(() => {
@@ -100,7 +101,8 @@
 				recipeItems.clear();
 				recipeTypeStorage.remove();
 
-				await goto(`/recipes/${recipeJson.recipeId}`);
+				await delay(1000); // Instead of do a query to check if already exists, we just wait 1 second
+				await goto(`/recipes/${recipeJson.recipeId}`, { invalidateAll: true });
 			}
 		} catch (err) {
 			console.error(err);
