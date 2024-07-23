@@ -30,3 +30,7 @@ export function getAIProviderConfig(cookies: Cookies) {
 		return null;
 	}
 }
+
+export function generateBase64Id() {
+	return btoa(crypto.randomUUID()).replaceAll('=', '');
+}

@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { generateBase64Id } from './utils';
 
 type UploadedFile = {
 	key: string;
@@ -21,7 +22,7 @@ const s3Client = new S3Client({
 });
 
 export async function uploadFile({ data, metadata }: UploadFileArgs): Promise<UploadedFile> {
-	const fileId = generateFileId();
+	const fileId = generateBase64Id();
 	const fileType = data.type.split('/')[1];
 	const ext = fileType ? `.${fileType}` : '';
 	const key = `images/${fileId}${ext}`;
@@ -69,6 +70,3 @@ export async function deleteFile(url: string) {
 	}
 }
 
-function generateFileId() {
-	return btoa(crypto.randomUUID()).replaceAll('=', '');
-}
