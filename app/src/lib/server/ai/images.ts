@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { uploadFile } from '../blob';
+import { isStorageReady, uploadFile } from '../blob';
 import { invariant } from '$lib/index';
 
 type GenerateImageArgs = {
@@ -10,6 +10,10 @@ type GenerateImageArgs = {
 
 export async function generateImage({ prompt, userId, apiKey }: GenerateImageArgs) {
 	invariant(apiKey, 'API key is required');
+
+	if (!isStorageReady()) {
+		throw new Error('Cannot generate images without the S3 environment variables set');
+	}
 
 	const openAI = new OpenAI({ apiKey });
 
