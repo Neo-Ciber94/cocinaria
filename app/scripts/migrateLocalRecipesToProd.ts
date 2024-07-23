@@ -100,8 +100,12 @@ async function copyRecipeImage(imageUrl: string) {
 	await s3Client.send(
 		new CopyObjectCommand({
 			Bucket: bucketName,
-			CopySource: `${bucketName}/${key}`,
-			Key: newKey
+			CopySource: key,
+			Key: newKey,
+			MetadataDirective: 'COPY',
+			Metadata: {
+				migrate: 'true'
+			}
 		})
 	);
 
