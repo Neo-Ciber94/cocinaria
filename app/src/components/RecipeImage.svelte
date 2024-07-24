@@ -3,7 +3,8 @@
 	import Picture, { type PictureProps } from 'svelte-picture/svelte/Picture';
 	import { fade } from 'svelte/transition';
 
-	let { width, height, ...rest }: PictureProps = $props();
+	type Props = PictureProps & { loadingAnimation?: boolean };
+	let { width, height, loadingAnimation = true, ...rest }: Props = $props();
 
 	let isLoading = $state(true);
 </script>
@@ -13,18 +14,23 @@
 		{...rest}
 		{width}
 		{height}
-		class={cn('transition-opacity duration-200', isLoading ? 'opacity-0' : 'opacity-100')}
+		class={cn(
+			'transition-opacity duration-200',
+			loadingAnimation && isLoading ? 'opacity-0' : 'opacity-100'
+		)}
 		onload={() => {
 			isLoading = false;
 		}}
 	/>
 
-	{#if isLoading}
-		<div
-			data-fallback-img
-			class="absolute left-0 top-0 h-full w-full"
-			out:fade={{ duration: 400 }}
-		></div>
+	{#if loadingAnimation}
+		{#if isLoading}
+			<div
+				data-fallback-img
+				class="absolute left-0 top-0 h-full w-full"
+				out:fade={{ duration: 400 }}
+			></div>
+		{/if}
 	{/if}
 </div>
 
