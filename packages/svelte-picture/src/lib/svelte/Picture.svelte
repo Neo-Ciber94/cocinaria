@@ -80,6 +80,17 @@
 
 		return { width: `${width}px`, height: `${height}px` };
 	});
+
+	function handleLoad(ev: Event & { currentTarget: EventTarget & Element }) {
+		isImageLoading = false;
+		imageUrl = remoteUrl;
+		onload?.(ev);
+	}
+
+	function handleError(ev: Event & { currentTarget: EventTarget & Element }) {
+		isImageLoading = false;
+		onerror?.(ev);
+	}
 </script>
 
 <img
@@ -91,14 +102,7 @@
 	style:width={imageStyles.width}
 	style:height={imageStyles.height}
 	style:position={imageStyles.position}
-	onload={(ev) => {
-		isImageLoading = false;
-		imageUrl = remoteUrl;
-		onload?.(ev);
-	}}
-	onerror={(ev) => {
-		isImageLoading = false;
-		onerror?.(ev);
-	}}
+	onload={handleLoad}
+	onerror={handleError}
 	{...rest}
 />
