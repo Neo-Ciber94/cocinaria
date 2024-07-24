@@ -42,7 +42,6 @@
 
 <script lang="ts">
   import { defaultImageLoader } from "./loader.js";";
-  import { loadImage } from "./utils.js";
   type Props = BaseProps & HTMLImageProps;
 
   let {
@@ -77,14 +76,6 @@
 
   const getInitialImageUrl = () => remoteUrl;
   let imageUrl = $state(placeholderUrl ? placeholderUrl : getInitialImageUrl());
-
-  $effect.pre(() => {
-    if (children && isImageLoading === true) {
-      loadImage(remoteUrl).finally(() => {
-        isImageLoading = false;
-      });
-    }
-  });
 
   const imageStyles = $derived.by(() => {
     if (fill) {
