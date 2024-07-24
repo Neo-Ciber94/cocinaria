@@ -41,6 +41,7 @@
 
 <script lang="ts">
 	import { defaultImageLoader } from './loader.js';
+	import { loadImage } from "./utils.js";
 
 	let {
 		width = $bindable(),
@@ -70,11 +71,24 @@
 	});
 
 	const getInitialImageUrl = () => remoteUrl;
-	let imageUrl = $state(placeholderUrl ? placeholderUrl : getInitialImageUrl());
+	let imageUrl = $state(placeholderUrl ||  getInitialImageUrl());
 
-  // eslint says this is unused for some reason
+  	// eslint says this is unused for some reason
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let isImageLoading = $state(true);
+
+	$effect.pre(() => {
+		loadImage(remoteUrl)
+		.catch(onerror)
+		.then((img) => {
+			const event = Object.assign(new Event("load"), { currentTarget: img });
+			onload?.(event)
+		})
+		.finally(() => {
+			imageUrl = remoteUrl;
+			isImageLoading = false;
+		})
+	})
 
 	const imageStyles = $derived.by(() => {
 		if (fill) {
@@ -85,13 +99,23 @@
 	});
 
 	function handleLoad(ev: Event & { currentTarget: EventTarget & Element }) {
-		isImageLoading = false;
-		imageUrl = remoteUrl;
+
+
+		if (!placeholderUrl) {
+			isImageLoading = false;
+			imageUrl = remoteUrl;
+		}
+
 		onload?.(ev);
 	}
 
 	function handleError(ev: Event & { currentTarget: EventTarget & Element }) {
-		isImageLoading = false;
+	
+		
+		if (!placeholderUrl) {
+			isImageLoading = false;
+		}
+
 		onerror?.(ev);
 	}
 </script>
