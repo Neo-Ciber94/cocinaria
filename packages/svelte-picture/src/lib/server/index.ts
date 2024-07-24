@@ -3,9 +3,14 @@ import type { Handle, RequestEvent, RequestHandler } from '@sveltejs/kit';
 import sharp from 'sharp';
 
 const IS_DEV = process.env.NODE_ENV !== 'production';
-
-const IMAGE_CACHE = new Map<string, { imageBuffer: ArrayBuffer; responseETag: string | null }>();
+const IMAGE_CACHE = new Map<string, ArrayBuffer>();
 const MAX_IMAGE_WIDTH = 4096;
+
+// Default cache id used it none is specified.
+const CACHE_ID = 'ZDgzNGRjYzQtODE3NC00ZDQ2LTkzYzMtN2I2ZDcyMGEzMjZi';
+
+// Default cache-control max-age used
+const CACHE_MAX_AGE = 3600; // 1 hour
 
 // This is in the order of priority, so webp will be used first if available
 const IMAGE_FORMATS = ['webp', 'png', 'jpeg', 'avif'] as const;
@@ -16,6 +21,18 @@ export type ImageFormat = (typeof IMAGE_FORMATS)[number];
  * Options for the image optimizer.
  */
 export type OptimizeImageOptions = {
+	/**
+	 * An unique id used for generating the image `ETag`, this value should be unique
+	 * and not dynamic.
+	 *
+	 * When this value changes the images with `ETag` generated using it, will be invalidated
+	 * from the cache as well, so changing this value can be used to burst the cache.
+	 *
+	 * Busting the cache is not an immediate action and will take effect when the
+	 * brower cache is cleared, by default images are cache for few hours.
+	 */
+	cacheId?: string;
+
 	/**
 	 * The allowed image origins.
 	 */
@@ -85,14 +102,18 @@ function matchesPath(from: string, to: string) {
 }
 
 /**
- * Create a request handler for optimize images. 
+ * Create a request handler for optimize images.
  * @param opts The image optimizer options.
  */
 export function createImageOptimizerHandler(
 	opts: Omit<OptimizeImageOptions, 'endpoint'>
 ): RequestHandler {
-	const { allowedOrigins, formats = [...IMAGE_FORMATS] } = opts;
+	const { cacheId = CACHE_ID, allowedOrigins, formats = [...IMAGE_FORMATS] } = opts;
 	const originUrls = allowedOrigins.map((x) => new URL(x));
+
+	if (!cacheId) {
+		throw new Error('Cache ID is required and cannot be empty.');
+	}
 
 	return async (event) => {
 		if (!isImageRequest(event)) {
@@ -182,13 +203,10 @@ export function createImageOptimizerHandler(
 		}
 
 		async function getImage() {
-			const cached = IMAGE_CACHE.get(rawUrl);
+			const cachedImageBuffer = IMAGE_CACHE.get(rawUrl);
 
-			if (cached) {
-				return {
-					imageBuffer: cached.imageBuffer,
-					responseETag: cached.responseETag
-				};
+			if (cachedImageBuffer) {
+				return cachedImageBuffer;
 			}
 
 			const res = await fetch(url, {
@@ -211,15 +229,28 @@ export function createImageOptimizerHandler(
 			}
 
 			const imageBuffer = await res.arrayBuffer();
-			const responseETag = res.headers.get('ETag');
-			IMAGE_CACHE.set(rawUrl, { imageBuffer, responseETag });
-			return { imageBuffer, responseETag };
+			IMAGE_CACHE.set(rawUrl, imageBuffer);
+			return imageBuffer;
 		}
 
 		try {
-			const result = await getImage();
-			const { imageBuffer, responseETag } = result;
-			const eTag = responseETag || generateETag({ url, width, quality });
+			const eTag = generateETag({ cacheId, url, width, quality });
+			const ifNoneMatch = event.request.headers.get('If-None-Match');
+
+			if (ifNoneMatch === eTag) {
+				return new Response(null, {
+					status: 304,
+					headers: {
+						'Cache-Control': `public, max-age=${CACHE_MAX_AGE}`,
+						'Access-Control-Allow-Origin': '*',
+						'Cache-Status': 'REVALIDATED',
+						Vary: 'Content-Encoding',
+						ETag: eTag
+					}
+				});
+			}
+
+			const imageBuffer = await getImage();
 			const sharpImage = sharp(imageBuffer).resize({ width });
 
 			let response: Response;
@@ -310,7 +341,7 @@ function createImageResponse(args: CreateImageResponseArgs) {
 	return new Response(buffer, {
 		headers: {
 			'Content-Type': `image/${format}`,
-			'Cache-Control': 'public, max-age=31557600',
+			'Cache-Control': `public, max-age=${CACHE_MAX_AGE}`,
 			'Access-Control-Allow-Origin': '*',
 			Vary: 'Content-Encoding',
 			ETag: eTag
@@ -318,7 +349,12 @@ function createImageResponse(args: CreateImageResponseArgs) {
 	});
 }
 
-function generateETag(args: { url: URL; width: number | undefined; quality: number }) {
-	const value = `${args.url.toString()}:${args.width}:${args.quality}`;
+function generateETag(args: {
+	cacheId: string;
+	url: URL;
+	width: number | undefined;
+	quality: number;
+}) {
+	const value = `${args.cacheId}:${args.url.toString()}:${args.width}:${args.quality}`;
 	return btoa(value).replaceAll('=', '');
 }
