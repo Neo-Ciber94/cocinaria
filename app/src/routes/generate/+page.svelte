@@ -12,7 +12,7 @@
 	import type { Ingredient } from '$lib/common/ingredients';
 	import { MIN_RECIPE_INGREDIENTS, MAX_RECIPE_INGREDIENTS } from '$lib/common/constants';
 	import toast from 'svelte-french-toast';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import SvelteSeo from '$components/seo/SvelteSeo.svelte';
 	import { getResponseError } from '$lib/client/getResponseError';
 	import LoadingDotsIcon from '$components/icons/loadingDotsIcon.svelte';
@@ -57,6 +57,18 @@
 		return recipeItems.selectedItems
 			.filter((e) => Boolean(e.ingredient))
 			.map((e) => e.ingredient?.image) as string[];
+	});
+
+	beforeNavigate(({ type, cancel }) => {
+		if (isGenerating) {
+			if (type !== 'leave') {
+				if (confirm('Recipe still genererating, want to leave?')) {
+					return;
+				}
+			}
+
+			cancel();
+		}
 	});
 
 	async function generateRecipe() {
@@ -119,7 +131,7 @@
 
 <div class="container mx-auto h-full w-full max-w-xl p-4 pt-10 sm:pt-20 lg:max-w-3xl">
 	<div
-		class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-background px-4 pb-6 pt-8 shadow-md"
+		class="bg-background flex flex-col gap-2 rounded-xl border border-gray-200 px-4 pb-6 pt-8 shadow-md"
 	>
 		<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 			<SparkIcon class="size-8 sm:size-12" animated />
