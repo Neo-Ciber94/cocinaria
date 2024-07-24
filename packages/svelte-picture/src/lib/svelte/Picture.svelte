@@ -47,7 +47,6 @@
 		fill = $bindable(),
 		src = $bindable(),
 		alt = $bindable(),
-		children,
 		placeholderUrl,
 		loader = defaultImageLoader,
 		onload,
