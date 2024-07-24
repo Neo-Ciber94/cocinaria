@@ -1,6 +1,7 @@
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 import sharp from 'sharp';
 
+const IMAGE_CACHE = new Map<string, { imageBuffer: ArrayBuffer; responseETag: string | null }>();
 const MAX_IMAGE_WIDTH = 4096;
 const CONTENT_TYPES = ['png', 'webp'] as const;
 
@@ -92,12 +93,14 @@ async function createOptimizedImage(
 		return Response.json({ error: 'Missing image url' }, { status: 400 });
 	}
 
+	const rawUrl = decodeURIComponent(queryUrl);
+
 	let url: URL;
 	let width: number | undefined;
 	let quality: number = 80;
 
 	try {
-		url = new URL(decodeURIComponent(queryUrl));
+		url = new URL(rawUrl);
 
 		const isOriginAllowed = originUrls.some((x) => x.origin === url.origin);
 
@@ -138,7 +141,16 @@ async function createOptimizedImage(
 		}
 	}
 
-	try {
+	async function getImage() {
+		const cached = IMAGE_CACHE.get(rawUrl);
+
+		if (cached) {
+			return {
+				imageBuffer: cached.imageBuffer,
+				responseETag: cached.responseETag
+			};
+		}
+
 		const res = await fetch(url, {
 			headers: {
 				Accept: 'image/*'
@@ -146,7 +158,7 @@ async function createOptimizedImage(
 		});
 
 		if (res.status === 404) {
-			return new Response(null, {
+			throw new Response(null, {
 				status: 404,
 				headers: {
 					'Content-Type': `image/${contentType}`
@@ -155,28 +167,50 @@ async function createOptimizedImage(
 		}
 
 		if (!res.ok) {
-			return Response.json({ error: 'Unable to fetch remote image' }, { status: 500 });
+			throw Response.json({ error: 'Unable to fetch remote image' }, { status: 500 });
 		}
 
-		const eTag = res.headers.get('ETag') || generateETag({ url, width, quality });
-
 		const imageBuffer = await res.arrayBuffer();
+		const responseETag = res.headers.get('ETag');
+		IMAGE_CACHE.set(rawUrl, { imageBuffer, responseETag });
+		return { imageBuffer, responseETag };
+	}
+
+	try {
+		const result = await getImage();
+		const { imageBuffer, responseETag } = result;
+		const eTag = responseETag || generateETag({ url, width, quality });
 		const sharpImage = sharp(imageBuffer).resize({ width });
+
+		let response: Response;
 
 		switch (contentType) {
 			case 'webp': {
 				const buffer = await sharpImage.webp({ quality }).toBuffer();
-				return createImageResponse({ eTag, contentType, buffer });
+				response = createImageResponse({ eTag, contentType, buffer });
+				break;
 			}
 			case 'png': {
 				const buffer = await sharpImage.png({ quality }).toBuffer();
-				return createImageResponse({ eTag, contentType, buffer });
+				response = createImageResponse({ eTag, contentType, buffer });
+				break;
 			}
 			default: {
-				return Response.json({ error: 'Invalid image format' }, { status: 500 });
+				return Response.json({ error: `Invalid image format: ${contentType}` }, { status: 500 });
 			}
 		}
-	} catch {
+
+		// Additional headers
+		response.headers.set('Cache-Hit', IMAGE_CACHE.has(rawUrl) ? 'HIT' : 'MISS');
+
+		// Send image response
+		return response;
+	} catch (err) {
+		if (err instanceof Response) {
+			return err;
+		}
+
+		console.error(err);
 		return Response.json({ error: 'Failed to fetch image' }, { status: 500 });
 	}
 }
