@@ -2,20 +2,20 @@
  * Props for an image loader.
  */
 export type ImageLoaderProps = {
-  /**
-   * URL of the image.
-   */
-  url: string;
+	/**
+	 * URL of the image.
+	 */
+	url: string;
 
-  /**
-   * The width to resize the image to.
-   */
-  width?: number;
+	/**
+	 * The width to resize the image to.
+	 */
+	width?: number;
 
-  /**
-   * The quality of the image.
-   */
-  quality?: number;
+	/**
+	 * The quality of the image.
+	 */
+	quality?: number;
 };
 
 /**
@@ -27,17 +27,17 @@ export type ImageLoader = (props: ImageLoaderProps) => string;
  * The default image loader.
  */
 export const defaultImageLoader: ImageLoader = (props) => {
-  const searchParams = new URLSearchParams();
+	const searchParams = new URLSearchParams();
 
-  searchParams.set("url", encodeURIComponent(props.url));
+	searchParams.set('url', encodeURIComponent(props.url));
 
-  if (props.width) {
-    searchParams.set("width", String(props.width));
-  }
+	if (props.width) {
+		searchParams.set('width', String(props.width));
+	}
 
-  if (props.quality) {
-    searchParams.set("quality", String(props.quality));
-  }
+	if (props.quality) {
+		searchParams.set('quality', String(props.quality));
+	}
 
-  return `/api/image?${searchParams}`;
+	return `/api/image?${searchParams}`;
 };
