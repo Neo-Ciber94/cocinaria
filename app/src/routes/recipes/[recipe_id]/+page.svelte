@@ -9,6 +9,8 @@
 	import { relativeTime } from '$lib/hooks/relativeTime.svelte';
 	import { handleImageError } from '$lib/client/handleImageError';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
+	import RecipeImage from '$components/RecipeImage.svelte';
+	import { defaultImageLoader } from 'svelte-picture/svelte/loader';
 
 	let { data }: { data: PageData } = $props();
 
@@ -27,6 +29,10 @@
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
+
+	const recipeImageUrl = $derived(
+		recipe.imageUrl == null ? undefined : defaultImageLoader({ url: recipe.imageUrl })
+	);
 </script>
 
 <SvelteSeo
@@ -39,11 +45,11 @@
 		title: recipe.name,
 		description: recipe.description ?? undefined,
 		url: data.seo.recipeUrl ?? undefined,
-		images: recipe.imageUrl
+		images: recipeImageUrl
 			? [
 					{
-						url: recipe.imageUrl,
-						secure_url: recipe.imageUrl,
+						url: recipeImageUrl,
+						secure_url: recipeImageUrl,
 						alt: recipe.name
 					}
 				]
@@ -53,7 +59,7 @@
 		title: recipe.name,
 		card: 'summary_large_image',
 		description: recipe.description ?? undefined,
-		image: recipe.imageUrl ?? undefined,
+		image: recipeImageUrl,
 		imageAlt: recipe.name
 	}}
 />
@@ -88,14 +94,15 @@
 						{/if}
 					</div>
 					<div class="flex flex-col gap-1">
-						<img
+						<RecipeImage
 							src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
-							width="600"
-							height="600"
+							width={600}
+							height={600}
 							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
 							style={`view-transition-name: recipe-${recipe.id}`}
 							onerror={handleImageError}
+							loadingAnimation={false}
 						/>
 						{#if isCurrentUserRecipe}
 							<div class="flex w-full flex-row gap-2">
