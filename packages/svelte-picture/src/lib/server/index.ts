@@ -10,7 +10,7 @@ const MAX_IMAGE_WIDTH = 4096;
 const CACHE_ID = 'ZDgzNGRjYzQtODE3NC00ZDQ2LTkzYzMtN2I2ZDcyMGEzMjZi';
 
 // Default cache-control max-age used
-const CACHE_MAX_AGE = 3600; // 1 hour
+const CACHE_MAX_AGE = 3600 * 3; // 3 hours
 
 // This is in the order of priority, so webp will be used first if available
 const IMAGE_FORMATS = ['webp', 'png', 'jpeg', 'avif'] as const;
