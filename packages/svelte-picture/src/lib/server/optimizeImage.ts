@@ -98,7 +98,7 @@ async function createOptimizedImage(
 
   let url: URL;
   let width: number | undefined;
-  let quality: number = 100;
+  let quality: number = 80;
 
   try {
     url = new URL(decodeURIComponent(queryUrl));

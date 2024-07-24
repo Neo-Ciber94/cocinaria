@@ -3,6 +3,6 @@ import { sequence } from "@sveltejs/kit/hooks";
 
 export const handle = sequence(
   optimizeImage({
-    allowedOrigins: ["https://cdn-cocinaria.ciber.in"],
+    allowedOrigins: ["https://image.civitai.com"],
   })
 );
