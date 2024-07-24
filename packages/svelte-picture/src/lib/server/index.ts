@@ -103,7 +103,7 @@ export function createImageOptimizerHandler(
 
 		if (!format) {
 			return Response.json({
-				error: "Request do not include a valid image content type in the 'Accept' header"
+				error: "Request do not include a valid image content-type in the 'Accept' header"
 			});
 		}
 
