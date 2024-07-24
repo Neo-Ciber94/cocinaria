@@ -50,6 +50,15 @@ export type OptimizeImageOptions = {
 	 * The endpoint for the image optimizer handler.
 	 */
 	endpoint?: string;
+
+	/**
+	 * Value used in the Cache-Control 'max-age',
+	 * we recommend keeping this value as low as possible, so the browser
+	 * cache can be burst easily.
+	 *
+	 * @default 3600 // (1 hour)
+	 */
+	cacheMaxAge?: number;
 };
 
 /**
@@ -108,7 +117,12 @@ function matchesPath(from: string, to: string) {
 export function createImageOptimizerHandler(
 	opts: Omit<OptimizeImageOptions, 'endpoint'>
 ): RequestHandler {
-	const { cacheId = CACHE_ID, allowedOrigins, formats = [...IMAGE_FORMATS] } = opts;
+	const {
+		cacheId = CACHE_ID,
+		allowedOrigins,
+		formats = [...IMAGE_FORMATS],
+		cacheMaxAge = CACHE_MAX_AGE
+	} = opts;
 	const originUrls = allowedOrigins.map((x) => new URL(x));
 
 	if (!cacheId) {
@@ -234,7 +248,8 @@ export function createImageOptimizerHandler(
 		}
 
 		try {
-			const eTag = generateETag({ cacheId, url, width, quality });
+			const isCached = IMAGE_CACHE.has(rawUrl);
+			const eTag = await generateETag({ cacheId, url, width, quality });
 			const ifNoneMatch = event.request.headers.get('If-None-Match');
 
 			if (ifNoneMatch === eTag) {
@@ -258,22 +273,22 @@ export function createImageOptimizerHandler(
 			switch (format) {
 				case 'webp': {
 					const buffer = await sharpImage.webp({ quality }).toBuffer();
-					response = createImageResponse({ eTag, format, buffer });
+					response = createImageResponse({ eTag, format, cacheMaxAge, buffer });
 					break;
 				}
 				case 'png': {
 					const buffer = await sharpImage.png({ quality }).toBuffer();
-					response = createImageResponse({ eTag, format, buffer });
+					response = createImageResponse({ eTag, format, cacheMaxAge, buffer });
 					break;
 				}
 				case 'avif': {
 					const buffer = await sharpImage.avif({ quality }).toBuffer();
-					response = createImageResponse({ eTag, format, buffer });
+					response = createImageResponse({ eTag, format, cacheMaxAge, buffer });
 					break;
 				}
 				case 'jpeg': {
 					const buffer = await sharpImage.jpeg({ quality }).toBuffer();
-					response = createImageResponse({ eTag, format, buffer });
+					response = createImageResponse({ eTag, format, cacheMaxAge, buffer });
 					break;
 				}
 				default: {
@@ -282,7 +297,7 @@ export function createImageOptimizerHandler(
 			}
 
 			// Additional headers
-			response.headers.set('Cache-Status', IMAGE_CACHE.has(rawUrl) ? 'HIT' : 'MISS');
+			response.headers.set('Cache-Status', isCached ? 'HIT' : 'MISS');
 
 			// Send image response
 			return response;
@@ -333,15 +348,16 @@ type CreateImageResponseArgs = {
 	eTag: string;
 	format: ImageFormat;
 	buffer: Buffer;
+	cacheMaxAge: number;
 };
 
 function createImageResponse(args: CreateImageResponseArgs) {
-	const { eTag, format, buffer } = args;
+	const { eTag, format, cacheMaxAge, buffer } = args;
 
 	return new Response(buffer, {
 		headers: {
 			'Content-Type': `image/${format}`,
-			'Cache-Control': `public, max-age=${CACHE_MAX_AGE}`,
+			'Cache-Control': `public, max-age=${cacheMaxAge}`,
 			'Access-Control-Allow-Origin': '*',
 			Vary: 'Content-Encoding',
 			ETag: eTag
@@ -349,12 +365,22 @@ function createImageResponse(args: CreateImageResponseArgs) {
 	});
 }
 
-function generateETag(args: {
+async function generateETag(args: {
 	cacheId: string;
 	url: URL;
 	width: number | undefined;
 	quality: number;
 }) {
 	const value = `${args.cacheId}:${args.url.toString()}:${args.width}:${args.quality}`;
-	return btoa(value).replaceAll('=', '');
+	return createSHA1Hash(value);
+}
+
+const encoder = new TextEncoder();
+
+async function createSHA1Hash(message: string) {
+	const data = encoder.encode(message);
+	const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+	return hashHex;
 }
