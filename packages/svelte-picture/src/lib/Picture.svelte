@@ -91,6 +91,8 @@
 
 	const getInitialImageUrl = () => remoteUrl;
 
+	// eslint says this is unused for some reason
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let isImageLoading = $state(true);
 	let imageUrl = $state(placeholderUrl || getInitialImageUrl());
 
