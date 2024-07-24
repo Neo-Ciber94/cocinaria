@@ -28,7 +28,7 @@
 
 		/**
 		 * A delay to add while loading the image.
-		 * 
+		 *
 		 * This is supported by the default image loading and ONLY during development.
 		 */
 		delayMs?: number;
