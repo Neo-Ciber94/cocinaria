@@ -201,7 +201,7 @@ async function createOptimizedImage(
 		}
 
 		// Additional headers
-		response.headers.set('Cache-Hit', IMAGE_CACHE.has(rawUrl) ? 'HIT' : 'MISS');
+		response.headers.set('Cache-Status', IMAGE_CACHE.has(rawUrl) ? 'HIT' : 'MISS');
 
 		// Send image response
 		return response;
@@ -228,6 +228,8 @@ function createImageResponse(args: CreateImageResponseArgs) {
 		headers: {
 			'Content-Type': `image/${contentType}`,
 			'Cache-Control': 'public, max-age=31557600',
+			'Access-Control-Allow-Origin': '*',
+			Vary: 'Content-Encoding',
 			ETag: eTag
 		}
 	});
