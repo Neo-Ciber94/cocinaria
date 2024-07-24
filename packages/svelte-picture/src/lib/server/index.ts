@@ -256,7 +256,7 @@ export function createImageOptimizerHandler(
 				return new Response(null, {
 					status: 304,
 					headers: {
-						'Cache-Control': `public, max-age=${CACHE_MAX_AGE}`,
+						'Cache-Control': `public, max-age=${cacheMaxAge}`,
 						'Access-Control-Allow-Origin': '*',
 						'Cache-Status': 'REVALIDATED',
 						Vary: 'Content-Encoding',
