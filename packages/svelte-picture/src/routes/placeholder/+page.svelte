@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Picture from '$lib/svelte/Picture.svelte';
+	import Picture from '$lib/Picture.svelte';
 	import { blurHashToDataURL } from './blurHashToDataURL.js';
 
 	const base64Url = blurHashToDataURL(

@@ -1,16 +1,18 @@
-import { delay } from '$lib/svelte/utils.js';
+import { delay } from '$lib/utils.js';
 import type { Handle, RequestEvent, RequestHandler } from '@sveltejs/kit';
 import sharp from 'sharp';
 
 const IS_DEV = process.env.NODE_ENV !== 'production';
 const IMAGE_CACHE = new Map<string, ArrayBuffer>();
-const MAX_IMAGE_WIDTH = 4096;
+
+// This is just a hard limit
+const MAX_IMAGE_WIDTH = 2048;
 
 // Default cache id used it none is specified.
 const CACHE_ID = 'ZDgzNGRjYzQtODE3NC00ZDQ2LTkzYzMtN2I2ZDcyMGEzMjZi';
 
 // Default cache-control max-age used
-const CACHE_MAX_AGE = 3600; // 1 hour
+const CACHE_MAX_AGE = 3600 * 3; // 3 hours
 
 // This is in the order of priority, so webp will be used first if available
 const IMAGE_FORMATS = ['webp', 'png', 'jpeg', 'avif'] as const;
