@@ -84,6 +84,10 @@ function matchesPath(from: string, to: string) {
 	return true;
 }
 
+/**
+ * Create a request handler for optimize images. 
+ * @param opts The image optimizer options.
+ */
 export function createImageOptimizerHandler(
 	opts: Omit<OptimizeImageOptions, 'endpoint'>
 ): RequestHandler {
