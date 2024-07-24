@@ -1,14 +1,26 @@
 <script lang="ts" context="module">
 	import type { HTMLImgAttributes } from 'svelte/elements';
-	import type { ImageLoader } from './loader.js';
+	import type { ImageLoader } from './imageLoader.js';
 
 	export type ImageProps = {
-		width?: number;
-		height?: number;
-	};
-
-	type BaseProps = ImageProps & {
+		/**
+		 * The image URL.
+		 */
 		src: string;
+
+		/**
+		 * The intrinsic width of the image in pixels. Must be an integer without a unit.
+		 */
+		width?: number;
+
+		/**
+		 * The intrinsic height of the image, in pixels. Must be an integer without a unit.
+		 */
+		height?: number;
+
+		/**
+		 * Defines text that can replace the image in the page.
+		 */
 		alt: string;
 
 		/**
@@ -27,6 +39,11 @@
 		placeholderUrl?: string;
 
 		/**
+		 * The width to request the image instead of using the parameter `width`.
+		 */
+		widthOverride?: number;
+
+		/**
 		 * A delay to add while loading the image.
 		 *
 		 * This is supported by the default image loading and ONLY during development.
@@ -36,21 +53,21 @@
 
 	type HTMLImageProps = Omit<HTMLImgAttributes, 'width' | 'height' | 'src' | 'alt'>;
 
-	export type PictureProps = BaseProps & HTMLImageProps;
+	export type PictureProps = ImageProps & HTMLImageProps;
 </script>
 
 <script lang="ts">
-	import { defaultImageLoader } from './loader.js';
-	import { loadImage } from './utils.js';
+	import { getRemoteImageUrl, loadImage } from './utils.js';
 
 	let {
 		width = $bindable(),
 		height = $bindable(),
 		src = $bindable(),
 		alt = $bindable(),
+		widthOverride = $bindable(),
 		placeholderUrl,
 		delayMs,
-		loader = defaultImageLoader,
+		loader,
 		onload,
 		onerror,
 		loading = 'lazy',
@@ -69,28 +86,27 @@
 	}
 
 	const remoteUrl = $derived.by(() => {
-		return loader({ url: src, width, quality });
+		return getRemoteImageUrl({ src, quality, width, widthOverride, loader });
 	});
 
 	const getInitialImageUrl = () => remoteUrl;
+
+	let isImageLoading = $state(true);
 	let imageUrl = $state(placeholderUrl || getInitialImageUrl());
 
-	// eslint says this is unused for some reason
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	let isImageLoading = $state(true);
-
-	$effect.pre(() => {
+	$effect(() => {
 		if (!placeholderUrl) {
 			return;
 		}
 
 		loadImage(remoteUrl)
 			.catch(onerror)
-			.then((img) => {
-				const event = Object.defineProperty(new Event('load', {}), 'currentTarget', {
-					value: img
-				}) as Event & { currentTarget: EventTarget & Element };
-				onload?.(event);
+			.then((value) => {
+				const event = new Event('load');
+				Object.defineProperty(event, 'currentTarget', { value });
+				Object.defineProperty(event, 'target', { value });
+
+				onload?.(event as Event & { currentTarget: EventTarget & Element });
 			})
 			.finally(() => {
 				imageUrl = remoteUrl;

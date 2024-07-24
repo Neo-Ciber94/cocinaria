@@ -18,13 +18,13 @@
 			"types": "./dist/server/index.d.ts",
 			"import": "./dist/server/index.js"
 		},
-		"./svelte/loader": {
-			"types": "./dist/svelte/loader.d.ts",
-			"svelte": "./dist/svelte/loader.js"
+		"./imageLoader": {
+			"types": "./dist/imageLoader.d.ts",
+			"svelte": "./dist/imageLoader.js"
 		},
-		"./svelte/Picture": {
-			"types": "./dist/svelte/Picture.svelte.d.ts",
-			"svelte": "./dist/svelte/Picture.svelte"
+		"./Picture": {
+			"types": "./dist/Picture.svelte.d.ts",
+			"svelte": "./dist/Picture.svelte"
 		}
 	},
 	"files": [

@@ -10,7 +10,7 @@
 	import { handleImageError } from '$lib/client/handleImageError';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import RecipeImage from '$components/RecipeImage.svelte';
-	import { defaultImageLoader } from 'svelte-picture/svelte/loader';
+	import { defaultImageLoader } from 'svelte-picture/imageLoader';
 
 	let { data }: { data: PageData } = $props();
 

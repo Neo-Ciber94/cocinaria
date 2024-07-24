@@ -1,5 +1,5 @@
 <script>
-	import Picture from '$lib/svelte/Picture.svelte';
+	import Picture from '$lib/Picture.svelte';
 </script>
 
 <Picture

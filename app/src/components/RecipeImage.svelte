@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
-	import Picture, { type PictureProps } from 'svelte-picture/svelte/Picture';
+	import Picture, { type PictureProps } from 'svelte-picture/Picture';
 	import { fade } from 'svelte/transition';
 
 	type Props = PictureProps & { loadingAnimation?: boolean };
-	let { width, height, loadingAnimation = true, ...rest }: Props = $props();
+	let { width, height, widthOverride = 800, loadingAnimation = true, ...rest }: Props = $props();
 
 	let isLoading = $state(true);
 </script>
@@ -14,6 +14,7 @@
 		{...rest}
 		{width}
 		{height}
+		{widthOverride}
 		class={cn(
 			'transition-opacity duration-200',
 			loadingAnimation && isLoading ? 'opacity-0' : 'opacity-100'

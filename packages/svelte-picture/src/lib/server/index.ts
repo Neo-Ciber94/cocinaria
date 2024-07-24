@@ -1,4 +1,4 @@
-import { delay } from '$lib/svelte/utils.js';
+import { delay } from '$lib/utils.js';
 import type { Handle, RequestEvent, RequestHandler } from '@sveltejs/kit';
 import sharp from 'sharp';
 
