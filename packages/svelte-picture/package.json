@@ -23,8 +23,8 @@
 			"svelte": "./dist/svelte/loader.js"
 		},
 		"./svelte/Picture": {
-			"types": "./dist/svelte/Picture.d.ts",
-			"svelte": "./dist/svelte/Picture.js"
+			"types": "./dist/svelte/Picture.svelte.d.ts",
+			"svelte": "./dist/svelte/Picture.svelte"
 		}
 	},
 	"files": [

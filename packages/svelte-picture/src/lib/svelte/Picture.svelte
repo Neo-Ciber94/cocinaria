@@ -35,11 +35,12 @@
 	};
 
 	type HTMLImageProps = Omit<HTMLImgAttributes, 'width' | 'height' | 'src' | 'alt'>;
+
+  export type PictureProps = BaseProps & HTMLImageProps;
 </script>
 
 <script lang="ts">
 	import { defaultImageLoader } from './loader.js';
-	type Props = BaseProps & HTMLImageProps;
 
 	let {
 		width = $bindable(),
@@ -54,13 +55,11 @@
 		loading = 'lazy',
 		quality,
 		...rest
-	}: Props = $props();
+	}: PictureProps = $props();
 
 	if (quality && !(quality > 0 && quality <= 100)) {
 		throw new Error('quality must be between 0 and 100');
 	}
-
-	let isImageLoading = $state(true);
 
 	const remoteUrl = $derived.by(() => {
 		return loader({
@@ -72,6 +71,10 @@
 
 	const getInitialImageUrl = () => remoteUrl;
 	let imageUrl = $state(placeholderUrl ? placeholderUrl : getInitialImageUrl());
+
+  // eslint says this is unused for some reason
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	let isImageLoading = $state(true);
 
 	const imageStyles = $derived.by(() => {
 		if (fill) {
