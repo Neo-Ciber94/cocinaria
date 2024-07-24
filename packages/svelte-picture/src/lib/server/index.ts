@@ -32,7 +32,7 @@ export type OptimizeImageOptions = {
  * A middleware to optimize images.
  * @param opts The options.
  */
-export default function optimizeImage(opts: OptimizeImageOptions): Handle {
+export function optimizeImage(opts: OptimizeImageOptions): Handle {
 	const endpoint = opts.endpoint || '/api/image';
 
 	return async ({ event, resolve }) => {

@@ -43,12 +43,13 @@
     "svelte-french-toast": "1.2.0",
     "svelte-radix": "1.1.0",
     "svelte-sonner": "0.3.27",
-    "svelte-stream": "workspace:*",
     "tailwind-merge": "2.4.0",
     "tailwind-variants": "0.2.1",
     "tailwindcss-bg-patterns": "0.3.0",
     "ws": "8.18.0",
-    "zod": "3.23.8"
+    "zod": "3.23.8",
+    "svelte-stream": "workspace:*",
+    "svelte-picture": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "3.0.0",

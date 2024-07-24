@@ -1,4 +1,4 @@
-import optimizeImage from '$lib/server/optimizeImage.js';
+import { optimizeImage } from '$lib/server/index.js';
 import { sequence } from '@sveltejs/kit/hooks';
 
 export const handle = sequence(

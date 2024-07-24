@@ -14,9 +14,9 @@
 		"lint": "prettier --check . && eslint ."
 	},
 	"exports": {
-		"./server/optimizeImage": {
-			"types": "./dist/server/optimizeImage.d.ts",
-			"import": "./dist/server/optimizeImage.js"
+		"./server": {
+			"types": "./dist/server/index.d.ts",
+			"import": "./dist/server/index.js"
 		},
 		"./svelte/loader": {
 			"types": "./dist/svelte/loader.d.ts",

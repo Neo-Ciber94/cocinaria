@@ -8,6 +8,7 @@
 	import { capitalize } from '$lib/utils/strings';
 	import { backOut } from 'svelte/easing';
 	import { scale } from 'svelte/transition';
+	import RecipeImage from './RecipeImage.svelte';
 
 	type ImgProps = {
 		width?: number;
@@ -61,7 +62,7 @@
 			img.style.viewTransitionName = `recipe-${recipe.id}`
 		}}
 	>
-		<img
+		<RecipeImage
 			data-img
 			width={imgProps?.width}
 			height={imgProps?.height}
@@ -71,7 +72,7 @@
 			onerror={handleImageError}
 		/>
 
-		<h3 class="mt-1 text-center text-sm font-bold xxs:text-base xs:text-lg">
+		<h3 class="xxs:text-base xs:text-lg mt-1 text-center text-sm font-bold">
 			{recipe.name}
 		</h3>
 		<small class="w-full text-center font-sans font-medium tracking-wide text-neutral-300">
