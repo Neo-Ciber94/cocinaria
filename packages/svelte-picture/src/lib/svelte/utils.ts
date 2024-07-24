@@ -7,3 +7,10 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
 		image.onerror = (ev) => reject(ev);
 	});
 }
+
+/**
+ * @internal
+ */
+export function delay(ms: number) {
+	return new Promise<void>((resolve) => setTimeout(() => resolve, ms));
+}

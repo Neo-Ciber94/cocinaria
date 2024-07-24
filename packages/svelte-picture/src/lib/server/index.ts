@@ -1,3 +1,5 @@
+import { DEV } from 'esm-env';
+import { delay } from '$lib/svelte/utils.js';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 import sharp from 'sharp';
 
@@ -88,6 +90,7 @@ async function createOptimizedImage(
 	const queryUrl = event.url.searchParams.get('url');
 	const queryWidth = event.url.searchParams.get('width');
 	const queryQuality = event.url.searchParams.get('quality');
+	const queryDelayMs = event.url.searchParams.get('delay');
 
 	if (!queryUrl) {
 		return Response.json({ error: 'Missing image url' }, { status: 400 });
@@ -138,6 +141,20 @@ async function createOptimizedImage(
 
 		if (!(quality >= 0 && quality <= 100)) {
 			return Response.json({ error: 'Expected image quality between 0 and 100' }, { status: 400 });
+		}
+	}
+
+	if (queryDelayMs) {
+		console.warn(
+			`A 'delay' of ${queryDelayMs}ms is being used while loading '${rawUrl}', this will only work during development`
+		);
+
+		if (DEV) {
+			const delayMs = parseFloat(queryDelayMs);
+
+			if (!Number.isNaN(delayMs)) {
+				await delay(delayMs);
+			}
 		}
 	}
 

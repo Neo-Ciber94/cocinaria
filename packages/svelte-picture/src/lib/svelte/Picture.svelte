@@ -25,6 +25,13 @@
 		 * A fallback image.
 		 */
 		placeholderUrl?: string;
+
+		/**
+		 * A delay to add while loading the image.
+		 * 
+		 * This is supported by the default image loading and ONLY during development.
+		 */
+		delayMs?: number;
 	};
 
 	type HTMLImageProps = Omit<HTMLImgAttributes, 'width' | 'height' | 'src' | 'alt'>;
@@ -42,6 +49,7 @@
 		src = $bindable(),
 		alt = $bindable(),
 		placeholderUrl,
+		delayMs,
 		loader = defaultImageLoader,
 		onload,
 		onerror,
@@ -52,6 +60,12 @@
 
 	if (quality && !(quality > 0 && quality <= 100)) {
 		throw new Error('quality must be between 0 and 100');
+	}
+
+	if (delayMs) {
+		console.warn(
+			`A 'delay' of ${delayMs}ms is being used while loading '${src}', this will only work during development`
+		);
 	}
 
 	const remoteUrl = $derived.by(() => {
