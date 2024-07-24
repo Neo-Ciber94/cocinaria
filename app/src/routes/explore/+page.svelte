@@ -170,6 +170,7 @@
 					<RecipeItem
 						{recipe}
 						{index}
+						imgProps={{ width: 800, height: 800}}
 						class={cn(index % 6 === 0 && 'col-span-1 row-span-1 md:col-span-2 md:row-span-2')}
 					/>
 				{/each}

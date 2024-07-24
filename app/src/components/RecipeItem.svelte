@@ -62,15 +62,17 @@
 			img.style.viewTransitionName = `recipe-${recipe.id}`
 		}}
 	>
-		<RecipeImage
-			data-img
-			width={imgProps?.width}
-			height={imgProps?.height}
-			class={imgProps?.class}
-			alt={recipe.name}
-			src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
-			onerror={handleImageError}
-		/>
+		<div style:position="relative">
+			<RecipeImage
+				data-img
+				width={imgProps?.width}
+				height={imgProps?.height}
+				class={imgProps?.class}
+				alt={recipe.name}
+				src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
+				onerror={handleImageError}
+			/>
+		</div>
 
 		<h3 class="xxs:text-base xs:text-lg mt-1 text-center text-sm font-bold">
 			{recipe.name}

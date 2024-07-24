@@ -92,10 +92,6 @@ async function createOptimizedImage(
 		return Response.json({ error: 'Missing image url' }, { status: 400 });
 	}
 
-	if (!queryWidth) {
-		return Response.json({ error: 'Missing image width' }, { status: 400 });
-	}
-
 	let url: URL;
 	let width: number | undefined;
 	let quality: number = 80;

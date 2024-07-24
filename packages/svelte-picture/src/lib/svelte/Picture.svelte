@@ -2,17 +2,10 @@
 	import type { HTMLImgAttributes } from 'svelte/elements';
 	import type { ImageLoader } from './loader.js';
 
-	export type ImageProps =
-		| {
-				width: number;
-				height: number;
-				fill?: undefined;
-		  }
-		| {
-				width?: undefined;
-				height?: undefined;
-				fill?: true;
-		  };
+	export type ImageProps = {
+		width?: number;
+		height?: number;
+	}
 
 	type BaseProps = ImageProps & {
 		src: string;
@@ -46,7 +39,6 @@
 	let {
 		width = $bindable(),
 		height = $bindable(),
-		fill = $bindable(),
 		src = $bindable(),
 		alt = $bindable(),
 		placeholderUrl,
@@ -63,11 +55,7 @@
 	}
 
 	const remoteUrl = $derived.by(() => {
-		return loader({
-			url: src,
-			width: fill ? undefined : width,
-			quality: quality ? undefined : quality
-		});
+		return loader({ url: src, width, quality });
 	});
 
 	const getInitialImageUrl = () => remoteUrl;
@@ -78,10 +66,14 @@
 	let isImageLoading = $state(true);
 
 	$effect.pre(() => {
+		if (!placeholderUrl) {
+			return;
+		}
+		
 		loadImage(remoteUrl)
 		.catch(onerror)
 		.then((img) => {
-			const event = Object.assign(new Event("load"), { currentTarget: img });
+			const event = Object.defineProperty(new Event("load", { }), "currentTarget", { value:  img }) as Event & { currentTarget: EventTarget & Element };
 			onload?.(event)
 		})
 		.finally(() => {
@@ -90,17 +82,7 @@
 		})
 	})
 
-	const imageStyles = $derived.by(() => {
-		if (fill) {
-			return { width: '100%', height: '100%', position: 'absolute' };
-		}
-
-		return { width: `${width}px`, height: `${height}px` };
-	});
-
 	function handleLoad(ev: Event & { currentTarget: EventTarget & Element }) {
-
-
 		if (!placeholderUrl) {
 			isImageLoading = false;
 			imageUrl = remoteUrl;
@@ -110,8 +92,6 @@
 	}
 
 	function handleError(ev: Event & { currentTarget: EventTarget & Element }) {
-	
-		
 		if (!placeholderUrl) {
 			isImageLoading = false;
 		}
@@ -126,9 +106,6 @@
 	{loading}
 	{width}
 	{height}
-	style:width={imageStyles.width}
-	style:height={imageStyles.height}
-	style:position={imageStyles.position}
 	onload={handleLoad}
 	onerror={handleError}
 	{...rest}

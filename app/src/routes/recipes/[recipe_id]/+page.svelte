@@ -91,8 +91,8 @@
 					<div class="flex flex-col gap-1">
 						<RecipeImage
 							src={recipe.imageUrl ?? NOT_FOUND_IMAGE}
-							width="600"
-							height="600"
+							width={600}
+							height={600}
 							alt={recipe.name}
 							class="mx-auto aspect-square overflow-hidden rounded-xl object-cover"
 							style={`view-transition-name: recipe-${recipe.id}`}
