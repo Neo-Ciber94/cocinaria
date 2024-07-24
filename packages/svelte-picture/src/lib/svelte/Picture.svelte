@@ -5,7 +5,7 @@
 	export type ImageProps = {
 		width?: number;
 		height?: number;
-	}
+	};
 
 	type BaseProps = ImageProps & {
 		src: string;
@@ -29,12 +29,12 @@
 
 	type HTMLImageProps = Omit<HTMLImgAttributes, 'width' | 'height' | 'src' | 'alt'>;
 
-  export type PictureProps = BaseProps & HTMLImageProps;
+	export type PictureProps = BaseProps & HTMLImageProps;
 </script>
 
 <script lang="ts">
 	import { defaultImageLoader } from './loader.js';
-	import { loadImage } from "./utils.js";
+	import { loadImage } from './utils.js';
 
 	let {
 		width = $bindable(),
@@ -59,9 +59,9 @@
 	});
 
 	const getInitialImageUrl = () => remoteUrl;
-	let imageUrl = $state(placeholderUrl ||  getInitialImageUrl());
+	let imageUrl = $state(placeholderUrl || getInitialImageUrl());
 
-  	// eslint says this is unused for some reason
+	// eslint says this is unused for some reason
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let isImageLoading = $state(true);
 
@@ -69,18 +69,20 @@
 		if (!placeholderUrl) {
 			return;
 		}
-		
+
 		loadImage(remoteUrl)
-		.catch(onerror)
-		.then((img) => {
-			const event = Object.defineProperty(new Event("load", { }), "currentTarget", { value:  img }) as Event & { currentTarget: EventTarget & Element };
-			onload?.(event)
-		})
-		.finally(() => {
-			imageUrl = remoteUrl;
-			isImageLoading = false;
-		})
-	})
+			.catch(onerror)
+			.then((img) => {
+				const event = Object.defineProperty(new Event('load', {}), 'currentTarget', {
+					value: img
+				}) as Event & { currentTarget: EventTarget & Element };
+				onload?.(event);
+			})
+			.finally(() => {
+				imageUrl = remoteUrl;
+				isImageLoading = false;
+			});
+	});
 
 	function handleLoad(ev: Event & { currentTarget: EventTarget & Element }) {
 		if (!placeholderUrl) {
