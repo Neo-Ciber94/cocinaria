@@ -14,7 +14,6 @@
 		{width}
 		{height}
 		class={cn('transition-opacity duration-200', isLoading ? 'opacity-0' : 'opacity-100')}
-        delayMs={5000}
 		onload={() => {
 			isLoading = false;
 		}}

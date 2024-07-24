@@ -1,7 +1,8 @@
-import { DEV } from 'esm-env';
 import { delay } from '$lib/svelte/utils.js';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 import sharp from 'sharp';
+
+const IS_DEV = process.env.NODE_ENV !== 'production';
 
 const IMAGE_CACHE = new Map<string, { imageBuffer: ArrayBuffer; responseETag: string | null }>();
 const MAX_IMAGE_WIDTH = 4096;
@@ -149,7 +150,7 @@ async function createOptimizedImage(
 			`A 'delay' of ${queryDelayMs}ms is being used while loading '${rawUrl}', this will only work during development`
 		);
 
-		if (DEV) {
+		if (IS_DEV) {
 			const delayMs = parseFloat(queryDelayMs);
 
 			if (!Number.isNaN(delayMs)) {

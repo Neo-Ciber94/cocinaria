@@ -33,7 +33,6 @@
     "!dist/**/*.spec.*"
   ],
   "dependencies": {
-    "esm-env": "^1.0.0",
     "sharp": "0.33.4"
   },
   "peerDependencies": {
