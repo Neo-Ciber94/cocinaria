@@ -10,7 +10,6 @@
 	import { handleImageError } from '$lib/client/handleImageError';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import RecipeImage from '$components/RecipeImage.svelte';
-	import { defaultImageLoader } from 'svelte-picture/imageLoader';
 
 	let { data }: { data: PageData } = $props();
 
@@ -29,13 +28,7 @@
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
-
-	const PREVIEW_IMG_WIDTH = 1024;
-	const recipeImageUrl = $derived.by(() => {
-		return recipe.imageUrl == null
-			? undefined
-			: defaultImageLoader({ url: recipe.imageUrl, width: PREVIEW_IMG_WIDTH });
-	});
+	const recipeImageUrl = data.seo.imageUrl;
 </script>
 
 <SvelteSeo
@@ -55,8 +48,8 @@
 						secure_url: recipeImageUrl,
 						alt: recipe.name,
 						type: 'image/webp',
-						height: PREVIEW_IMG_WIDTH,
-						width: PREVIEW_IMG_WIDTH
+						height: data.seo.imageSize,
+						width: data.seo.imageSize
 					}
 				]
 			: []

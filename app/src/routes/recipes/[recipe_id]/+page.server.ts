@@ -3,6 +3,9 @@ import type { Actions, PageServerLoad } from './$types';
 import { deleteRecipe, getRecipeById } from '$lib/server/recipes';
 import { checkAuthenticated } from '$lib/server/utils';
 import { getBaseUrl } from '$lib/common/getBaseUrl';
+import { defaultImageLoader } from 'svelte-picture/imageLoader';
+
+const SEO_IMAGE_WIDTH = 1024;
 
 export const actions = {
 	async deleteRecipe(event) {
@@ -19,12 +22,21 @@ export const load: PageServerLoad = async (event) => {
 		error(404, { message: 'Recipe not found' });
 	}
 
+	const recipeImageUrl = $derived.by(() => {
+		return recipe.imageUrl == null
+			? undefined
+			: defaultImageLoader({ url: recipe.imageUrl, width: SEO_IMAGE_WIDTH });
+	});
+
 	const recipeUrl = `${getBaseUrl()}/recipes/${recipe.id}`;
+	const imageUrl = `${getBaseUrl()}/${recipeImageUrl}`;
 
 	return {
 		recipe,
 		seo: {
-			recipeUrl
+			recipeUrl,
+			imageUrl,
+			imageSize: SEO_IMAGE_WIDTH
 		}
 	};
 };
