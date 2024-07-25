@@ -281,6 +281,8 @@ export function createImageOptimizerHandler(
 
 			let response: Response;
 
+			console.log({ eTag, format, rawUrl });
+
 			switch (format) {
 				case 'webp': {
 					const buffer = await sharpImage.webp({ quality }).toBuffer();
