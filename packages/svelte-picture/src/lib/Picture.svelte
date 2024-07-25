@@ -97,6 +97,12 @@
 	let imageUrl = $state(placeholderUrl || getInitialImageUrl());
 
 	$effect(() => {
+		if (!isImageLoading) {
+			imageUrl = remoteUrl;
+		}
+	});
+
+	$effect(() => {
 		if (!placeholderUrl) {
 			return;
 		}
@@ -117,26 +123,18 @@
 	});
 
 	function handleLoad(ev: Event & { currentTarget: EventTarget & Element }) {
-		if (!placeholderUrl) {
-			isImageLoading = false;
-			imageUrl = remoteUrl;
-		}
-
+		isImageLoading = false;
 		onload?.(ev);
 	}
 
 	function handleError(ev: Event & { currentTarget: EventTarget & Element }) {
-		if (!placeholderUrl) {
-			isImageLoading = false;
-		}
-
+		isImageLoading = false;
 		onerror?.(ev);
 	}
 </script>
 
 <img
 	src={imageUrl}
-	{alt}
 	{loading}
 	{width}
 	{height}
