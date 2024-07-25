@@ -30,10 +30,11 @@
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
 
+	const PREVIEW_IMG_WIDTH = 1024;
 	const recipeImageUrl = $derived.by(() => {
 		return recipe.imageUrl == null
 			? undefined
-			: defaultImageLoader({ url: recipe.imageUrl, width: 1024 });
+			: defaultImageLoader({ url: recipe.imageUrl, width: PREVIEW_IMG_WIDTH });
 	});
 </script>
 
@@ -54,8 +55,8 @@
 						secure_url: recipeImageUrl,
 						alt: recipe.name,
 						type: 'image/webp',
-						height: 1024,
-						width: 1024
+						height: PREVIEW_IMG_WIDTH,
+						width: PREVIEW_IMG_WIDTH
 					}
 				]
 			: []
