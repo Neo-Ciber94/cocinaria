@@ -50,6 +50,7 @@
 		images: recipeImageUrl
 			? [
 					{
+						url: recipeImageUrl,
 						secure_url: recipeImageUrl,
 						alt: recipe.name,
 						type: 'image/webp',
