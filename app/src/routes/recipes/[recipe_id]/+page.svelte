@@ -12,6 +12,7 @@
 	import RecipeImage from '$components/RecipeImage.svelte';
 
 	let { data }: { data: PageData } = $props();
+	const { seo } = data;
 
 	const auth = useAuth();
 	const isCurrentUserRecipe = $derived(auth?.user.id === data.recipe.userId);
@@ -28,7 +29,6 @@
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
-	const recipeImageUrl = data.seo.imageUrl;
 </script>
 
 <SvelteSeo
@@ -40,16 +40,16 @@
 		site_name: `CocinarIA ${icon}`,
 		title: recipe.name,
 		description: recipe.description ?? undefined,
-		url: data.seo.recipeUrl ?? undefined,
-		images: recipeImageUrl
+		url: seo.recipeUrl ?? undefined,
+		images: seo.imageUrl
 			? [
 					{
-						url: recipeImageUrl,
-						secure_url: recipeImageUrl,
+						url: seo.imageUrl,
+						secure_url: seo.imageUrl,
 						alt: recipe.name,
 						type: 'image/webp',
-						height: data.seo.imageSize,
-						width: data.seo.imageSize
+						height: seo.imageSize,
+						width: seo.imageSize
 					}
 				]
 			: []
@@ -58,7 +58,7 @@
 		title: recipe.name,
 		card: 'summary_large_image',
 		description: recipe.description ?? undefined,
-		image: recipeImageUrl,
+		image: seo.imageUrl,
 		imageAlt: recipe.name
 	}}
 />
