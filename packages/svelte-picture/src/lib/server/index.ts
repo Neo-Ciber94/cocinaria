@@ -155,17 +155,20 @@ export function createImageOptimizerHandler(
 
 		const rawUrl = decodeURIComponent(queryUrl);
 
-		let url: URL;
+		let url: URL | string;
 		let width: number | undefined;
 		let quality: number = 80;
 
 		try {
-			url = new URL(rawUrl);
+			if (isRelativeUrl(rawUrl)) {
+				url = rawUrl;
+			} else {
+				url = new URL(rawUrl);
+				const isOriginAllowed = originUrls.some((x) => x.origin === (url as URL).origin);
 
-			const isOriginAllowed = originUrls.some((x) => x.origin === url.origin);
-
-			if (!isOriginAllowed) {
-				return Response.json({ error: 'Invalid image url origin' }, { status: 403 });
+				if (!isOriginAllowed) {
+					return Response.json({ error: 'Invalid image url origin' }, { status: 403 });
+				}
 			}
 		} catch (err) {
 			console.error(err);
@@ -225,7 +228,7 @@ export function createImageOptimizerHandler(
 				return cachedImageBuffer;
 			}
 
-			const res = await fetch(url, {
+			const res = await event.fetch(url, {
 				headers: {
 					Accept: 'image/*'
 				}
@@ -346,6 +349,11 @@ function isImageRequest(event: RequestEvent) {
 	return acceptImages && (event.request.method === 'GET' || event.request.method === 'HEAD');
 }
 
+function isRelativeUrl(url: string) {
+	// https://stackoverflow.com/a/19709846/9307869
+	return !/^(?:[a-z+]+:)?\/\//i.test(url);
+}
+
 type CreateImageResponseArgs = {
 	eTag: string;
 	format: ImageFormat;
@@ -369,7 +377,7 @@ function createImageResponse(args: CreateImageResponseArgs) {
 
 async function generateETag(args: {
 	cacheId: string;
-	url: URL;
+	url: URL | string;
 	width: number | undefined;
 	quality: number;
 }) {

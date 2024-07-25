@@ -7,4 +7,4 @@ export const MAX_RECIPE_INGREDIENTS = 10;
 export const FREE_CREDITS_COUNT = 3;
 
 // Images
-export const NOT_FOUND_IMAGE = 'https://placehold.co/500x500/FDBA74/B45309?text=Not+Found';
+export const NOT_FOUND_IMAGE = '/images/not_found.jpg';
