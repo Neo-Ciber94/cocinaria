@@ -210,7 +210,7 @@ export function createImageOptimizerHandler(
 
 		if (queryFormat && isValidImageFormat(queryFormat)) {
 			// If other format is required, we override it
-			format = queryFormat as ImageFormat;
+			format = queryFormat;
 		}
 
 		if (queryDelayMs) {
@@ -260,7 +260,7 @@ export function createImageOptimizerHandler(
 
 		try {
 			const isCached = IMAGE_CACHE.has(rawUrl);
-			const eTag = await generateETag({ cacheId, url, width, quality });
+			const eTag = await generateETag({ cacheId, url, width, format, quality });
 			const ifNoneMatch = event.request.headers.get('If-None-Match');
 
 			if (ifNoneMatch === eTag) {
@@ -390,8 +390,10 @@ async function generateETag(args: {
 	url: URL | string;
 	width: number | undefined;
 	quality: number;
+	format: string;
 }) {
-	const value = `${args.cacheId}:${args.url.toString()}:${args.width}:${args.quality}`;
+	const { cacheId, url, width, format, quality } = args;
+	const value = `${cacheId}:${url.toString()}:${width}:${format}:${quality}`;
 	return createSHA1Hash(value);
 }
 
