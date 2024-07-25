@@ -40,6 +40,6 @@ function getRecipeImage(recipeImageUrl: string | null) {
 
 	const size = 1024;
 	const relativeUrl = defaultImageLoader({ url: recipeImageUrl, width: size });
-	const url = `${getBaseUrl()}/${relativeUrl}`;
+	const url = `${getBaseUrl()}${relativeUrl}`;
 	return { url, size };
 }
