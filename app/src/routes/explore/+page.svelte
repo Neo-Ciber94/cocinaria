@@ -160,13 +160,14 @@
 		</h2>
 	{:else if $query.data.pages && totalCount > 0}
 		{@const pages = $query.data.pages}
+
 		<div
 			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
 		>
-			{#each pages as page}
+			{#each pages as page (page.next)}
 				{@const recipes = page.recipes}
 
-				{#each recipes as recipe, index}
+				{#each recipes as recipe, index (recipe.id)}
 					<RecipeItem
 						{recipe}
 						{index}

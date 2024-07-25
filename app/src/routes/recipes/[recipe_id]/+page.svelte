@@ -30,9 +30,11 @@
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
 
-	const recipeImageUrl = $derived(
-		recipe.imageUrl == null ? undefined : defaultImageLoader({ url: recipe.imageUrl })
-	);
+	const recipeImageUrl = $derived.by(() => {
+		return recipe.imageUrl == null
+			? undefined
+			: defaultImageLoader({ url: recipe.imageUrl, width: 1024 });
+	});
 </script>
 
 <SvelteSeo
@@ -50,7 +52,9 @@
 					{
 						url: recipeImageUrl,
 						secure_url: recipeImageUrl,
-						alt: recipe.name
+						alt: recipe.name,
+						height: 1024,
+						width: 1024
 					}
 				]
 			: []
