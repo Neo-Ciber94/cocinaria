@@ -19,9 +19,9 @@
 					{#each Object.entries(image) as [key, value]}
 						{#if key === 'url'}
 							<meta property="og:image" content={value.toString()} />
+						{:else}
+							<meta property="og:image:{key}" content={value.toString()} />
 						{/if}
-
-						<meta property="og:image:{key}" content={value.toString()} />
 					{/each}
 				{/each}
 			{:else if key === 'videos'}
