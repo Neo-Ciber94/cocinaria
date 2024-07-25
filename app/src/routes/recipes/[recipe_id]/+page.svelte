@@ -11,7 +11,6 @@
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import RecipeImage from '$components/RecipeImage.svelte';
 	import { defaultImageLoader } from 'svelte-picture/imageLoader';
-	import type { OpenGraph } from '$components/seo/types';
 
 	let { data }: { data: PageData } = $props();
 
