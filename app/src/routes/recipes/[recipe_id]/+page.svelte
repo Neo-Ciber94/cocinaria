@@ -45,7 +45,10 @@
 			? [
 					{
 						url: seo.imageUrl,
-						alt: recipe.name
+						secure_url: seo.imageUrl,
+						alt: recipe.name,
+						width: 1024,
+						height: 1024
 					}
 				]
 			: []
@@ -113,7 +116,7 @@
 			<div class="container grid gap-12 px-4 md:px-6 lg:grid-cols-[1fr_2fr]">
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Ingredients</h2>
-					<ul class="grid gap-2 text-muted-foreground">
+					<ul class="text-muted-foreground grid gap-2">
 						{#each recipe.recipe.ingredients as ingredient}
 							<li>
 								<svg
@@ -137,12 +140,12 @@
 				</div>
 				<div class="space-y-6">
 					<h2 class="text-2xl font-bold">Instructions</h2>
-					<ol class="grid gap-4 text-muted-foreground">
+					<ol class="text-muted-foreground grid gap-4">
 						{#each recipe.recipe.steps as step, idx}
 							<li>
 								<div class="flex items-start gap-2">
 									<div
-										class="mt-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground"
+										class="bg-primary text-primary-foreground mt-1 rounded-full px-2 py-1 text-xs font-medium"
 									>
 										{idx + 1}
 									</div>
