@@ -1,5 +1,3 @@
-import type { ImageFormat } from './server/index.js';
-
 /**
  * Props for an image loader.
  */
@@ -18,11 +16,6 @@ export type ImageLoaderProps = {
 	 * The quality of the image.
 	 */
 	quality?: number;
-
-	/**
-	 * A format to override the image format.
-	 */
-	format?: ImageFormat;
 };
 
 /**
@@ -36,7 +29,7 @@ export type ImageLoader = (props: ImageLoaderProps) => string;
 export const defaultImageLoader: ImageLoader = (props) => {
 	const searchParams = new URLSearchParams();
 
-	searchParams.set('url', props.url);
+	searchParams.set('url', encodeURIComponent(props.url));
 
 	if (props.width) {
 		searchParams.set('width', String(props.width));
@@ -44,10 +37,6 @@ export const defaultImageLoader: ImageLoader = (props) => {
 
 	if (props.quality) {
 		searchParams.set('quality', String(props.quality));
-	}
-
-	if (props.format) {
-		searchParams.set('format', String(props.format));
 	}
 
 	return `/api/image?${searchParams}`;
