@@ -136,7 +136,7 @@ export function createImageOptimizerHandler(
 			return new Response(null, { status: 405 });
 		}
 
-		const format = getAcceptedFormats(event, formats)[0];
+		let format = getAcceptedFormats(event, formats)[0];
 
 		if (!format) {
 			return Response.json({
@@ -147,6 +147,7 @@ export function createImageOptimizerHandler(
 		const queryUrl = event.url.searchParams.get('url');
 		const queryWidth = event.url.searchParams.get('width');
 		const queryQuality = event.url.searchParams.get('quality');
+		const queryFormat = event.url.searchParams.get('format');
 		const queryDelayMs = event.url.searchParams.get('delay');
 
 		if (!queryUrl) {
@@ -207,6 +208,11 @@ export function createImageOptimizerHandler(
 			}
 		}
 
+		if (queryFormat && isValidImageFormat(queryFormat)) {
+			// If other format is required, we override it
+			format = queryFormat;
+		}
+
 		if (queryDelayMs) {
 			console.warn(
 				`A 'delay' of ${queryDelayMs}ms is being used while loading '${rawUrl}', this will only work during development`
@@ -254,7 +260,7 @@ export function createImageOptimizerHandler(
 
 		try {
 			const isCached = IMAGE_CACHE.has(rawUrl);
-			const eTag = await generateETag({ cacheId, url, width, quality });
+			const eTag = await generateETag({ cacheId, url, width, format, quality });
 			const ifNoneMatch = event.request.headers.get('If-None-Match');
 
 			if (ifNoneMatch === eTag) {
@@ -354,6 +360,10 @@ function isRelativeUrl(url: string) {
 	return !/^(?:[a-z+]+:)?\/\//i.test(url);
 }
 
+function isValidImageFormat(s: string): s is ImageFormat {
+	return IMAGE_FORMATS.includes(s as ImageFormat);
+}
+
 type CreateImageResponseArgs = {
 	eTag: string;
 	format: ImageFormat;
@@ -380,8 +390,10 @@ async function generateETag(args: {
 	url: URL | string;
 	width: number | undefined;
 	quality: number;
+	format: string;
 }) {
-	const value = `${args.cacheId}:${args.url.toString()}:${args.width}:${args.quality}`;
+	const { cacheId, url, width, format, quality } = args;
+	const value = `${cacheId}:${url.toString()}:${width}:${format}:${quality}`;
 	return createSHA1Hash(value);
 }
 
