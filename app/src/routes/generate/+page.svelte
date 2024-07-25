@@ -112,6 +112,8 @@
 				recipeTypeStorage.remove();
 
 				await delay(1000); // Instead of do a query to check if already exists, we just wait 1 second
+				
+				isGenerating = false;
 				await goto(`/recipes/${recipeJson.recipeId}`, { invalidateAll: true });
 			}
 		} catch (err) {
@@ -128,7 +130,7 @@
 
 <div class="container mx-auto h-full w-full max-w-xl p-4 pt-10 sm:pt-20 lg:max-w-3xl">
 	<div
-		class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-background px-4 pb-6 pt-8 shadow-md"
+		class="bg-background flex flex-col gap-2 rounded-xl border border-gray-200 px-4 pb-6 pt-8 shadow-md"
 	>
 		<h1 class="mx-auto flex flex-row items-center gap-2 text-2xl text-orange-400 sm:text-4xl">
 			<SparkIcon class="size-8 sm:size-12" animated />
