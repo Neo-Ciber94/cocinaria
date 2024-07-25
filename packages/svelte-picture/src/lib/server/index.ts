@@ -136,7 +136,7 @@ export function createImageOptimizerHandler(
 			return new Response(null, { status: 405 });
 		}
 
-		const format = getAcceptedFormats(event, formats)[0];
+		let format = getAcceptedFormats(event, formats)[0];
 
 		if (!format) {
 			return Response.json({
@@ -147,6 +147,7 @@ export function createImageOptimizerHandler(
 		const queryUrl = event.url.searchParams.get('url');
 		const queryWidth = event.url.searchParams.get('width');
 		const queryQuality = event.url.searchParams.get('quality');
+		const queryFormat = event.url.searchParams.get('format');
 		const queryDelayMs = event.url.searchParams.get('delay');
 
 		if (!queryUrl) {
@@ -205,6 +206,11 @@ export function createImageOptimizerHandler(
 					{ status: 400 }
 				);
 			}
+		}
+
+		if (queryFormat && isValidImageFormat(queryFormat)) {
+			// If other format is required, we override it
+			format = queryFormat as ImageFormat;
 		}
 
 		if (queryDelayMs) {
@@ -352,6 +358,10 @@ function isImageRequest(event: RequestEvent) {
 function isRelativeUrl(url: string) {
 	// https://stackoverflow.com/a/19709846/9307869
 	return !/^(?:[a-z+]+:)?\/\//i.test(url);
+}
+
+function isValidImageFormat(s: string): s is ImageFormat {
+	return IMAGE_FORMATS.includes(s as ImageFormat);
 }
 
 type CreateImageResponseArgs = {

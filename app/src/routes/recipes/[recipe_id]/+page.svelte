@@ -45,10 +45,9 @@
 			? [
 					{
 						url: seo.imageUrl,
-						secure_url: seo.imageUrl,
 						alt: recipe.name,
-						width: 1024,
-						height: 1024
+						width: seo.imageSize,
+						height: seo.imageSize
 					}
 				]
 			: []
