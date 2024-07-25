@@ -281,7 +281,13 @@ export function createImageOptimizerHandler(
 
 			let response: Response;
 
-			console.log({ eTag, format, rawUrl });
+			console.log({
+				eTag,
+				format,
+				queryFormat,
+				validFormat: isValidImageFormat(queryFormat!),
+				rawUrl
+			});
 
 			switch (format) {
 				case 'webp': {
