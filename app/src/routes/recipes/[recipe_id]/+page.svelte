@@ -46,8 +46,8 @@
 					{
 						url: seo.imageUrl,
 						alt: recipe.name,
-						width: seo.imageSize,
-						height: seo.imageSize
+						// width: seo.imageSize,
+						// height: seo.imageSize
 					}
 				]
 			: []
