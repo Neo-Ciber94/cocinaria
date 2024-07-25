@@ -62,12 +62,10 @@
 	beforeNavigate(({ type, cancel }) => {
 		if (isGenerating) {
 			if (type !== 'leave') {
-				if (confirm('Recipe still genererating, want to leave?')) {
-					return;
+				if (!confirm('Recipe still genererating, want to leave?')) {
+					cancel();
 				}
 			}
-
-			cancel();
 		}
 	});
 
@@ -114,11 +112,12 @@
 				recipeTypeStorage.remove();
 
 				await delay(1000); // Instead of do a query to check if already exists, we just wait 1 second
+
+				isGenerating = false;
 				await goto(`/recipes/${recipeJson.recipeId}`, { invalidateAll: true });
 			}
 		} catch (err) {
 			console.error(err);
-
 			const message = err instanceof Error ? err.message : 'Failed to generate recipe';
 			toast.error(message, { position: 'bottom-center' });
 		} finally {
