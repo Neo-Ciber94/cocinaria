@@ -47,7 +47,7 @@ export const defaultImageLoader: ImageLoader = (props) => {
 	}
 
 	if (props.format) {
-		searchParams.set('quality', String(props.format));
+		searchParams.set('format', String(props.format));
 	}
 
 	return `/api/image?${searchParams}`;
