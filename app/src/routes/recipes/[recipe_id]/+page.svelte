@@ -10,9 +10,9 @@
 	import { handleImageError } from '$lib/client/handleImageError';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import RecipeImage from '$components/RecipeImage.svelte';
-	import { defaultImageLoader } from 'svelte-picture/imageLoader';
 
 	let { data }: { data: PageData } = $props();
+	const { seo } = data;
 
 	const auth = useAuth();
 	const isCurrentUserRecipe = $derived(auth?.user.id === data.recipe.userId);
@@ -29,12 +29,6 @@
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
 	const generatedAt = relativeTime(data.recipe.createdAt);
-
-	const recipeImageUrl = $derived.by(() => {
-		return recipe.imageUrl == null
-			? undefined
-			: defaultImageLoader({ url: recipe.imageUrl, width: 1024 });
-	});
 </script>
 
 <SvelteSeo
@@ -46,15 +40,16 @@
 		site_name: `CocinarIA ${icon}`,
 		title: recipe.name,
 		description: recipe.description ?? undefined,
-		url: data.seo.recipeUrl ?? undefined,
-		images: recipeImageUrl
+		url: seo.recipeUrl ?? undefined,
+		images: seo.imageUrl
 			? [
 					{
-						url: recipeImageUrl,
-						secure_url: recipeImageUrl,
+						url: seo.imageUrl,
+						secure_url: seo.imageUrl,
 						alt: recipe.name,
-						height: 1024,
-						width: 1024
+						type: 'image/webp',
+						height: seo.imageSize,
+						width: seo.imageSize
 					}
 				]
 			: []
@@ -63,7 +58,7 @@
 		title: recipe.name,
 		card: 'summary_large_image',
 		description: recipe.description ?? undefined,
-		image: recipeImageUrl,
+		image: seo.imageUrl,
 		imageAlt: recipe.name
 	}}
 />
