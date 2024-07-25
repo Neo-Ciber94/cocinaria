@@ -25,7 +25,7 @@
 
 	{#if hasRecipes}
 		<div
-			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 xs:grid-cols-3 md:grid-cols-4 xl:grid-cols-5"
 		>
 			{#each recipes as recipe, index}
 				<RecipeItem {recipe} {index} imgProps={{ width: 400, height: 400 }} />

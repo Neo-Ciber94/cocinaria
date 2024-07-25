@@ -49,14 +49,14 @@ export async function getRecipes(args?: GetRecipesArgs) {
 			createdAt: true,
 			ingredients: true
 		},
-		where(fields, { and, or, eq, ilike, sql, lte }) {
+		where(fields, { ilike, sql }) {
 			const decoded = decodeCursor(cursor);
 			const chunks: SQL[] = [];
 
 			if (decoded) {
 				const { id, date } = decoded;
-				// We return the element that is the cursor and the following elements
-				chunks.push(or(eq(fields.id, id), and(lte(fields.createdAt, date), lte(fields.id, id)))!);
+				// We return the cursor element and the following elements
+				return sql`${fields.id} = ${id} or (${fields.createdAt}, ${fields.id}) < (${date}, ${id})`;
 			}
 
 			if (search) {
@@ -81,8 +81,8 @@ export async function getRecipes(args?: GetRecipesArgs) {
 	let next: string | null = null;
 
 	if (recipes.length > LIMIT) {
-		const last = recipes.pop()!;
-		next = encodeCursor(last.id, last.createdAt);
+		const cursor = recipes.pop()!;
+		next = encodeCursor(cursor.id, cursor.createdAt);
 	}
 
 	return {
