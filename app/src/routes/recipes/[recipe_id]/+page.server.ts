@@ -5,8 +5,6 @@ import { checkAuthenticated } from '$lib/server/utils';
 import { getBaseUrl } from '$lib/common/getBaseUrl';
 import { defaultImageLoader } from 'svelte-picture/imageLoader';
 
-const SEO_IMAGE_WIDTH = 1024;
-
 export const actions = {
 	async deleteRecipe(event) {
 		const { user } = checkAuthenticated(event);
@@ -22,21 +20,26 @@ export const load: PageServerLoad = async (event) => {
 		error(404, { message: 'Recipe not found' });
 	}
 
-	const recipeImageUrl = $derived.by(() => {
-		return recipe.imageUrl == null
-			? undefined
-			: defaultImageLoader({ url: recipe.imageUrl, width: SEO_IMAGE_WIDTH });
-	});
-
+	const recipeImage = getRecipeImage(recipe.imageUrl);
 	const recipeUrl = `${getBaseUrl()}/recipes/${recipe.id}`;
-	const imageUrl = `${getBaseUrl()}/${recipeImageUrl}`;
 
 	return {
 		recipe,
 		seo: {
 			recipeUrl,
-			imageUrl,
-			imageSize: SEO_IMAGE_WIDTH
+			imageUrl: recipeImage?.url,
+			imageSize: recipeImage?.size
 		}
 	};
 };
+
+function getRecipeImage(recipeImageUrl: string | null) {
+	if (!recipeImageUrl) {
+		return null;
+	}
+
+	const size = 1024;
+	const relativeUrl = defaultImageLoader({ url: recipeImageUrl, width: size });
+	const url = `${getBaseUrl()}/${relativeUrl}`;
+	return { url, size };
+}
