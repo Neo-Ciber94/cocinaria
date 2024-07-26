@@ -30,29 +30,37 @@ export function createImageTransformerHandler(options: ImageTransformerOptions) 
 		throw new Error("Image transformer url should start with '/'");
 	}
 
-	function getImageUrl(event: RequestEvent) {
-		// We expect the url in this format: <endpoint>/image_url
-		// so we just remove the endpoint, and the rest SHOULD be the image url
-		const pathname = event.url.pathname;
-		if (!pathname.startsWith(endpoint)) {
-			return null;
-		}
+	return unsafe_createImageTransformerHandler({
+		...options,
+		getImageUrl(event) {
+			// We expect the url in this format: <endpoint>/image_url
+			// so we just remove the endpoint, and the rest SHOULD be the image url
+			const pathname = event.url.pathname;
+			if (!pathname.startsWith(endpoint)) {
+				return null;
+			}
 
-		const rawUrl = pathname.slice(endpoint.length + 1); // +1 to remove the trailing slash: <endpoint>/...
-		const imageUrl = decodeURIComponent(rawUrl);
-		return imageUrl;
-	}
-
-	return unsafe_createImageTransformerHandler(
-		{
-			...options,
-			getImageUrl
-		},
-		{
-			inferFormatFromUrl: true
+			const rawUrl = pathname.slice(endpoint.length + 1); // +1 to remove the trailing slash: <endpoint>/...
+			const url = decodeURIComponent(rawUrl);
+			return { url, inferFormat: true };
 		}
-	);
+	});
 }
+
+/**
+ * Contains the url for the image to fetch.
+ */
+export type GetImageURL = {
+	/**
+	 * The url of the image.
+	 */
+	url: string;
+
+	/**
+	 * Whether if use the format specified on the url.
+	 */
+	inferFormat?: boolean;
+};
 
 /**
  * Options for the image transformer.
@@ -62,7 +70,7 @@ export type CreateImageTransformerOptions = {
 	 * Gets the image url to transform from the request event.
 	 * @param event
 	 */
-	getImageUrl(event: RequestEvent): string | null | undefined;
+	getImageUrl(event: RequestEvent): GetImageURL | null | undefined;
 
 	/**
 	 * An unique id used for generating the image `ETag`, this value should be unique
@@ -103,8 +111,7 @@ export type CreateImageTransformerOptions = {
  * @internal
  */
 export function unsafe_createImageTransformerHandler(
-	options: CreateImageTransformerOptions,
-	extras?: { inferFormatFromUrl?: boolean }
+	options: CreateImageTransformerOptions
 ): RequestHandler {
 	const {
 		cacheId = CACHE_ID,
@@ -113,7 +120,6 @@ export function unsafe_createImageTransformerHandler(
 		cacheMaxAge = CACHE_MAX_AGE,
 		getImageUrl
 	} = options;
-	const { inferFormatFromUrl = false } = extras || {};
 	const originUrls = allowedOrigins.map((x) => new URL(x));
 
 	if (!cacheId) {
@@ -125,19 +131,17 @@ export function unsafe_createImageTransformerHandler(
 			return new Response(null, { status: 405 });
 		}
 
-		const rawUrl = getImageUrl(event);
+		const reqImg = getImageUrl(event);
 
-		if (!rawUrl) {
+		if (!reqImg || !reqImg.url) {
 			return Response.json({ error: 'Missing image url' }, { status: 400 });
 		}
 
-		const expectedImageFormats = getResponseFormats({
-			event,
-			formats,
-			url: rawUrl,
-			inferFormatFromUrl
-		});
-		let format = expectedImageFormats[0];
+		const rawUrl = reqImg.url;
+
+		let format = reqImg.inferFormat
+			? getFormatFromUrl(reqImg.url)
+			: getAcceptedFormats({ event, formats })[0];
 
 		if (!format) {
 			return Response.json({
@@ -271,27 +275,11 @@ export function unsafe_createImageTransformerHandler(
 
 type GetImageResponseFormatsArgs = {
 	event: RequestEvent;
-	url: string;
 	formats: ImageFormat[];
-	inferFormatFromUrl?: boolean;
 };
 
-function getResponseFormats(args: GetImageResponseFormatsArgs): ImageFormat[] {
-	const { event, url, formats, inferFormatFromUrl } = args;
-
-	if (inferFormatFromUrl) {
-		try {
-			const ext = getUrlFileExtension(url);
-			if (ext) {
-				const format = formats.find((x) => x === ext);
-				if (format) {
-					return [format];
-				}
-			}
-		} catch {
-			// ignore
-		}
-	}
+function getAcceptedFormats(args: GetImageResponseFormatsArgs): ImageFormat[] {
+	const { event, formats } = args;
 
 	const acceptHeader = event.request.headers.get('Accept');
 
@@ -308,20 +296,34 @@ function getResponseFormats(args: GetImageResponseFormatsArgs): ImageFormat[] {
 	return formats.filter((format) => acceptFormats.some((x) => x === `image/${format}`));
 }
 
+function getFormatFromUrl(url: string): ImageFormat | null {
+	const format = getUrlFileExtension(url);
+
+	if (!format) {
+		return null;
+	}
+
+	return isValidImageFormat(format) ? format : null;
+}
+
 function getUrlFileExtension(url: string) {
-	const urlObj = isRelativeUrl(url) ? new URL(url, 'http://a') : new URL(url);
+	try {
+		const urlObj = isRelativeUrl(url) ? new URL(url, 'http://a') : new URL(url);
 
-	// Extract the pathname from the URL object
-	const pathname = urlObj.pathname;
+		// Extract the pathname from the URL object
+		const pathname = urlObj.pathname;
 
-	// Regular expression to capture the file extension
-	const regex = /(?:\.([^.]+))?$/;
-	const matches = pathname.match(regex);
+		// Regular expression to capture the file extension
+		const regex = /(?:\.([^.]+))?$/;
+		const matches = pathname.match(regex);
 
-	// Check if there's a match and return the extension
-	if (matches && matches[1]) {
-		return matches[1];
-	} else {
+		// Check if there's a match and return the extension
+		if (matches && matches[1]) {
+			return matches[1];
+		} else {
+			return null;
+		}
+	} catch {
 		return null;
 	}
 }

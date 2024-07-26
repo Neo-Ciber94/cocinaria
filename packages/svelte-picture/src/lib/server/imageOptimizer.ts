@@ -76,11 +76,13 @@ export function createImageOptimizerHandler(
 		getImageUrl(event) {
 			const url = event.url.searchParams.get('url');
 
-			if (url) {
-				return decodeURIComponent(url);
+			if (!url) {
+				return null;
 			}
 
-			return url;
+			return {
+				url: decodeURIComponent(url)
+			};
 		}
 	});
 }
