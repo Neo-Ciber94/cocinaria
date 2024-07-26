@@ -6,7 +6,10 @@
 	"background_color": "#F97316",
 	"theme_color": "#FDBA74",
 	"description": "Generate incredibles (or interestings) recipes using AI",
-	"display_override": ["window-control-overlay", "minimal-ui"],
+	"display_override": [
+		"window-control-overlay",
+		"minimal-ui"
+	],
 	"icons": [
 		{
 			"src": "icons/cocinaria-512x512.png",
@@ -67,17 +70,35 @@
 		{
 			"name": "Generate",
 			"url": "/generate",
-			"description": "Generate a new recipe"
+			"description": "Generate a new recipe",
+			"icons": [
+				{
+					"src": "icons/cocinaria-96x96.png",
+					"sizes": "96x96"
+				}
+			]
 		},
 		{
 			"name": "Explore",
 			"url": "/explore",
-			"description": "Explore all generated recipes"
+			"description": "Explore all generated recipes",
+			"icons": [
+				{
+					"src": "icons/cocinaria-96x96.png",
+					"sizes": "96x96"
+				}
+			]
 		},
 		{
 			"name": "My Recipes",
 			"url": "/my-recipes",
-			"description": "Checkout all my generated recipes"
+			"description": "Checkout all my generated recipes",
+			"icons": [
+				{
+					"src": "icons/cocinaria-96x96.png",
+					"sizes": "96x96"
+				}
+			]
 		}
 	]
 }
