@@ -3,7 +3,7 @@
     "short_name": "CocinarIA",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#FFFFFF",
+    "background_color": "#F97316",
     "theme_color": "#FDBA74",
     "description": "A recipe generator that uses AI",
     "icons": [

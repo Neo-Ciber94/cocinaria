@@ -72,8 +72,8 @@
 	/>
 
 	<link rel="manifest" href="/manifest.json" />
-	<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FB923C" />
-	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#FB923C" />
+	<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FDBA74" />
+	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#FDBA74" />
 </svelte:head>
 
 <Header />
