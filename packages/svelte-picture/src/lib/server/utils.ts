@@ -1,3 +1,9 @@
+import type { RequestEvent } from '@sveltejs/kit';
+
+export function isGetOrHeadRequest(event: RequestEvent) {
+	return event.request.method === 'GET' || event.request.method === 'HEAD';
+}
+
 export async function generateETag(args: {
 	cacheId: string;
 	url: URL | string;

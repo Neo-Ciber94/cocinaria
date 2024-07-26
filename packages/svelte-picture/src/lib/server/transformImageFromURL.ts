@@ -1,5 +1,5 @@
-import type { ImageFormat } from './imageOptimizer.js';
 import sharp from 'sharp';
+import type { ImageFormat } from './imageTransformer.js';
 
 const IMAGE_CACHE = new Map<string, ArrayBuffer>();
 

@@ -23,8 +23,6 @@ export const load: PageServerLoad = async (event) => {
 	const recipeImage = getImageUrl(recipe.imageUrl);
 	const recipeUrl = `${getBaseUrl()}/recipes/${recipe.id}`;
 
-	console.log({ recipeImage });
-
 	return {
 		recipe,
 		seo: {
@@ -40,18 +38,11 @@ function getImageUrl(recipeImageUrl: string | null) {
 		return undefined;
 	}
 
-	if (recipeImageUrl) {
-		return {
-			url: recipeImageUrl,
-			size: 1024
-		};
-	}
-
-	const size = 1024;
+	const size = 512;
 	const relativeUrl = defaultImageLoader({
 		url: recipeImageUrl,
-		format: 'jpeg',
-		width: 1024,
+		format: 'png',
+		width: size,
 		quality: 80
 	});
 
