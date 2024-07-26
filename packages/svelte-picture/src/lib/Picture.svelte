@@ -85,29 +85,22 @@
 		);
 	}
 
+	let isImageLoading = $state(true);
+
 	const remoteUrl = $derived.by(() => {
+		if (isImageLoading && placeholderUrl) {
+			return placeholderUrl;
+		}
+
 		return getRemoteImageUrl({ src, quality, width, widthOverride, loader });
 	});
 
-	const getInitialImageUrl = () => remoteUrl;
-
-	// eslint says this is unused for some reason
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	let isImageLoading = $state(true);
-	let imageUrl = $state(placeholderUrl || getInitialImageUrl());
-
 	$effect(() => {
-		if (!isImageLoading) {
-			imageUrl = remoteUrl;
-		}
-	});
-
-	$effect(() => {
-		if (!placeholderUrl) {
+		if (!placeholderUrl || !isImageLoading) {
 			return;
 		}
 
-		loadImage(remoteUrl)
+		loadImage(src)
 			.catch(onerror)
 			.then((value) => {
 				const event = new Event('load');
@@ -117,7 +110,6 @@
 				onload?.(event as Event & { currentTarget: EventTarget & Element });
 			})
 			.finally(() => {
-				imageUrl = remoteUrl;
 				isImageLoading = false;
 			});
 	});
@@ -134,7 +126,7 @@
 </script>
 
 <img
-	src={imageUrl}
+	src={remoteUrl}
 	{loading}
 	{width}
 	{height}
