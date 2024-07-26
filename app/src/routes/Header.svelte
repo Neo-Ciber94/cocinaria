@@ -68,19 +68,79 @@
 			isMenuOpen = false;
 		}
 	});
-
-	let scrollY = $state(0);
 </script>
 
-<svelte:window bind:scrollY />
+<header class="flex h-[var(--header-height)] w-full flex-row items-center justify-between px-4">
+	<a
+		class="xss:text-base flex flex-row justify-center font-mono text-2xl font-bold text-orange-500"
+		href="/"
+	>
+		<span>Cocinar</span>
+		<span class="text-emerald-500">IA</span>
+		<span>{icon}</span>
+	</a>
 
-<header
-	class={cn(
-		'fixed z-10 flex h-[var(--header-height)] w-full flex-row items-center justify-between bg-background px-2 xs:static sm:px-4',
-		scrollY > 100 && 'shadow-sm shadow-black/30 transition-shadow xs:shadow-none'
-	)}
->
-	<div class="flex flex-row items-center gap-4">
+	<div class="hidden h-full flex-row items-center gap-4 md:flex">
+		{#each MENU_ITEMS as menuItem}
+			{@const active = isActive(menuItem.href)}
+
+			<a
+				href={menuItem.href}
+				data-active={active}
+				class={cn(
+					'group flex min-w-[90px] flex-row items-center gap-1 rounded-md p-2 text-center font-medium text-neutral-600 hover:bg-orange-500 hover:text-white',
+					'data-[active=true]:bg-orange-500 data-[active=true]:text-white'
+				)}
+			>
+				<svelte:component
+					this={menuItem.icon}
+					class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
+				/>
+				<span> {menuItem.label} </span>
+			</a>
+		{/each}
+	</div>
+
+	<div class="flex flex-row items-center gap-2">
+		{#if user}
+			{@const account = auth.account}
+
+			{#if account.isPremium}
+				<button
+					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
+				>
+					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
+				</button>
+			{:else}
+				<button
+					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
+				>
+					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
+					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
+					>
+				</button>
+			{/if}
+
+			<UserAvatar {user} {account} />
+		{:else if !$isLoginPage}
+			<a
+				href="/login"
+				class="hidden flex-row items-center gap-2 rounded-lg bg-orange-500 px-8 py-2 font-bold text-white shadow-md hover:bg-orange-600 md:flex"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
+					<path
+						fill="currentColor"
+						d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8z"
+					/>
+				</svg>
+
+				<span> Login </span>
+			</a>
+		{:else}
+			<div></div>
+		{/if}
+
 		<DropdownMenu.Root
 			open={isMenuOpen}
 			onOpenChange={(isOpen) => {
@@ -88,10 +148,10 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="focus-visible active:scale-98 inline-flex h-10 w-10 items-center justify-center rounded-3xl text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+				class="focus-visible bg-background-alt shadow-btn active:scale-98 inline-flex h-10 w-10 items-center justify-center text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
 			>
 				<MenuIcon
-					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-400 active:bg-gray-100"
+					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-500 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
@@ -211,79 +271,5 @@
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
-
-		<a
-			class="flex flex-row justify-center font-mono text-base font-bold text-orange-500 sm:text-2xl"
-			href="/"
-		>
-			<span>Cocinar</span>
-			<span class="text-emerald-500">IA</span>
-			<span>{icon}</span>
-		</a>
-	</div>
-
-	<div class="hidden h-full flex-row items-center gap-4 md:flex">
-		{#each MENU_ITEMS as menuItem}
-			{@const active = isActive(menuItem.href)}
-
-			<a
-				href={menuItem.href}
-				data-active={active}
-				class={cn(
-					'group flex min-w-[90px] flex-row items-center gap-1 rounded-md p-2 text-center font-medium text-neutral-600 hover:bg-orange-500 hover:text-white',
-					'data-[active=true]:bg-orange-500 data-[active=true]:text-white'
-				)}
-			>
-				<svelte:component
-					this={menuItem.icon}
-					class={cn('size-5 opacity-50 group-hover:opacity-100', active && 'opacity-100')}
-				/>
-				<span> {menuItem.label} </span>
-			</a>
-		{/each}
-	</div>
-
-	<div class="flex flex-row items-center gap-2">
-		{#if user}
-			{@const account = auth.account}
-
-			{#if account.isPremium}
-				<button
-					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
-				>
-					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
-				</button>
-			{:else}
-				<button
-					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
-				>
-					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
-					>
-				</button>
-			{/if}
-
-			<UserAvatar {user} {account} />
-		{:else if !$isLoginPage}
-			<a
-				href="/login"
-				class="hidden flex-row items-center gap-2 rounded-lg bg-orange-500 px-8 py-2 font-bold text-white shadow-md hover:bg-orange-600 md:flex"
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24">
-					<path
-						fill="currentColor"
-						d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8z"
-					/>
-				</svg>
-
-				<span> Login </span>
-			</a>
-		{:else}
-			<div></div>
-		{/if}
 	</div>
 </header>
-
-<!-- We reserve space for the header when is fixed on the top -->
-<div class="block h-[var(--header-height)] sm:hidden"></div>
