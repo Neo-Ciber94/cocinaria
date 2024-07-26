@@ -5,7 +5,7 @@ import { db } from '$lib/db';
 
 import type { Handle, RequestEvent } from '@sveltejs/kit';
 
-const PUBLIC_ROUTES = ['/', '/login', 'manifest.json', /^\/recipes\/(.+)/];
+const PUBLIC_ROUTES = ['/', '/login', '/manifest.json', /^\/recipes\/(.+)/];
 
 export function authentication(): Handle {
 	function isPublic(pathname: string) {
