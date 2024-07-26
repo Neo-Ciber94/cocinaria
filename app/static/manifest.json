@@ -1,0 +1,35 @@
+{
+    "name": "CocinarIA",
+    "short_name": "CocinarIA",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#FDBA74",
+    "description": "A recipe generator that uses AI",
+    "icons": [
+        {
+            "src": "icons/cocinaria-512x512.png",
+            "sizes": "512x512"
+        },
+        {
+            "src": "icons/cocinaria-192x192.png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icons/cocinaria-144x144.png",
+            "sizes": "144x144"
+        },
+        {
+            "src": "icons/cocinaria-96x96.png",
+            "sizes": "96x96"
+        },
+        {
+            "src": "icons/cocinaria-72x72.png",
+            "sizes": "72x72"
+        },
+        {
+            "src": "icons/cocinaria-48x48.png",
+            "sizes": "48x48"
+        }
+    ]
+}
