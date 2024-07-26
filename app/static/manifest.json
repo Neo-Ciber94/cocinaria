@@ -5,7 +5,8 @@
 	"display": "standalone",
 	"background_color": "#F97316",
 	"theme_color": "#FDBA74",
-	"description": "A recipe generator that uses AI",
+	"description": "Generate incredibles (or interesting) recipes using AI",
+	"display_override": ["window-control-overlay", "minimal-ui"],
 	"icons": [
 		{
 			"src": "icons/cocinaria-512x512.png",
@@ -30,6 +31,53 @@
 		{
 			"src": "icons/cocinaria-48x48.png",
 			"sizes": "48x48"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "screenshots/desktop-explore-1920x1080.png",
+			"sizes": "1920x1080",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Desktop Explore Page"
+		},
+		{
+			"src": "screenshots/desktop-homepage-1920x1080.png",
+			"sizes": "1920x1080",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Desktop Homepage"
+		},
+		{
+			"src": "screenshots/mobile-explore-1170x2532.png",
+			"sizes": "1170x2532",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Mobile Explore Page"
+		},
+		{
+			"src": "screenshots/mobile-homepage-1170x2532.png",
+			"sizes": "1170x2532",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Mobile Homepage"
+		}
+	],
+	"shortcuts": [
+		{
+			"name": "Generate",
+			"url": "/generate",
+			"description": "Generate a new recipe"
+		},
+		{
+			"name": "Explore",
+			"url": "/explore",
+			"description": "Explore all generated recipes"
+		},
+		{
+			"name": "My Recipes",
+			"url": "/my-recipes",
+			"description": "Checkout all my generated recipes"
 		}
 	]
 }
