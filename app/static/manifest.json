@@ -6,10 +6,8 @@
 	"background_color": "#F97316",
 	"theme_color": "#FDBA74",
 	"description": "Generate incredibles (or interestings) recipes using AI",
-	"display_override": [
-		"window-control-overlay",
-		"minimal-ui"
-	],
+	"display_override": ["window-control-overlay", "minimal-ui"],
+	"version": "0.1.0",
 	"icons": [
 		{
 			"src": "icons/cocinaria-512x512.png",
