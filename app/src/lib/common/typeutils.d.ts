@@ -9,10 +9,9 @@ type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
 	: never;
 
 // Utility type to convert union to tuple
-type UnionToTuple<U> = UnionToIntersection<U extends any ? (x: U) => void : never> extends (
-	x: infer I
-) => void
-	? [...UnionToTuple<Exclude<U, I>>, I]
-	: [];
+type UnionToTuple<U> =
+	UnionToIntersection<U extends any ? (x: U) => void : never> extends (x: infer I) => void
+		? [...UnionToTuple<Exclude<U, I>>, I]
+		: [];
 
 export type KeysTuple<T> = UnionToTuple<keyof T>;

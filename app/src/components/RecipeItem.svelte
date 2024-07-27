@@ -57,9 +57,9 @@
 			easing: backOut,
 			delay: index * 70
 		}}
-		onclick={e => {
-			const img = e.currentTarget.querySelector("img")!;
-			img.style.viewTransitionName = `recipe-${recipe.id}`
+		onclick={(e) => {
+			const img = e.currentTarget.querySelector('img')!;
+			img.style.viewTransitionName = `recipe-${recipe.id}`;
 		}}
 	>
 		<div style:position="relative">
