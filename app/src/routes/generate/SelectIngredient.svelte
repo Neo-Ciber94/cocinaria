@@ -53,6 +53,8 @@
 	}
 
 	const ingredientGroups = Object.groupBy(ingredients, (e) => e.category);
+
+	$inspect(isDesktop).with(console.log);
 </script>
 
 {#snippet ListItems(ids)}
@@ -92,7 +94,7 @@
 	</Command.Root>
 {/snippet}
 
-{#if isDesktop}
+{#if isDesktop.matches}
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
 			<Button
@@ -121,17 +123,33 @@
 		</Popover.Content>
 	</Popover.Root>
 {:else}
-	<Drawer.Root>
-		<Drawer.Trigger>Open</Drawer.Trigger>
-		<Drawer.Content>
-			<Drawer.Header>
-				<Drawer.Title>Are you sure absolutely sure?</Drawer.Title>
-				<Drawer.Description>This action cannot be undone.</Drawer.Description>
-			</Drawer.Header>
-			<Drawer.Footer>
-				<Button>Submit</Button>
-				<Drawer.Close>Cancel</Drawer.Close>
-			</Drawer.Footer>
+	<Drawer.Root bind:open>
+		<Drawer.Trigger asChild let:builder>
+			<Button
+				builders={[builder]}
+				variant="outline"
+				role="combobox"
+				aria-expanded={open}
+				class={cn('relative w-[200px] justify-between pl-12', rest.class)}
+			>
+				{#if selected}
+					<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
+						{selected.image}
+					</div>
+					<span class="capitalize">{selected.value}</span>
+				{:else}
+					<OrangeSliceIcon
+						class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
+					/>
+					<span class="text-muted-foreground">Select an ingredient</span>
+				{/if}
+				<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+			</Button>
+		</Drawer.Trigger>
+		<Drawer.Content class="max-h-[70vh]">
+			<div class="h-full overflow-y-auto">
+				{@render ListItems('')}
+			</div>
 		</Drawer.Content>
 	</Drawer.Root>
 {/if}
