@@ -8,7 +8,7 @@
 	import { cn } from '$lib/utils.js';
 	import type { Category, Ingredient } from '$lib/common/ingredients';
 	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
-	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
+	import { breakpoints, useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 	import * as Drawer from '$components/ui/drawer';
 
 	type Props = {
@@ -36,7 +36,7 @@
 		return initialIngredients;
 	});
 
-	const isDesktop = useMatchQuery('(min-width: 768px)');
+	const isDesktopQuery = useMatchQuery(breakpoints.desktop);
 
 	function findIngredient(name: string) {
 		return filteredIngredients.find((x) => x.value === name);
@@ -53,8 +53,6 @@
 	}
 
 	const ingredientGroups = Object.groupBy(ingredients, (e) => e.category);
-
-	$inspect(isDesktop).with(console.log);
 </script>
 
 {#snippet ListItems(ids)}
@@ -94,7 +92,7 @@
 	</Command.Root>
 {/snippet}
 
-{#if isDesktop.matches}
+{#if isDesktopQuery.matches}
 	<Popover.Root bind:open let:ids>
 		<Popover.Trigger asChild let:builder>
 			<Button

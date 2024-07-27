@@ -1,3 +1,7 @@
+export const breakpoints = {
+	desktop: '(min-width: 768px)'
+} as const;
+
 export function useMatchQuery(query: string, initialValue = false) {
 	let isMatching = $state(initialValue);
 

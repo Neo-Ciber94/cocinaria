@@ -15,7 +15,7 @@
 	import { fly } from 'svelte/transition';
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
-	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
+	import { breakpoints, useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
@@ -54,7 +54,7 @@
 	const user = auth?.user;
 	const account = auth?.account;
 	let isMenuOpen = $state(false);
-	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
+	const isDesktopQuery = useMatchQuery(breakpoints.desktop);
 	const apiKeyDialogOpen = useApiKeyDialog();
 
 	function isActive(pathname: string) {
@@ -64,7 +64,7 @@
 	}
 
 	$effect(() => {
-		if (!isSmallScreenQuery.matches) {
+		if (isDesktopQuery.matches) {
 			isMenuOpen = false;
 		}
 	});
@@ -76,8 +76,8 @@
 
 <header
 	class={cn(
-		'fixed z-10 flex h-[var(--header-height)] w-full flex-row items-center justify-between bg-background px-2 xs:static sm:px-4',
-		scrollY > 100 && 'shadow-sm shadow-black/30 transition-shadow xs:shadow-none'
+		'bg-background xs:static fixed z-10 flex h-[var(--header-height)] w-full flex-row items-center justify-between px-2 sm:px-4',
+		scrollY > 100 && 'xs:shadow-none shadow-sm shadow-black/30 transition-shadow'
 	)}
 >
 	<div class="flex flex-row items-center gap-4">
@@ -88,14 +88,14 @@
 			}}
 		>
 			<DropdownMenu.Trigger
-				class="focus-visible active:scale-98 inline-flex h-10 w-10 items-center justify-center rounded-3xl text-sm font-medium text-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+				class="focus-visible active:scale-98 text-foreground hover:bg-muted focus-visible:ring-foreground focus-visible:ring-offset-background inline-flex h-10 w-10 items-center justify-center rounded-3xl text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2 md:hidden"
 			>
 				<MenuIcon
 					class="flex size-10 flex-row items-center justify-center rounded-full p-1 text-neutral-400 active:bg-gray-100"
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg"
+				class="border-muted bg-background mx-auto w-full max-w-[95vw] sm:max-w-[400px] overflow-hidden rounded-xl border shadow-lg"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{
@@ -251,15 +251,15 @@
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-purple-100 px-2 py-1 shadow-inner shadow-purple-600/70"
 				>
-					<DiamondIcon class="size-3 text-purple-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-purple-800 xxs:text-sm">Premium</span>
+					<DiamondIcon class="xxs:size-5 size-3 text-purple-500" />
+					<span class="xxs:text-sm text-[12px] font-semibold text-purple-800">Premium</span>
 				</button>
 			{:else}
 				<button
 					class="flex flex-row items-center gap-1 rounded-md bg-amber-100 px-2 py-1 shadow-inner shadow-amber-600/70"
 				>
-					<CoinIcon class="size-3 text-amber-500 xxs:size-5" />
-					<span class="text-[12px] font-semibold text-amber-800 xxs:text-sm">{account.credits}</span
+					<CoinIcon class="xxs:size-5 size-3 text-amber-500" />
+					<span class="xxs:text-sm text-[12px] font-semibold text-amber-800">{account.credits}</span
 					>
 				</button>
 			{/if}
