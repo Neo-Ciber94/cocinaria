@@ -146,8 +146,8 @@
 				<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 			</Button>
 		</Drawer.Trigger>
-		<Drawer.Content class="max-h-[70vh]">
-			<div class="h-full overflow-y-auto">
+		<Drawer.Content>
+			<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
 				{@render ListItems('')}
 			</div>
 		</Drawer.Content>
