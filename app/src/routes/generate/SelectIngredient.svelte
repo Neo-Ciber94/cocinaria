@@ -82,27 +82,29 @@
 				{@const ingredients = ingredientGroups[group as Category] || []}
 				{#if ingredients}
 					<Command.Group heading={group}>
-						{#each ingredients as ingredient}
-							<Command.Item
-								class="flex flex-row gap-2"
-								value={ingredient.value}
-								onSelect={(currentValue) => {
-									const ingredient = findIngredient(currentValue);
-									value = currentValue;
-									onchange(ingredient);
-									closeAndFocusTrigger(ids.trigger);
-								}}
-							>
-								<Check
-									class={cn('mr-2 h-4 w-4', value !== ingredient.value && 'text-transparent')}
-								/>
-								{ingredient.image}
+						<Command.List>
+							{#each ingredients as ingredient}
+								<Command.Item
+									class="flex flex-row gap-2"
+									value={ingredient.value}
+									onSelect={(currentValue) => {
+										const ingredient = findIngredient(currentValue);
+										value = currentValue;
+										onchange(ingredient);
+										closeAndFocusTrigger(ids.trigger);
+									}}
+								>
+									<Check
+										class={cn('mr-2 h-4 w-4', value !== ingredient.value && 'text-transparent')}
+									/>
+									{ingredient.image}
 
-								<span class="capitalize">
-									{ingredient.value}
-								</span>
-							</Command.Item>
-						{/each}
+									<span class="capitalize">
+										{ingredient.value}
+									</span>
+								</Command.Item>
+							{/each}
+						</Command.List>
 					</Command.Group>
 				{/if}
 			{/each}
