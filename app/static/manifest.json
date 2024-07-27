@@ -11,32 +11,32 @@
 		{
 			"src": "icons/cocinaria-512x512.png",
 			"sizes": "512x512",
-			"purpose": "maskable",
+			"purpose": "maskable"
 		},
 		{
 			"src": "icons/cocinaria-192x192.png",
 			"sizes": "192x192",
-			"purpose": "any",
+			"purpose": "any"
 		},
 		{
 			"src": "icons/cocinaria-144x144.png",
 			"sizes": "144x144",
-			"purpose": "any",
+			"purpose": "any"
 		},
 		{
 			"src": "icons/cocinaria-96x96.png",
 			"sizes": "96x96",
-			"purpose": "any",
+			"purpose": "any"
 		},
 		{
 			"src": "icons/cocinaria-72x72.png",
 			"sizes": "72x72",
-			"purpose": "any",
+			"purpose": "any"
 		},
 		{
 			"src": "icons/cocinaria-48x48.png",
 			"sizes": "48x48",
-			"purpose": "any",
+			"purpose": "any"
 		}
 	],
 	"screenshots": [
@@ -71,7 +71,8 @@
 	],
 	"shortcuts": [
 		{
-			"name": "Generate",
+			"name": "Generate Recipe",
+			"short_name": "Generate",
 			"url": "/generate",
 			"description": "Generate a new recipe",
 			"icons": [
@@ -82,7 +83,8 @@
 			]
 		},
 		{
-			"name": "Explore",
+			"name": "Explore Recipes",
+			"short_name": "Explore",
 			"url": "/explore",
 			"description": "Explore all generated recipes",
 			"icons": [
@@ -94,6 +96,7 @@
 		},
 		{
 			"name": "My Recipes",
+			"short_name": "My Recipes",
 			"url": "/my-recipes",
 			"description": "Checkout all my generated recipes",
 			"icons": [
