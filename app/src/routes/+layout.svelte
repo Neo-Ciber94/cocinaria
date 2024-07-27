@@ -60,7 +60,7 @@
 	setSeoBaseTitle(`CocinarIA ${icon}`);
 </script>
 
-<!-- <SvelteSeo /> -->
+<SvelteSeo />
 
 <svelte:head>
 	<title>{`CocinarIA ${icon}`}</title>
