@@ -145,7 +145,7 @@
 			</Button>
 		</Drawer.Trigger>
 		<Drawer.Content>
-			<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
+			<div class="max-h-[80vh] overflow-y-auto">
 				{@render ListItems('')}
 			</div>
 		</Drawer.Content>

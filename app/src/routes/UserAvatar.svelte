@@ -32,7 +32,7 @@
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content
-		class="w-full max-w-[95vw] xs:max-w-[229px] space-y-1 rounded-xl border border-gray-200 bg-white px-1 py-1.5 shadow-sm"
+		class="w-full max-w-[95vw] space-y-1 rounded-xl border border-gray-200 bg-white px-1 py-1.5 shadow-sm xs:max-w-[229px]"
 		sideOffset={8}
 		transition={flyAndScale}
 	>
