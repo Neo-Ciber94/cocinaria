@@ -3,8 +3,8 @@
 	"short_name": "CocinarIA",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#F97316",
-	"theme_color": "#FDBA74",
+	"background_color": "#FDBA74",
+	"theme_color": "#F97316",
 	"description": "Generate incredibles (or interestings) recipes using AI",
 	"version": "0.1.0",
 	"icons": [
