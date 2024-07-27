@@ -19,9 +19,9 @@
 	action={`?/deleteRecipe`}
 	use:enhance={async ({ cancel }) => {
 		const success = await alertManager.confirm({
-			title: "Delete",
-			description:'Delete this recipe?'
-		})
+			title: 'Delete',
+			description: 'Delete this recipe?'
+		});
 
 		if (!success) {
 			return cancel();
@@ -32,18 +32,18 @@
 			switch (result.type) {
 				case 'success': {
 					const data = result.data as ActionData;
-					if(!data || data.deleted === false) {
-                        toast.error("Unable to delete this recipe");
-                        return;
-                    }
-                    
-                    if (props.onDeleted) {
-                        props.onDeleted();
-                    }
+					if (!data || data.deleted === false) {
+						toast.error('Unable to delete this recipe');
+						return;
+					}
+
+					if (props.onDeleted) {
+						props.onDeleted();
+					}
 
 					// FIXME: We shouldn't be invalidating all the cache
 					toast.success('Recipe deleted successfully');
-					await goto('/my-recipes', { invalidateAll: true})
+					await goto('/my-recipes', { invalidateAll: true });
 					break;
 				}
 				case 'error':
