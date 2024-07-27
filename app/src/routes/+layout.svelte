@@ -71,7 +71,7 @@
 		rel="stylesheet"
 	/>
 
-	<link rel="manifest" href="/manifest.json" />
+	<link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
 	<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FDBA74" />
 	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#FDBA74" />
 </svelte:head>
