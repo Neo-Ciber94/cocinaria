@@ -1,4 +1,9 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({
+	path: ['.env', '.env.production'],
+	override: true
+});
+
 import { db, client } from '$lib/db';
 import {
 	DeleteObjectCommand,

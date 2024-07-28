@@ -1,8 +1,9 @@
 import { ApplicationError } from '$lib/common/error';
 import { generateRecipeImage } from '$lib/server/ai/recipe';
+import { rateLimiter } from '$lib/server/ratelimiter';
 import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 import type { Config } from '@sveltejs/adapter-vercel';
-import { type RequestHandler } from '@sveltejs/kit';
+import { error, type RequestHandler } from '@sveltejs/kit';
 import { task, TaskError } from 'svelte-stream/task';
 
 export const config: Config = {
@@ -12,7 +13,14 @@ export const config: Config = {
 export type GeneratedImage = { url: string | null };
 
 export const POST: RequestHandler = async (event) => {
-	const { session } = checkAuthenticated(event);
+	const auth = checkAuthenticated(event);
+	const { success } = await rateLimiter.limit(event, auth.user.id);
+
+	if (!success) {
+		error(429, { message: 'Too many requests' });
+	}
+
+	const session = auth.session;
 	const aiConfig = getAIProviderConfig(event.cookies);
 	const recipeId = event.url.searchParams.get('recipe_id');
 

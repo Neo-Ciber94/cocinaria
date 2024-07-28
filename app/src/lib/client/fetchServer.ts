@@ -9,13 +9,13 @@ export async function fetchServer<T>(url: string, init?: RequestInit): Promise<T
 		throw new Error('Invalid response');
 	}
 
-	const json = parse(contents);
-
 	if (!res.ok) {
-		const error = getJsonError(json) ?? `Http Error: ${res.status}`;
+		const errorJson = JSON.parse(contents);
+		const error = getJsonError(errorJson) ?? `Http Error: ${res.status}`;
 		throw new Error(error);
 	}
 
+	const json = parse(contents);
 	return json as T;
 }
 

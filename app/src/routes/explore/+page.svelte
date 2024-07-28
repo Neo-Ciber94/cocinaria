@@ -16,6 +16,7 @@
 	import { Button } from '$components/ui/button';
 	import Input from '$components/ui/input/input.svelte';
 	import { debounce } from '$lib/utils/debounce';
+	import { derived as deriveStore } from 'svelte/store';
 
 	function getInitialIngredients() {
 		try {
@@ -82,7 +83,7 @@
 		}
 	});
 
-	const queryError = $query.error;
+	const queryError = deriveStore(query, (q) => q.error);
 	const totalCount = $derived.by(() => {
 		const pages = $query.data?.pages || [];
 		return pages.flatMap((x) => x.recipes).length;
@@ -92,9 +93,11 @@
 	const showNoMoreRecipes = $derived(totalCount > MIN_COUNT);
 
 	$effect(() => {
-		if (queryError) {
-			toast.error(queryError.message);
-		}
+		return queryError.subscribe((err) => {
+			if (err) {
+				toast.error(err.message);
+			}
+		});
 	});
 
 	async function handleReset() {

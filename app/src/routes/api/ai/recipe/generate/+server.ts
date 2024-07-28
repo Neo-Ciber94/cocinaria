@@ -3,13 +3,21 @@ import { generateRecipe, generateRecipeInputSchema } from '$lib/server/ai/recipe
 import { checkAuthenticated, getAIProviderConfig } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import type { Config } from '@sveltejs/adapter-vercel';
+import { rateLimiter } from '$lib/server/ratelimiter';
 
 export const config: Config = {
 	runtime: 'edge'
 };
 
 export const POST: RequestHandler = async (event) => {
-	const { session } = checkAuthenticated(event);
+	const auth = checkAuthenticated(event);
+	const { success } = await rateLimiter.limit(event, auth.user.id);
+
+	if (!success) {
+		error(429, { message: 'Too many requests' });
+	}
+
+	const session = auth.session;
 
 	try {
 		const body = await event.request.json();
