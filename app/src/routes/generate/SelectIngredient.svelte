@@ -9,7 +9,7 @@
 	import type { Category, Ingredient } from '$lib/common/ingredients';
 	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
 	import { breakpoints, useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
-	import Drawer from '$components/Drawer.svelte';
+	import * as Drawer from '$components/drawer';
 
 	type Props = {
 		class?: string;
@@ -121,28 +121,32 @@
 		</Popover.Content>
 	</Popover.Root>
 {:else}
-	<Button
-		variant="outline"
-		role="combobox"
-		aria-expanded={open}
-		class={cn('relative w-[200px] justify-between pl-12', rest.class)}
-		onclick={() => (open = true)}
-	>
-		{#if selected}
-			<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
-				{selected.image}
-			</div>
-			<span class="capitalize">{selected.value}</span>
-		{:else}
-			<OrangeSliceIcon class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500" />
-			<span class="text-muted-foreground">Select an ingredient</span>
-		{/if}
-		<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-	</Button>
+	<Drawer.Root>
+		<Button
+			variant="outline"
+			role="combobox"
+			aria-expanded={open}
+			class={cn('relative w-[200px] justify-between pl-12', rest.class)}
+			onclick={() => (open = true)}
+		>
+			{#if selected}
+				<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
+					{selected.image}
+				</div>
+				<span class="capitalize">{selected.value}</span>
+			{:else}
+				<OrangeSliceIcon
+					class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
+				/>
+				<span class="text-muted-foreground">Select an ingredient</span>
+			{/if}
+			<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+		</Button>
 
-	<Drawer bind:open>
-		<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
-			{@render ListItems('')}
-		</div>
-	</Drawer>
+		<Drawer.Content bind:open>
+			<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
+				{@render ListItems('')}
+			</div>
+		</Drawer.Content>
+	</Drawer.Root>
 {/if}
