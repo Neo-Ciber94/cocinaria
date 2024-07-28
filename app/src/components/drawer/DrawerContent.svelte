@@ -83,7 +83,7 @@
 		transition:slide={{ duration: transitionDurationMs, easing: quintOut, axis: 'y' }}
 	>
 		<button
-			class="mx-auto my-3 block h-2 w-2/6 rounded-lg bg-neutral-300"
+			class="mx-auto my-5 block h-1.5 w-2/6 rounded-lg bg-neutral-300"
 			ontouchstart={(ev) => {
 				isDragging = true;
 				startYPos = ev.touches[0].clientY;

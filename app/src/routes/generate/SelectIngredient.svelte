@@ -66,7 +66,7 @@
 					<Command.List class="max-h-full">
 						{#each ingredients as ingredient}
 							<Command.Item
-								class="flex flex-row gap-2"
+								class="flex flex-row gap-2 text-base"
 								value={ingredient.value}
 								onSelect={(currentValue) => {
 									const ingredient = findIngredient(currentValue);
