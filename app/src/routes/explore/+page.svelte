@@ -62,8 +62,6 @@
 	const getSearch = () => search;
 	const getIngredients = () => ingredients;
 
-	$inspect(ingredients).with(console.log);
-
 	const query = createInfiniteQuery({
 		queryKey: ['recipes', getSearch(), getIngredients()],
 		queryFn: async ({ pageParam, signal }) => {
@@ -155,6 +153,7 @@
 		</div>
 		<div class="mt-5 flex w-full basis-1/3 flex-row gap-1 xs:mt-0">
 			<Button
+				onclick={doSearch}
 				class={'relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-orange-500 text-white hover:bg-orange-600'}
 			>
 				Search
