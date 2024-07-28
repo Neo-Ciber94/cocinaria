@@ -2,9 +2,11 @@
 	import * as Select from '$components/ui/select/index.js';
 	import type { RecipeType } from '$lib/common/recipe';
 	import { useIsMounted } from '$lib/hooks/useIsMounted.svelte';
+	import { useMatchQuery, breakpoints } from '$lib/hooks/useMatchQuery.svelte';
 	import { cn } from '$lib/utils';
 	import { flyAndScale } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import * as Drawer from '$components/drawer';
 
 	type Props = {
 		selected?: RecipeType;
@@ -24,10 +26,31 @@
 	] satisfies { value: RecipeType; label: string; icon: string }[];
 
 	let selectedRecipe = $derived(recipeTypes.find((e) => e.value === selected));
+	const isDesktopQuery = useMatchQuery(breakpoints.desktop);
+	let open = $state(false);
 </script>
+
+{#snippet Items()}
+	<Select.Group>
+		<Select.Label>Recipes</Select.Label>
+		{#each recipeTypes as recipeType}
+			{@const isSelected = selectedRecipe?.value === recipeType.value}
+
+			<Select.Item
+				value={recipeType.value}
+				label={recipeType.label}
+				class="flex flex-row gap-2 px-4 py-4 data-[selected]:bg-neutral-100 xs:px-0 xs:py-0"
+			>
+				<Icon icon={recipeType.icon} class={cn('size-6 opacity-50', isSelected && 'opacity-90')} />
+				{recipeType.label}
+			</Select.Item>
+		{/each}
+	</Select.Group>
+{/snippet}
 
 <Select.Root
 	items={recipeTypes}
+	bind:open
 	{disabled}
 	selected={selectedRecipe}
 	onSelectedChange={(item) => {
@@ -53,21 +76,20 @@
 		{/if}
 		<Select.Value placeholder="Select a recipe type" />
 	</Select.Trigger>
-	<Select.Content transition={flyAndScale} sideOffset={8}>
-		<Select.Group>
-			<Select.Label>Recipes</Select.Label>
-			{#each recipeTypes as recipeType}
-				{@const isSelected = selectedRecipe?.value === recipeType.value}
 
-				<Select.Item value={recipeType.value} label={recipeType.label} class="flex flex-row gap-2">
-					<Icon
-						icon={recipeType.icon}
-						class={cn('size-6 opacity-50', isSelected && 'opacity-90')}
-					/>
-					{recipeType.label}
-				</Select.Item>
-			{/each}
-		</Select.Group>
-	</Select.Content>
+	{#if isDesktopQuery.matches}
+		<Select.Content transition={flyAndScale} sideOffset={8}>
+			{@render Items()}
+		</Select.Content>
+	{:else}
+		<Drawer.Root>
+			<Drawer.Content bind:open>
+				<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
+					{@render Items()}
+				</div>
+			</Drawer.Content>
+		</Drawer.Root>
+	{/if}
+
 	<Select.Input name="recipeType" />
 </Select.Root>
