@@ -61,6 +61,10 @@
 		} else {
 			document.body.style.overflow = prevBodyStyleOverflow || '';
 		}
+
+		return () => {
+			document.body.style.overflow = prevBodyStyleOverflow || '';
+		};
 	});
 </script>
 

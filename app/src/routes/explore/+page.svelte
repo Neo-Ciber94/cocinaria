@@ -98,6 +98,10 @@
 	});
 
 	async function handleReset() {
+		if (search === '' && (ingredients == null || ingredients.length === 0)) {
+			return;
+		}
+
 		search = '';
 		ingredients = [];
 		await goto('?', { replaceState: true, invalidateAll: true });
@@ -110,6 +114,7 @@
 			keepFocus: true,
 			invalidateAll: true
 		});
+
 		await $query.refetch();
 	}
 
