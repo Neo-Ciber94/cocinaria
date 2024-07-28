@@ -16,6 +16,7 @@
 	import { Button } from '$components/ui/button';
 	import Input from '$components/ui/input/input.svelte';
 	import { debounce } from '$lib/utils/debounce';
+	import { derived as deriveStore } from 'svelte/store';
 
 	function getInitialIngredients() {
 		try {
@@ -82,7 +83,7 @@
 		}
 	});
 
-	const queryError = $query.error;
+	const queryError = deriveStore(query, (q) => q.error);
 	const totalCount = $derived.by(() => {
 		const pages = $query.data?.pages || [];
 		return pages.flatMap((x) => x.recipes).length;
@@ -92,9 +93,11 @@
 	const showNoMoreRecipes = $derived(totalCount > MIN_COUNT);
 
 	$effect(() => {
-		if (queryError) {
-			toast.error(queryError.message);
-		}
+		return queryError.subscribe((err) => {
+			if (err) {
+				toast.error(err.message);
+			}
+		});
 	});
 
 	async function handleReset() {
@@ -156,7 +159,7 @@
 				onClose={debouncedSearch}
 			/>
 		</div>
-		<div class="mt-5 flex w-full basis-1/3 flex-row gap-1 xs:mt-0">
+		<div class="xs:mt-0 mt-5 flex w-full basis-1/3 flex-row gap-1">
 			<Button
 				onclick={doSearch}
 				class={'relative flex w-full flex-row items-center justify-center gap-1 rounded-lg bg-orange-500 text-white hover:bg-orange-600'}
@@ -182,7 +185,7 @@
 		{@const pages = $query.data.pages}
 
 		<div
-			class="grid grid-cols-1 flex-wrap justify-center gap-4 py-5 xxs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+			class="xxs:grid-cols-2 grid grid-cols-1 flex-wrap justify-center gap-4 py-5 sm:grid-cols-3 md:grid-cols-4"
 		>
 			{#each pages as page (page.next)}
 				{@const recipes = page.recipes}

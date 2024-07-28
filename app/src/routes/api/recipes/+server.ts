@@ -7,9 +7,8 @@ import { stringify } from 'devalue';
 export const GET: RequestHandler = async (event) => {
 	const auth = checkAuthenticated(event);
 
-	const limiterResult = await rateLimiter.limit(event, auth.user.id);
-
-	if (!limiterResult.success) {
+	const { success } = await rateLimiter.limit(event, auth.user.id);
+	if (!success) {
 		error(429, { message: 'Too many requests' });
 	}
 
