@@ -14,9 +14,7 @@ type EncodeJwtOptions = {
 export async function encodeJwt(payload: Record<string, unknown>, options?: EncodeJwtOptions) {
 	const { expiration, issuer, audience } = options || {};
 
-	const jwt = new jose.EncryptJWT(payload)
-		.setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-		.setIssuedAt();
+	const jwt = new jose.SignJWT(payload).setProtectedHeader({ alg: 'HS256' }).setIssuedAt();
 
 	if (expiration) {
 		jwt.setExpirationTime(expiration);
@@ -30,7 +28,7 @@ export async function encodeJwt(payload: Record<string, unknown>, options?: Enco
 		jwt.setAudience(audience);
 	}
 
-	return jwt.encrypt(SECRET);
+	return jwt.sign(SECRET);
 }
 
 export function decodeJwt(token: string) {
