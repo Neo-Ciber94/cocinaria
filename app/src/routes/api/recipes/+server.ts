@@ -1,10 +1,17 @@
+import { rateLimiter } from '$lib/server/ratelimiter';
 import { getRecipes } from '$lib/server/recipes';
 import { checkAuthenticated } from '$lib/server/utils';
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { stringify } from 'devalue';
 
 export const GET: RequestHandler = async (event) => {
-	checkAuthenticated(event);
+	const auth = checkAuthenticated(event);
+
+	const limiterResult = await rateLimiter.limit(event, auth.user.id);
+
+	if (!limiterResult.success) {
+		error(429, { message: 'Too many requests' });
+	}
 
 	const search = event.url.searchParams.get('search');
 	const ingredients = event.url.searchParams.getAll('ingredients').filter(Boolean);

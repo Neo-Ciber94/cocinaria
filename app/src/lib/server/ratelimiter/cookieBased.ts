@@ -1,5 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import { RateLimiter, type RateLimiterResult } from '.';
+import { RateLimiter, type RateLimiterResult } from './base';
 import { invariant } from '$lib/index';
 import { z } from 'zod';
 import { decodeJwt, encodeJwt } from '../jwt';
@@ -7,8 +7,8 @@ import { decodeJwt, encodeJwt } from '../jwt';
 const COOKIE_RATE_LIMITER_KEY = 'cocinaria:rate-limit';
 
 const rateLimitEntrySchema = z.object({
-	count: z.number().positive(),
-	expires: z.date()
+	count: z.coerce.number().positive(),
+	expires: z.coerce.date()
 });
 
 type RateLimitEntry = z.infer<typeof rateLimitEntrySchema>;
@@ -29,7 +29,7 @@ export class CookieBasedRateLimiter extends RateLimiter {
 		invariant(options.windowMs > 0, 'Rate limiter window should be positive');
 
 		this.#count = options.count;
-		this.#windowMs = options.count;
+		this.#windowMs = options.windowMs;
 	}
 
 	async limit(event: RequestEvent, key: string): Promise<RateLimiterResult> {
@@ -49,13 +49,14 @@ export class CookieBasedRateLimiter extends RateLimiter {
 			return { success: true, remaining: this.#count };
 		}
 
-		if (entry.expires >= now) {
+		if (now > entry.expires) {
 			entry.count = this.#count;
 		} else {
 			entry.count -= 1;
 		}
 
 		if (entry.count <= 0) {
+			entry.count = 0;
 			await this.#setRateLimiterCookie(event, cookieName, entry);
 			return { success: false, remaining: 0 };
 		}
