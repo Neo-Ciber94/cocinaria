@@ -76,7 +76,7 @@
 
 	<div
 		bind:this={containerRef}
-		class={cn('bg-background fixed bottom-0 left-0 z-10 w-full overflow-hidden rounded-t-lg', {
+		class={cn('fixed bottom-0 left-0 z-10 w-full overflow-hidden rounded-t-lg bg-background', {
 			'transition-transform duration-500': !isDragging
 		})}
 		style:transform={`translateY(${yPos}px)`}
