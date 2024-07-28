@@ -77,7 +77,7 @@
 			"description": "Generate a new recipe",
 			"icons": [
 				{
-					"src": "icons/cocinaria-96x96.png",
+					"src": "icons/shortcut-generate-96x96.png",
 					"sizes": "96x96"
 				}
 			]
@@ -89,7 +89,7 @@
 			"description": "Explore all generated recipes",
 			"icons": [
 				{
-					"src": "icons/cocinaria-96x96.png",
+					"src": "icons/shortcut-explore-96x96.png",
 					"sizes": "96x96"
 				}
 			]
@@ -101,7 +101,7 @@
 			"description": "Checkout all my generated recipes",
 			"icons": [
 				{
-					"src": "icons/cocinaria-96x96.png",
+					"src": "icons/shortcut-myrecipes-96x96.png",
 					"sizes": "96x96"
 				}
 			]
