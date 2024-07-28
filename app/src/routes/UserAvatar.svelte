@@ -5,7 +5,7 @@
 	import type { User } from 'lucia';
 	import type { Account } from '$lib/db/types';
 	import CoinIcon from '$components/icons/coinIcon.svelte';
-	import DiamongIcon from '$components/icons/diamondIcon.svelte';
+	import DiamondIcon from '$components/icons/diamondIcon.svelte';
 	import KeyIcon from '$components/icons/keyIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
 	import { getStringInitials } from '$lib/utils/strings';
@@ -32,7 +32,7 @@
 		</Avatar.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content
-		class="w-full max-w-[229px] space-y-1 rounded-xl border border-gray-200 bg-white px-1 py-1.5 shadow-sm"
+		class="w-full max-w-[95vw] space-y-1 rounded-xl border border-gray-200 bg-white px-1 py-1.5 shadow-sm xs:max-w-[229px]"
 		sideOffset={8}
 		transition={flyAndScale}
 	>
@@ -66,7 +66,7 @@
 				class="group flex h-10 cursor-pointer select-none items-center rounded-md px-2 py-1 text-sm font-medium !ring-0 !ring-transparent hover:text-white data-[highlighted]:bg-purple-300"
 			>
 				<div class="flex w-full flex-row items-center gap-2 rounded-lg p-2">
-					<DiamongIcon class="size-5 transition-transform group-hover:scale-110" />
+					<DiamondIcon class="size-5 transition-transform group-hover:scale-110" />
 					<span> Premium </span>
 				</div>
 			</DropdownMenu.Item>

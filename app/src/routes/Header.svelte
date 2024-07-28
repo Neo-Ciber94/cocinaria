@@ -15,7 +15,7 @@
 	import { fly } from 'svelte/transition';
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
-	import { useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
+	import { breakpoints, useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
 	import SparkIcon from '$components/icons/sparkIcon.svelte';
 	import GithubAnimatedIcon from '$components/icons/githubAnimatedIcon.svelte';
 	import { useApiKeyDialog } from '$lib/hooks/useApiKeyDialog.svelte';
@@ -54,7 +54,7 @@
 	const user = auth?.user;
 	const account = auth?.account;
 	let isMenuOpen = $state(false);
-	const isSmallScreenQuery = useMatchQuery('(max-width: 768px)');
+	const isDesktopQuery = useMatchQuery(breakpoints.desktop);
 	const apiKeyDialogOpen = useApiKeyDialog();
 
 	function isActive(pathname: string) {
@@ -64,7 +64,7 @@
 	}
 
 	$effect(() => {
-		if (!isSmallScreenQuery.matches) {
+		if (isDesktopQuery.matches) {
 			isMenuOpen = false;
 		}
 	});
@@ -95,7 +95,7 @@
 				/>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg"
+				class="mx-auto w-full max-w-[95vw] overflow-hidden rounded-xl border border-muted bg-background shadow-lg sm:max-w-[400px]"
 				sideOffset={8}
 				transition={fly}
 				transitionConfig={{

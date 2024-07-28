@@ -18,19 +18,33 @@
 	import { debounce } from '$lib/utils/debounce';
 
 	function getInitialIngredients() {
-		const values = $page.url.searchParams
-			.getAll('ingredients')
-			.filter(Boolean)
-			.map((value) => ({ value, label: value }));
+		try {
+			const raw = $page.url.searchParams.get('ingredients');
 
-		return values.length > 0 ? values : undefined;
+			if (!raw) {
+				return undefined;
+			}
+
+			const array = JSON.parse(raw);
+
+			if (Array.isArray(array)) {
+				return array
+					.map((s) => s.trim())
+					.filter(Boolean)
+					.map((value) => ({ value, label: value }));
+			}
+
+			return undefined;
+		} catch {
+			return undefined;
+		}
 	}
 
 	let search = $state($page.url.searchParams.get('search'));
 	let ingredients = $state<Selected<string>[] | undefined>(getInitialIngredients());
 	const isSearching = $derived(search || (ingredients ?? []).length > 0);
 
-	const recipesSearchParms = $derived.by(() => {
+	const recipesSearchParams = $derived.by(() => {
 		const ret = new URLSearchParams();
 
 		if (search && search.trim().length > 0) {
@@ -48,10 +62,12 @@
 	const getSearch = () => search;
 	const getIngredients = () => ingredients;
 
+	$inspect(ingredients).with(console.log);
+
 	const query = createInfiniteQuery({
 		queryKey: ['recipes', getSearch(), getIngredients()],
 		queryFn: async ({ pageParam, signal }) => {
-			const sp = new URLSearchParams(recipesSearchParms);
+			const sp = new URLSearchParams(recipesSearchParams);
 
 			if (pageParam) {
 				sp.set('cursor', pageParam);
@@ -91,7 +107,7 @@
 	}
 
 	async function doSearch() {
-		await goto(`?${recipesSearchParms}`, {
+		await goto(`?${recipesSearchParams}`, {
 			replaceState: true,
 			keepFocus: true,
 			invalidateAll: true

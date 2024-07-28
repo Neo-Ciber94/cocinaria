@@ -8,6 +8,8 @@
 	import { cn } from '$lib/utils.js';
 	import type { Category, Ingredient } from '$lib/common/ingredients';
 	import OrangeSliceIcon from '$components/icons/orangeSliceIcon.svelte';
+	import { breakpoints, useMatchQuery } from '$lib/hooks/useMatchQuery.svelte';
+	import * as Drawer from '$components/drawer';
 
 	type Props = {
 		class?: string;
@@ -34,6 +36,8 @@
 		return initialIngredients;
 	});
 
+	const isDesktopQuery = useMatchQuery(breakpoints.desktop);
+
 	function findIngredient(name: string) {
 		return filteredIngredients.find((x) => x.value === name);
 	}
@@ -51,37 +55,15 @@
 	const ingredientGroups = Object.groupBy(ingredients, (e) => e.category);
 </script>
 
-<Popover.Root bind:open let:ids>
-	<Popover.Trigger asChild let:builder>
-		<Button
-			builders={[builder]}
-			variant="outline"
-			role="combobox"
-			aria-expanded={open}
-			class={cn('relative w-[200px] justify-between pl-12', rest.class)}
-		>
-			{#if selected}
-				<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
-					{selected.image}
-				</div>
-				<span class="capitalize">{selected.value}</span>
-			{:else}
-				<OrangeSliceIcon
-					class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
-				/>
-				<span class="text-muted-foreground">Select an ingredient</span>
-			{/if}
-			<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-		</Button>
-	</Popover.Trigger>
-	<Popover.Content class="max-h-[500px] w-[90%] overflow-y-auto p-0 sm:w-[400px]">
-		<Command.Root>
-			<Command.Input placeholder="Select an ingredient" class="h-9" {disabled} />
-			<Command.Empty>No ingredients</Command.Empty>
-			{#each Object.keys(ingredientGroups) as group}
-				{@const ingredients = ingredientGroups[group as Category] || []}
-				{#if ingredients}
-					<Command.Group heading={group}>
+{#snippet ListItems(ids)}
+	<Command.Root>
+		<Command.Input placeholder="Select an ingredient" class="h-9" {disabled} />
+		<Command.Empty>No ingredients</Command.Empty>
+		{#each Object.keys(ingredientGroups) as group}
+			{@const ingredients = ingredientGroups[group as Category] || []}
+			{#if ingredients}
+				<Command.Group heading={group}>
+					<Command.List class="max-h-full">
 						{#each ingredients as ingredient}
 							<Command.Item
 								class="flex flex-row gap-2"
@@ -103,9 +85,68 @@
 								</span>
 							</Command.Item>
 						{/each}
-					</Command.Group>
+					</Command.List>
+				</Command.Group>
+			{/if}
+		{/each}
+	</Command.Root>
+{/snippet}
+
+{#if isDesktopQuery.matches}
+	<Popover.Root bind:open let:ids>
+		<Popover.Trigger asChild let:builder>
+			<Button
+				builders={[builder]}
+				variant="outline"
+				role="combobox"
+				aria-expanded={open}
+				class={cn('relative w-[200px] justify-between pl-12', rest.class)}
+			>
+				{#if selected}
+					<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
+						{selected.image}
+					</div>
+					<span class="capitalize">{selected.value}</span>
+				{:else}
+					<OrangeSliceIcon
+						class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
+					/>
+					<span class="text-muted-foreground">Select an ingredient</span>
 				{/if}
-			{/each}
-		</Command.Root>
-	</Popover.Content>
-</Popover.Root>
+				<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+			</Button>
+		</Popover.Trigger>
+		<Popover.Content class="max-h-[500px] w-[90%] overflow-y-auto p-0 sm:w-[400px]">
+			{@render ListItems(ids)}
+		</Popover.Content>
+	</Popover.Root>
+{:else}
+	<Drawer.Root>
+		<Button
+			variant="outline"
+			role="combobox"
+			aria-expanded={open}
+			class={cn('relative w-[200px] justify-between pl-12', rest.class)}
+			onclick={() => (open = true)}
+		>
+			{#if selected}
+				<div class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-lg">
+					{selected.image}
+				</div>
+				<span class="capitalize">{selected.value}</span>
+			{:else}
+				<OrangeSliceIcon
+					class="absolute start-3 top-1/2 size-6 -translate-y-1/2 text-neutral-500"
+				/>
+				<span class="text-muted-foreground">Select an ingredient</span>
+			{/if}
+			<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+		</Button>
+
+		<Drawer.Content bind:open>
+			<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
+				{@render ListItems('')}
+			</div>
+		</Drawer.Content>
+	</Drawer.Root>
+{/if}
