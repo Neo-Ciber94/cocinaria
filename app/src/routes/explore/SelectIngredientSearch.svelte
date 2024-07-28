@@ -62,7 +62,7 @@
 		</Select.Content>
 	{:else}
 		<Drawer.Root>
-			<Drawer.Content bind:open>
+			<Drawer.Content bind:open onclose={onClose}>
 				<div class="max-h-[80vh] min-h-[80vh] overflow-y-auto">
 					{@render Items()}
 				</div>
