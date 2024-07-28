@@ -1,8 +1,8 @@
 import type { RateLimiter } from './base';
-import { CookieBasedRateLimiter } from './cookieBased';
+import { CookieBasedRateLimiter } from './cookie.ratelimiter';
 
 // 10 request each 10 seconds
 export const rateLimiter: RateLimiter = new CookieBasedRateLimiter({
-	count: 10,
-	windowMs: 30_000
+	max: 10,
+	windowMs: 10_000
 });
