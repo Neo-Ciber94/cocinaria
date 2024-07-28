@@ -3,13 +3,17 @@ import { getFoodIcon } from '$lib/hooks/foodIcon';
 import type { Cookies } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { aiProviderConfig } from './api/ai/provider/schema';
+import { getBaseUrl } from '$lib/common/getBaseUrl';
 
 export const load: LayoutServerLoad = async (event) => {
 	const auth = event.locals.auth;
 	const icon = getFoodIcon(event);
 	const aiProvider = getAIProvider(event.cookies);
+	const seo = {
+		image: `${getBaseUrl()}/icons/cocinaria-512x512.png`
+	};
 
-	return { auth, icon, aiProvider };
+	return { auth, icon, aiProvider, seo };
 };
 
 function getAIProvider(cookies: Cookies) {

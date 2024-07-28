@@ -60,7 +60,15 @@
 	setSeoBaseTitle(`CocinarIA ${icon}`);
 </script>
 
-<SvelteSeo />
+<SvelteSeo
+	openGraph={{
+		images: [
+			{
+				url: data.seo.image
+			}
+		]
+	}}
+/>
 
 <svelte:head>
 	<title>{`CocinarIA ${icon}`}</title>
