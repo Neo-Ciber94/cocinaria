@@ -35,5 +35,5 @@
 	)}
 >
 	<ShareIcon class="size-5" />
-	<span> Share</span>
+	<span> Share Link</span>
 </Button>
