@@ -9,12 +9,13 @@
 	import type { ActionData } from './$types';
 	import toast from 'svelte-french-toast';
 
-	let props: { disabled?: boolean; onDeleted?: () => void } = $props();
+	let props: { disabled?: boolean; onDeleted?: () => void; class?: string } = $props();
 	const alertManager = useAlertManager();
 	let loading = $state(false);
 </script>
 
 <form
+	class="contents"
 	method="post"
 	action={`?/deleteRecipe`}
 	use:enhance={async ({ cancel }) => {
@@ -61,8 +62,9 @@
 		type="submit"
 		disabled={loading || props.disabled}
 		class={cn(
-			'mb-2 flex flex-row items-center justify-center gap-2 bg-red-500 px-10 text-white',
-			loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-red-600'
+			'mb-2 flex flex-row items-center justify-center gap-2 bg-red-500 px-2 text-white',
+			loading ? 'cursor-wait disabled:opacity-70' : ' hover:bg-red-600',
+			props.class
 		)}
 	>
 		{#if loading}
