@@ -10,6 +10,8 @@
 	import { handleImageError } from '$lib/client/handleImageError';
 	import { useFoodIcon } from '$lib/hooks/useFoodIcon';
 	import RecipeImage from '$components/RecipeImage.svelte';
+	import ShareButton from './ShareButton.svelte';
+	import { cn } from '$lib/utils';
 
 	let { data }: { data: PageData } = $props();
 	const { seo } = data;
@@ -28,6 +30,7 @@
 	const icon = useFoodIcon();
 	const recipe = $derived(data.recipe);
 	let isDeleted = $state(false);
+
 	const generatedAt = relativeTime(data.recipe.createdAt);
 </script>
 
@@ -64,11 +67,21 @@
 <div
 	class="mx-auto mb-2 min-h-screen w-full max-w-3xl px-4 pt-4 sm:container sm:px-1 sm:pt-12 md:max-w-5xl md:pt-20"
 >
-	{#if isCurrentUserRecipe}
-		<div class="flex w-full flex-row justify-end">
-			<DeleteRecipeButton disabled={isDeleted} onDeleted={() => (isDeleted = true)} />
-		</div>
-	{/if}
+	<div class="flex w-full flex-row justify-end gap-2">
+		<ShareButton
+			recipeId={data.recipe.id}
+			class={cn('w-full min-w-0 sm:w-auto sm:min-w-40', {
+				'w-auto min-w-40': !isCurrentUserRecipe
+			})}
+		/>
+		{#if isCurrentUserRecipe}
+			<DeleteRecipeButton
+				class="w-full min-w-0 sm:w-auto sm:min-w-40"
+				disabled={isDeleted}
+				onDeleted={() => (isDeleted = true)}
+			/>
+		{/if}
+	</div>
 
 	<div class="flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-md">
 		<section class="w-full pt-5 md:pt-12 lg:pt-16">
