@@ -20,7 +20,9 @@ By default it uses an `OpenAI` API Key but you can configure it to use `Gemini` 
 - [x] Home page with latest created recipes
 - [x] Generate recipe page for user to generate recipes
 - [x] My recipes page to show the user recipes
-
+- [x] Fully responsive (mobile, tablet and desktop)
+- [x] Installable (PWA)
+ 
 ## 💻 Running locally
 
 For running locally you need to setup some environment variables, checkout the `.env.example` file.
