@@ -16,6 +16,13 @@
 
 <SvelteSeo
 	description={`Discover delicious recipes tailored to your taste with this AI-powered recipe generator. Specify the recipe type and ingredients, and get detailed steps, precise ingredient amounts, and images. Whether you're a seasoned chef or a home cook, enjoy a variety of culinary inspirations and create mouth-watering dishes with ease.`}
+	openGraph={{
+		images: [
+			{
+				url: data.seo.image
+			}
+		]
+	}}
 />
 
 <section
